@@ -1,0 +1,112 @@
+[
+  {
+    "manufacturerId": "MFR_NATCO",
+    "name": "Natco Pharma Limited",
+    "shortName": "Natco Pharma",
+    "type": "Manufacturer",
+    "headquarters": "Hyderabad, Telangana, India",
+    "website": "https://www.natcopharma.co.in",
+    "about": "Natco Pharma Limited is a leading Indian pharmaceutical company specialising in oncology, hepatology, and cardiology medicines. Founded in 1981, Natco is known for producing high-quality generic versions of patented cancer drugs at affordable prices, making life-saving treatments accessible across India and globally.",
+    "licenseNo": "MFR-AP-NATCO-001",
+    "authorisedSince": "2020-01-01"
+  },
+  {
+    "manufacturerId": "MFR_BAYER",
+    "name": "Bayer India Limited",
+    "shortName": "Bayer India",
+    "type": "Manufacturer",
+    "headquarters": "Mumbai, Maharashtra, India",
+    "website": "https://www.bayer.com/en/in",
+    "about": "Bayer India Limited is a subsidiary of Bayer AG, Germany. It operates across pharmaceuticals, consumer health, and crop science. Bayer India is known for trusted consumer health brands and a strong prescription portfolio covering cardiology, oncology, and women's health.",
+    "licenseNo": "MFR-MH-BAYER-002",
+    "authorisedSince": "2020-01-01"
+  },
+  {
+    "manufacturerId": "MFR_GSK",
+    "name": "GlaxoSmithKline Pharmaceuticals Limited",
+    "shortName": "GSK India",
+    "type": "Manufacturer",
+    "headquarters": "Mumbai, Maharashtra, India",
+    "website": "https://in.gsk.com",
+    "about": "GlaxoSmithKline Pharmaceuticals Limited (GSK India) is one of India's oldest and most trusted pharmaceutical companies. Its portfolio spans vaccines, antibiotics, respiratory medicines, and specialty treatments. GSK India is listed on the Bombay Stock Exchange and follows strict global quality standards.",
+    "licenseNo": "MFR-MH-GSK-003",
+    "authorisedSince": "2019-06-01"
+  },
+  {
+    "manufacturerId": "MFR_ADLEY_ONCOLOGY",
+    "name": "Adley Oncology",
+    "shortName": "Adley Oncology",
+    "type": "Manufacturer",
+    "headquarters": "India",
+    "website": "",
+    "about": "Adley Oncology is a specialty pharmaceutical company focused on oncology medicines, providing affordable cancer treatment options across India.",
+    "licenseNo": "MFR-ADLEY-004",
+    "authorisedSince": "2022-01-01"
+  },
+  {
+    "manufacturerId": "MFR_HETERO_DRUGS",
+    "name": "Hetero Drugs Limited",
+    "shortName": "Hetero Drugs",
+    "type": "Manufacturer",
+    "headquarters": "Hyderabad, Telangana, India",
+    "website": "https://www.heterodrugs.com",
+    "about": "Hetero Drugs Limited is one of India's largest generic pharmaceutical companies with a strong presence in antiviral, oncology, and antibiotic segments. The company exports to over 120 countries and is known for its role in making HIV and Hepatitis C treatments affordable globally.",
+    "licenseNo": "MFR-AP-HETERO-005",
+    "authorisedSince": "2021-03-01"
+  },
+  {
+    "manufacturerId": "MFR_DR__REDDY_S",
+    "name": "Dr. Reddy's Laboratories",
+    "shortName": "Dr. Reddy's",
+    "type": "Manufacturer",
+    "headquarters": "Hyderabad, Telangana, India",
+    "website": "https://www.drreddys.com",
+    "about": "Dr. Reddy's Laboratories is a global pharmaceutical company headquartered in Hyderabad, India. It offers a portfolio of products including APIs, generics, biosimilars, and branded medicines across oncology, cardiovascular, and GI therapy areas.",
+    "licenseNo": "MFR-AP-DRL-006",
+    "authorisedSince": "2020-06-01"
+  },
+  {
+    "manufacturerId": "MFR_ZYDUS_LIFESCIENCES",
+    "name": "Zydus Lifesciences Limited",
+    "shortName": "Zydus",
+    "type": "Manufacturer",
+    "headquarters": "Ahmedabad, Gujarat, India",
+    "website": "https://www.zyduslife.com",
+    "about": "Zydus Lifesciences (formerly Cadila Healthcare) is one of India's top five pharmaceutical companies. It has a strong presence in formulations, APIs, animal health, and consumer wellness. Zydus was one of the first companies to develop a COVID-19 DNA vaccine in India.",
+    "licenseNo": "MFR-GJ-ZYDUS-007",
+    "authorisedSince": "2021-01-01"
+  },
+  {
+    "manufacturerId": "MFR_CELON_LABORATORIES",
+    "name": "Celon Laboratories",
+    "shortName": "Celon Labs",
+    "type": "Manufacturer",
+    "headquarters": "Hyderabad, Telangana, India",
+    "website": "",
+    "about": "Celon Laboratories is a specialty pharmaceutical company with expertise in oncology and haematology medicines. The company focuses on providing affordable cancer therapies to patients across India.",
+    "licenseNo": "MFR-AP-CELON-008",
+    "authorisedSince": "2022-06-01"
+  },
+  {
+    "manufacturerId": "MFR_HALSTED_PHARMA",
+    "name": "Halsted Pharma",
+    "shortName": "Halsted Pharma",
+    "type": "Manufacturer",
+    "headquarters": "India",
+    "website": "",
+    "about": "Halsted Pharma is a pharmaceutical company specialising in oncology and specialty medicines for the Indian market.",
+    "licenseNo": "MFR-HALSTED-009",
+    "authorisedSince": "2023-01-01"
+  },
+  {
+    "manufacturerId": "MFR_MSN_LABORATORIES",
+    "name": "MSN Laboratories",
+    "shortName": "MSN Labs",
+    "type": "Manufacturer",
+    "headquarters": "Hyderabad, Telangana, India",
+    "website": "https://www.msnlabs.com",
+    "about": "MSN Laboratories is a fully integrated pharmaceutical company engaged in the development and manufacture of APIs and finished dosage forms. It has a strong oncology and specialty medicines portfolio.",
+    "licenseNo": "MFR-AP-MSN-010",
+    "authorisedSince": "2021-09-01"
+  }
+]

@@ -1,0 +1,46 @@
+<svg viewBox="0 0 340 68" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+  <defs>
+    <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
+    </linearGradient>
+  </defs>
+
+  <!--
+    True medical plus sign: equal arms, square proportion
+    Icon bounding box: 0,0 → 54,54, centred at 27,27
+    Arm thickness = 14px, arm length from centre = 27px each side
+  -->
+  <!-- Vertical arm: x=20, y=4, w=14, h=46 -->
+  <rect x="20" y="4"  width="14" height="46" rx="4" fill="url(#lg1)"/>
+  <!-- Horizontal arm: x=4, y=20, w=46, h=14  -->
+  <rect x="4"  y="20" width="46" height="14" rx="4" fill="url(#lg1)"/>
+
+  <!-- Centre node -->
+  <circle cx="27" cy="27" r="5"   fill="#fff"/>
+  <circle cx="27" cy="27" r="3.2" fill="#14B8A6"/>
+
+  <!-- Corner nodes (inside the icon box) -->
+  <circle cx="8"  cy="8"  r="2.2" fill="#2563EB" opacity="0.65"/>
+  <circle cx="46" cy="8"  r="2.2" fill="#14B8A6" opacity="0.65"/>
+  <circle cx="8"  cy="46" r="2.2" fill="#2563EB" opacity="0.65"/>
+  <circle cx="46" cy="46" r="2.2" fill="#14B8A6" opacity="0.65"/>
+
+  <!-- Network lines from centre to corners -->
+  <line x1="27" y1="27" x2="8"  y2="8"  stroke="#14B8A6" stroke-width="1.2" opacity="0.45"/>
+  <line x1="27" y1="27" x2="46" y2="8"  stroke="#14B8A6" stroke-width="1.2" opacity="0.45"/>
+  <line x1="27" y1="27" x2="8"  y2="46" stroke="#14B8A6" stroke-width="1.2" opacity="0.45"/>
+  <line x1="27" y1="27" x2="46" y2="46" stroke="#14B8A6" stroke-width="1.2" opacity="0.45"/>
+
+  <!-- Wordmark — 30% larger than before (30 → 39) -->
+  <text x="64" y="43"
+        font-size="39" font-weight="800" fill="#1E3A8A"
+        font-family="system-ui,-apple-system,'Segoe UI',sans-serif"
+        letter-spacing="-0.5">Medi<tspan fill="#14B8A6" font-weight="400">Fy</tspan></text>
+
+  <!-- Tagline — 30% larger (11 → 14), sits 16px below baseline of wordmark -->
+  <text x="65" y="60"
+        font-size="13" font-weight="600" fill="#475569"
+        font-family="system-ui,-apple-system,'Segoe UI',sans-serif"
+        letter-spacing="2">DIGITAL PHARMACY</text>
+</svg>

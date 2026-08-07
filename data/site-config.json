@@ -1,0 +1,105 @@
+{
+  "faqs": [
+    {
+      "q": "Is [BRAND_NAME] available in India?",
+      "a": "Yes. [BRAND_NAME] is available in India through authorized channels. To get [BRAND_NAME] in India it should only be obtained with a valid prescription from a qualified oncologist or hematologist."
+    },
+    {
+      "q": "How can I access [BRAND_NAME] if my hospital or pharmacy doesn't have it?",
+      "a": "If [BRAND_NAME] is not immediately available, speak with your treating oncologist or hospital pharmacy. They can coordinate with authorized distributors to arrange procurement. Patients should avoid purchasing the medicine from unverified sources due to the risk of falsified products."
+    },
+    {
+      "q": "What documents are usually needed to obtain [BRAND_NAME]?",
+      "a": "In most cases, you will need:\n• A valid prescription from your treating oncologist\n• Your diagnosis and medical reports. Hospital details where you will receive treatment\n\nThe support team will let you know if any additional documents are required."
+    },
+    {
+      "q": "Can someone help me navigate the access process?",
+      "a": "Yes. Dedicated patient support services can help you understand the process, coordinate with your hospital, and answer questions related to access, documentation, and treatment logistics.\n\nSpeak to a patient support representative for one-on-one assistance."
+    },
+    {
+      "q": "How long does it take to receive [BRAND_NAME] after my prescription?",
+      "a": "The timeline may vary depending on your hospital, location, and availability. Once your documents are verified, the patient support team can provide updates and help coordinate the next steps.\n\nReach out to our support team to check timelines based on your treatment center."
+    },
+    {
+      "q": "Does \"Company Name\" offer products for export?",
+      "a": "Yes, we have a strong export division and collaborate with international partners to distribute our high-quality pharmaceutical products globally."
+    },
+    {
+      "q": "What certifications and licenses does \"Company Name\" hold?",
+      "a": "We are certified with GST, 20, 20A, 21, 21A, Retail License, and are a manufacturer authorized distributor, ensuring compliance with all necessary regulatory requirements."
+    }
+  ],
+
+  "whoCanReachOut": "• Patients and families needing access to cancer medicines\n• Doctors and hospitals managing leukemia or tumor treatments\n• Pharmacies and medical distributors looking to buy wholesale\n• Hospital Procurement Officers and\n• Institutional Buyers in India",
+
+  "deliveredMedicines": "Delhi-NCR (Delhi, Gurugram, Noida), Mumbai and Navi Mumbai, Bengaluru, Kolkata, Chennai, Hyderabad, Ahmedabad, Pune, Jaipur, Kochi, Lucknow, Nagpur, Kanpur, Agra, Patna, Bhopal, Chandigarh and across India.",
+
+  "writtenBy": "Dr. Nikita Toshi",
+  "writtenByQualification": "BDS (Bachelor of Dental Surgery), WHO FIDES member",
+  "writtenByExperience": "12 years of experience",
+  "writtenByPhoto": "../assets/WrittenByDr.avif",
+  "reviewedBy": "Dr. Nikhil Kamdi",
+  "reviewedByQualification": "M.B.B.S., M.D. (Pharmacology)",
+  "reviewedByExperience": "10 years of experience",
+  "reviewedByPhoto": "../assets/ReviewedByDr.jpg",
+  "contentLastUpdated": "14 July 2026 | 5:48 PM (IST)",
+
+  "disclaimer": "The information provided on this page about [BRAND_NAME] is for general informational and educational purposes only. It is not intended as a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician, pharmacist, or other qualified health provider with any questions you may have regarding a medical condition or medication. Never disregard professional medical advice or delay seeking it because of something you have read on this website. MediFy does not endorse any specific treatment, product, or procedure. Drug information is subject to change — please refer to the manufacturer's prescribing information for the most current data. Prices displayed are indicative and subject to change without notice.",
+
+  "headOffice": {
+    "label": "Head Office",
+    "company": "MediFy Healthcare Pvt. Ltd.",
+    "contactPerson": "",
+    "address": "123, Pharma Tower, Sector 44, Gurugram, Haryana — 122003",
+    "email": "info@medify.in",
+    "whatsapp": "+91 98100 00001",
+    "mobile": "+91 98100 00001",
+    "licenseNo": "DL-HO-2024-00001"
+  },
+
+  "branchOffices": [
+    {
+      "label": "Mumbai Branch",
+      "company": "MediFy Healthcare Pvt. Ltd.",
+      "contactPerson": "",
+      "address": "456, Trade Centre, Andheri East, Mumbai, Maharashtra — 400069",
+      "email": "mumbai@medify.in",
+      "whatsapp": "+91 98200 00002",
+      "mobile": "+91 98200 00002",
+      "licenseNo": "DL-MUM-2024-00002"
+    },
+    {
+      "label": "Bengaluru Branch",
+      "company": "MediFy Healthcare Pvt. Ltd.",
+      "contactPerson": "",
+      "address": "789, Tech Park Road, Whitefield, Bengaluru, Karnataka — 560066",
+      "email": "bengaluru@medify.in",
+      "whatsapp": "+91 98300 00003",
+      "mobile": "+91 98300 00003",
+      "licenseNo": "DL-BLR-2024-00003"
+    }
+  ],
+
+  "vendorPartners": [
+    {
+      "label": "Licensed Vendor Partner — North India",
+      "company": "Sharma Medical Distributors",
+      "contactPerson": "Rajesh Sharma",
+      "address": "12, Medical Complex, Karol Bagh, New Delhi — 110005",
+      "email": "sharma.medical@example.com",
+      "whatsapp": "+91 99100 00004",
+      "mobile": "+91 99100 00004",
+      "licenseNo": "DL-DEL-VP-2024-00004"
+    },
+    {
+      "label": "Licensed Vendor Partner — West India",
+      "company": "Patel Pharma Distributors",
+      "contactPerson": "Amit Patel",
+      "address": "34, Ring Road, Satellite, Ahmedabad, Gujarat — 380015",
+      "email": "patel.pharma@example.com",
+      "whatsapp": "+91 99200 00005",
+      "mobile": "+91 99200 00005",
+      "licenseNo": "DL-AHM-VP-2024-00005"
+    }
+  ]
+}
