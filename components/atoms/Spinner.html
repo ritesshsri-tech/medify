@@ -1,0 +1,36 @@
+<!--
+  Spinner — atom reference snippet
+  Copy-paste guide, not an imported module.
+
+  Size scales: smaller on mobile (inline loading states), larger on desktop
+  (full-section loading states). Uses currentColor so it inherits text color
+  from a wrapping element (e.g. text-blue-600) for easy recoloring.
+-->
+
+<!-- Mobile-default size (inline, e.g. inside a button) -->
+<svg
+  class="animate-spin h-4 w-4 md:h-5 md:w-5 text-blue-600"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  viewBox="0 0 24 24"
+  role="status"
+  aria-label="Loading"
+>
+  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+</svg>
+
+<!-- Section/page loading state (larger, centered) -->
+<div class="flex items-center justify-center py-8 md:py-12">
+  <svg
+    class="animate-spin h-8 w-8 md:h-10 md:w-10 text-blue-600"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    role="status"
+    aria-label="Loading"
+  >
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+  </svg>
+</div>
