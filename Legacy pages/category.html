@@ -1,0 +1,1261 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medicines — MediFy</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="../assets/favicon.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: #f5f8fe;
+        color: #0f172a;
+      }
+      .card-shadow {
+        box-shadow:
+          0 1px 4px rgba(37, 99, 235, 0.07),
+          0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      .card-shadow:hover {
+        box-shadow:
+          0 4px 16px rgba(37, 99, 235, 0.13),
+          0 2px 8px rgba(0, 0, 0, 0.06);
+      }
+      .rx-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 2px 8px;
+        background: #fff1f2;
+        color: #be123c;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid #fecdd3;
+        white-space: nowrap;
+      }
+      .otc-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+        background: #e7f6ec;
+        color: #166534;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid #bbf7d0;
+      }
+      .sort-btn {
+        background: #fff;
+        color: #64748b;
+        border-color: #bfdbfe;
+      }
+      .sort-btn:hover {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-color: #93c5fd;
+      }
+      .sort-btn.active {
+        background: #2563eb;
+        color: #fff;
+        border-color: #2563eb;
+      }
+      .card-img-wrap:hover .carousel-arrow {
+        opacity: 1;
+      }
+      .carousel-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 999px;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        z-index: 2;
+      }
+      .carousel-arrow-left {
+        left: 6px;
+      }
+      .carousel-arrow-right {
+        right: 6px;
+      }
+      .carousel-dots {
+        position: absolute;
+        bottom: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 4px;
+        z-index: 2;
+      }
+      .carousel-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 999px;
+        background: #cbd5e1;
+        transition: background 0.2s;
+      }
+      .carousel-dot.active {
+        background: #2563eb;
+      }
+      .popup-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: #cbd5e1;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .popup-dot.active {
+        background: #2563eb;
+        width: 18px;
+      }
+      .popup-dot:hover {
+        background: #93c5fd;
+      }
+      .popup-carousel-arrow {
+        opacity: 1;
+      }
+      .gallery-main {
+        height: 320px;
+      }
+      @media (max-width: 1023px) {
+        .card-shadow {
+          padding: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      if (!localStorage.getItem('currentUser')) {
+        sessionStorage.setItem('loginRedirect', window.location.href);
+        window.location.replace('/pages/login.html');
+      }
+    </script>
+    <!-- Navbar mount -->
+    <div id="appHeader"></div>
+
+    <div class="max-w-6xl mx-auto px-4 py-6">
+      <!-- Filters bar -->
+      <div class="bg-white rounded-xl border border-blue-100 card-shadow p-4 mb-6 flex flex-col gap-3">
+        <!-- Row 1: search + dropdowns -->
+        <div class="flex flex-col sm:flex-row flex-wrap gap-3 items-stretch sm:items-center">
+          <!-- Search -->
+          <div class="relative flex-1 min-w-[200px] w-full sm:w-auto">
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Search brand, salt, or category…"
+              class="w-full pl-9 pr-3 py-2 border border-blue-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+            />
+            <svg
+              class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </div>
+
+          <!-- Category filter -->
+          <select
+            id="categoryFilter"
+            title="Filter by category"
+            aria-label="Filter by category"
+            class="px-3 py-2 border border-blue-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white w-full sm:min-w-[160px] sm:w-auto"
+          >
+            <option value="">All Categories</option>
+          </select>
+
+          <!-- Indication filter -->
+          <select
+            id="indicationFilter"
+            title="Filter by indication"
+            aria-label="Filter by indication"
+            class="px-3 py-2 border border-blue-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white w-full sm:min-w-[160px] sm:w-auto"
+          >
+            <option value="">All Indications</option>
+          </select>
+
+          <!-- Manufacturer filter -->
+          <select
+            id="manufacturerFilter"
+            title="Filter by manufacturer"
+            aria-label="Filter by manufacturer"
+            class="px-3 py-2 border border-blue-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white w-full sm:min-w-[160px] sm:w-auto"
+          >
+            <option value="">All Manufacturers</option>
+          </select>
+        </div>
+
+        <!-- Row 2: sort buttons -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-xs text-slate-500 font-medium mr-1">Sort:</span>
+          <button
+            type="button"
+            data-sort="alpha"
+            onclick="setSort('alpha')"
+            class="sort-btn active px-4 py-1.5 rounded-full text-sm font-medium border transition-colors"
+          >
+            Brand Name A–Z
+          </button>
+          <button
+            type="button"
+            data-sort="indication"
+            onclick="setSort('indication')"
+            class="sort-btn px-4 py-1.5 rounded-full text-sm font-medium border transition-colors"
+          >
+            Indication A–Z
+          </button>
+          <button
+            type="button"
+            data-sort="manufacturer"
+            onclick="setSort('manufacturer')"
+            class="sort-btn px-4 py-1.5 rounded-full text-sm font-medium border transition-colors"
+          >
+            Manufacturer A–Z
+          </button>
+
+          <!-- Price pill with dropdown -->
+          <div class="relative" id="pricePillWrap">
+            <button
+              type="button"
+              id="pricePillBtn"
+              onclick="togglePriceMenu()"
+              class="sort-btn px-4 py-1.5 rounded-full text-sm font-medium border transition-colors flex items-center gap-1"
+            >
+              Price
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div
+              id="priceMenu"
+              class="hidden absolute top-full left-0 mt-1 bg-white border border-blue-100 rounded-xl shadow-lg overflow-hidden z-50 min-w-[160px]"
+            >
+              <button
+                type="button"
+                data-sort="price-asc"
+                onclick="
+                  setSort('price-asc');
+                  togglePriceMenu();
+                "
+                class="price-opt w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 flex items-center gap-2 transition-colors"
+              >
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <line x1="12" y1="19" x2="12" y2="5" />
+                  <polyline points="5 12 12 5 19 12" />
+                </svg>
+                Low to High
+              </button>
+              <button
+                type="button"
+                data-sort="price-desc"
+                onclick="
+                  setSort('price-desc');
+                  togglePriceMenu();
+                "
+                class="price-opt w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 flex items-center gap-2 transition-colors border-t border-blue-50 transition-colors"
+              >
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <polyline points="19 12 12 19 5 12" />
+                </svg>
+                High to Low
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onclick="clearFilters()"
+            class="ml-auto px-4 py-1.5 rounded-full text-sm font-medium border border-red-200 text-red-500 hover:bg-red-50 transition-colors"
+          >
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- Medicine grid -->
+      <div id="medicineGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- populated by JS -->
+      </div>
+
+      <!-- Infinite scroll sentinel + spinner -->
+      <div id="scrollSentinel" class="py-8 flex justify-center">
+        <div id="scrollSpinner" class="hidden flex-col items-center gap-2">
+          <svg class="animate-spin text-blue-400" width="28" height="28" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+          </svg>
+          <span class="text-xs text-slate-500">Loading more…</span>
+        </div>
+        <p id="endOfResults" class="hidden text-xs text-slate-500">All medicines loaded</p>
+      </div>
+
+      <!-- Empty state -->
+      <div id="emptyState" class="hidden text-center py-20">
+        <svg
+          class="mx-auto mb-4 text-blue-200"
+          width="56"
+          height="56"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          viewBox="0 0 24 24"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <p class="text-slate-500 text-base font-medium">No medicines found</p>
+        <p class="text-slate-500 text-sm mt-1">Try adjusting your search or filters</p>
+        <button
+          type="button"
+          onclick="clearFilters()"
+          class="mt-4 px-5 py-2 border border-blue-200 text-blue-700 hover:bg-blue-50 font-medium rounded-full text-sm transition-colors"
+        >
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <script src="../js/header.js"></script>
+    <script>
+      const PAGE_SIZE = 24;
+
+      const MED_IMAGES = [
+        '../assets/Medicine1.webp',
+        '../assets/Medicine2.avif',
+        '../assets/Medicine3.jpeg',
+        '../assets/Medicine4.webp',
+        '../assets/Medicine5.jpeg',
+        '../assets/Medicine6.jpg',
+      ];
+
+      // cardIndex[medicineId] = current carousel index
+      const cardIndex = {};
+
+      let allMedicines = [];
+      let filteredList = [];
+      let visibleCount = 0;
+      let isLoading = false;
+      let observer = null;
+      let currentSort = 'alpha';
+
+      function setSort(sort) {
+        currentSort = sort;
+        const isPriceSort = sort === 'price-asc' || sort === 'price-desc';
+        document.querySelectorAll('.sort-btn').forEach((b) => {
+          b.classList.toggle('active', b.dataset.sort === sort);
+        });
+        // Price pill stays active when either price sub-option is selected
+        const priceBtn = document.getElementById('pricePillBtn');
+        if (priceBtn) priceBtn.classList.toggle('active', isPriceSort);
+        // Highlight selected price option
+        document.querySelectorAll('.price-opt').forEach((b) => {
+          b.style.fontWeight = b.dataset.sort === sort ? '600' : '';
+          b.style.color = b.dataset.sort === sort ? '#2563EB' : '';
+        });
+        applyFilters();
+      }
+
+      function togglePriceMenu() {
+        const menu = document.getElementById('priceMenu');
+        menu.classList.toggle('hidden');
+      }
+
+      document.addEventListener('click', function (e) {
+        const wrap = document.getElementById('pricePillWrap');
+        if (wrap && !wrap.contains(e.target)) {
+          document.getElementById('priceMenu').classList.add('hidden');
+        }
+      });
+
+      async function init() {
+        try {
+          allMedicines = await fetch('../docs/medicines.json').then((r) => r.json());
+          allMedicines = allMedicines.filter((m) => m.status === 'published');
+        } catch (e) {
+          allMedicines = [];
+        }
+
+        populateFilters();
+        applyUrlParams();
+        applyFilters();
+        bindEvents();
+        setupIntersectionObserver();
+      }
+
+      function populateFilters() {
+        // Categories
+        const cats = [...new Set(allMedicines.map((m) => m.diseaseCategory).filter(Boolean))].sort();
+        const catSel = document.getElementById('categoryFilter');
+        cats.forEach((c) => {
+          const o = document.createElement('option');
+          o.value = c;
+          o.textContent = c;
+          catSel.appendChild(o);
+        });
+
+        // Indications — flatten all treatmentFor arrays
+        const indications = [...new Set(allMedicines.flatMap((m) => m.treatmentFor || []).filter(Boolean))].sort();
+        const indSel = document.getElementById('indicationFilter');
+        indications.forEach((ind) => {
+          const o = document.createElement('option');
+          o.value = ind;
+          o.textContent = ind;
+          indSel.appendChild(o);
+        });
+
+        // Manufacturers
+        const mfrs = [...new Set(allMedicines.map((m) => m.manufacturer).filter(Boolean))].sort();
+        const mfrSel = document.getElementById('manufacturerFilter');
+        mfrs.forEach((mfr) => {
+          const o = document.createElement('option');
+          o.value = mfr;
+          o.textContent = mfr;
+          mfrSel.appendChild(o);
+        });
+      }
+
+      function applyUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        const search = params.get('search') || '';
+        const category = params.get('category') || '';
+        if (search) document.getElementById('searchInput').value = search;
+        if (category) document.getElementById('categoryFilter').value = category;
+      }
+
+      function applyFilters() {
+        const search = document.getElementById('searchInput').value.toLowerCase().trim();
+        const category = document.getElementById('categoryFilter').value;
+        const indication = document.getElementById('indicationFilter').value;
+        const manufacturer = document.getElementById('manufacturerFilter').value;
+        const sort = currentSort;
+
+        filteredList = allMedicines.filter((m) => {
+          if (search) {
+            const hay = (
+              m.brandName +
+              ' ' +
+              m.saltName +
+              ' ' +
+              m.diseaseCategory +
+              ' ' +
+              m.manufacturer +
+              ' ' +
+              (m.treatmentFor || []).join(' ')
+            ).toLowerCase();
+            if (!hay.includes(search)) return false;
+          }
+          if (category && m.diseaseCategory !== category) return false;
+          if (indication && !(m.treatmentFor || []).includes(indication)) return false;
+          if (manufacturer && m.manufacturer !== manufacturer) return false;
+          return true;
+        });
+
+        filteredList.sort((a, b) => {
+          if (sort === 'price-asc') return a.sellingPricePaise - b.sellingPricePaise;
+          if (sort === 'price-desc') return b.sellingPricePaise - a.sellingPricePaise;
+          if (sort === 'indication') return (a.treatmentFor[0] || '').localeCompare(b.treatmentFor[0] || '');
+          if (sort === 'manufacturer') return (a.manufacturer || '').localeCompare(b.manufacturer || '');
+          return a.brandName.localeCompare(b.brandName);
+        });
+
+        // Reset scroll state
+        visibleCount = 0;
+        document.getElementById('medicineGrid').innerHTML = '';
+        document.getElementById('emptyState').classList.add('hidden');
+        document.getElementById('endOfResults').classList.add('hidden');
+
+        const count = filteredList.length;
+
+        if (count === 0) {
+          document.getElementById('emptyState').classList.remove('hidden');
+          return;
+        }
+
+        loadNextBatch();
+      }
+
+      function loadNextBatch() {
+        if (isLoading || visibleCount >= filteredList.length) return;
+        isLoading = true;
+
+        const spinner = document.getElementById('scrollSpinner');
+        spinner.classList.remove('hidden');
+        spinner.classList.add('flex');
+
+        // Small delay so the spinner is visible, then render
+        setTimeout(() => {
+          const batch = filteredList.slice(visibleCount, visibleCount + PAGE_SIZE);
+          const grid = document.getElementById('medicineGrid');
+          batch.forEach((m) => {
+            const card = document.createElement('div');
+            card.innerHTML = buildCard(m);
+            grid.appendChild(card.firstElementChild);
+          });
+          visibleCount += batch.length;
+
+          spinner.classList.add('hidden');
+          spinner.classList.remove('flex');
+          isLoading = false;
+
+          if (visibleCount >= filteredList.length) {
+            document.getElementById('endOfResults').classList.remove('hidden');
+          }
+        }, 120);
+      }
+
+      function buildCard(m) {
+        const mrp = (m.mrpPaise / 100).toFixed(2);
+        const price = (m.sellingPricePaise / 100).toFixed(2);
+        const discount = Math.round(((m.mrpPaise - m.sellingPricePaise) / m.mrpPaise) * 100);
+
+        const rxBadge = m.requiresPrescription
+          ? `<span class="rx-badge"><span style="font-weight:800;letter-spacing:0.03em;">Rx</span>&thinsp;Prescription Required</span>`
+          : `<span class="otc-badge"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>OTC</span>`;
+
+        // assign a random start index once per medicine, stable across re-renders
+        if (cardIndex[m.id] === undefined) {
+          const pool = Array.isArray(m.image) && m.image.length ? m.image : MED_IMAGES;
+          cardIndex[m.id] = Math.floor(Math.random() * pool.length);
+        }
+        const imgs = Array.isArray(m.image) && m.image.length ? m.image : MED_IMAGES;
+        const idx = cardIndex[m.id] % imgs.length;
+        const showArrows = imgs.length > 1;
+
+        return `
+<div class="bg-white rounded-xl border border-blue-100 card-shadow transition-shadow cursor-pointer group" onclick="window.location.href='medicine-detail.html?id=${m.id}'">
+  <div class="relative h-40 rounded-t-xl bg-blue-50 overflow-hidden border-b border-blue-100 card-img-wrap">
+    <img
+      id="cimg-${m.id}"
+      src="${imgs[idx]}"
+      alt="${m.brandName}"
+      class="w-full h-full object-contain p-2 cursor-zoom-in transition-opacity duration-200"
+      onclick="event.stopPropagation(); openLightbox('${m.id}')"
+    />
+    ${
+      showArrows
+        ? `<button type="button" class="carousel-arrow carousel-arrow-left" onclick="event.stopPropagation(); carouselPrev('${m.id}')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button type="button" class="carousel-arrow carousel-arrow-right" onclick="event.stopPropagation(); carouselNext('${m.id}')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="carousel-dots" id="cdots-${m.id}">
+        ${imgs.map((_, i) => `<span class="carousel-dot${i === idx ? ' active' : ''}"></span>`).join('')}
+      </div>`
+        : ''
+    }
+  </div>
+  <div class="p-4">
+    <div class="mb-1">
+      <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-700 transition-colors leading-snug">${m.brandName}</h3>
+    </div>
+    <p class="text-[10px] text-slate-500 uppercase tracking-wide mb-0.5">Salt · Strength</p>
+    <p class="text-xs text-slate-600 font-medium mb-2">${m.saltName} · ${m.strength}</p>
+    <p class="text-[10px] text-slate-500 uppercase tracking-wide mb-0.5">Form · Pack</p>
+    <p class="text-xs text-slate-600 font-medium mb-2">${m.form} · ${m.packSize}</p>
+    <p class="text-[10px] text-slate-500 uppercase tracking-wide mb-0.5">Manufacturer</p>
+    <p class="text-xs text-slate-600 font-medium mb-3">${m.manufacturer}</p>
+    <div class="flex items-center gap-2 mb-3 flex-wrap">
+      ${rxBadge}
+      <span class="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs font-medium rounded-full">${m.diseaseCategory}</span>
+    </div>
+    <div class="flex items-center gap-2 flex-wrap mb-3">
+      <span class="text-lg font-bold text-slate-900">₹${price}</span>
+      ${discount > 0 ? `<span class="text-xs text-slate-500 line-through">₹${mrp}</span><span class="text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full">${discount}% off</span>` : ''}
+    </div>
+    <div class="flex items-center justify-between gap-2">
+      <button
+        type="button"
+        onclick="event.stopPropagation(); openQueryModal('${m.id}')"
+        class="flex items-center gap-1 px-3 py-1.5 bg-teal-500 hover:bg-teal-600 text-white text-xs font-semibold rounded-full transition-colors"
+      >
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Send Query
+      </button>
+      <div class="flex items-center gap-1.5">
+        <a
+          href="https://wa.me/911800123456?text=${encodeURIComponent('Hi, I want to order ' + m.brandName)}"
+          target="_blank"
+          rel="noopener noreferrer"
+          onclick="event.stopPropagation()"
+          class="flex items-center gap-1 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-semibold rounded-full transition-colors"
+        >
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.528 5.845L.057 23.882l6.186-1.444A11.934 11.934 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.793 9.793 0 0 1-5.006-1.374l-.36-.213-3.67.857.885-3.567-.234-.375A9.818 9.818 0 0 1 2.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+          WhatsApp
+        </a>
+        <button
+          type="button"
+          onclick="event.stopPropagation(); addToCart('${m.id}')"
+          class="flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-full transition-colors"
+        >
+          + Add
+        </button>
+      </div>
+    </div>
+  </div>
+</div>`;
+      }
+
+      function addToCart(id) {
+        const med = allMedicines.find((m) => m.id === id);
+        if (!med) return;
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const existing = cart.find((i) => i.id === id);
+        if (existing) {
+          existing.qty = (existing.qty || 1) + 1;
+        } else {
+          cart.push({ id, brandName: med.brandName, price: med.sellingPricePaise, qty: 1 });
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        if (window.refreshAppHeaderCart) window.refreshAppHeaderCart();
+      }
+
+      function setupIntersectionObserver() {
+        observer = new IntersectionObserver(
+          (entries) => {
+            if (entries[0].isIntersecting) loadNextBatch();
+          },
+          { rootMargin: '200px' }
+        );
+        observer.observe(document.getElementById('scrollSentinel'));
+      }
+
+      function getCardImgs(id) {
+        const med = allMedicines.find((m) => m.id === id);
+        return med && Array.isArray(med.image) && med.image.length ? med.image : MED_IMAGES;
+      }
+
+      function carouselPrev(id) {
+        const imgs = getCardImgs(id);
+        cardIndex[id] = (cardIndex[id] - 1 + imgs.length) % imgs.length;
+        updateCardImg(id, imgs);
+      }
+
+      function carouselNext(id) {
+        const imgs = getCardImgs(id);
+        cardIndex[id] = (cardIndex[id] + 1) % imgs.length;
+        updateCardImg(id, imgs);
+      }
+
+      function updateCardImg(id, imgs) {
+        const idx = cardIndex[id];
+        const imgEl = document.getElementById(`cimg-${id}`);
+        if (imgEl) imgEl.src = imgs[idx];
+        const dotsEl = document.getElementById(`cdots-${id}`);
+        if (dotsEl) {
+          dotsEl.querySelectorAll('.carousel-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === idx);
+          });
+        }
+      }
+
+      let activeMedId = null;
+      let popupIdx = 0;
+
+      function openMedPopup(id) {
+        const med = allMedicines.find((m) => m.id === id);
+        if (!med) return;
+        activeMedId = id;
+        popupIdx = cardIndex[id] !== undefined ? cardIndex[id] % MED_IMAGES.length : 0;
+
+        const mrp = (med.mrpPaise / 100).toFixed(2);
+        const price = (med.sellingPricePaise / 100).toFixed(2);
+        const discount = Math.round(((med.mrpPaise - med.sellingPricePaise) / med.mrpPaise) * 100);
+
+        document.getElementById('popupBrandName').textContent = med.brandName;
+        document.getElementById('popupSalt').textContent = `${med.saltName} · ${med.strength}`;
+        document.getElementById('popupMeta').textContent = `${med.form} · ${med.packSize} · ${med.manufacturer}`;
+        document.getElementById('popupPrice').textContent = `₹${price}`;
+        document.getElementById('popupMrp').textContent = discount > 0 ? `₹${mrp}` : '';
+        document.getElementById('popupDiscount').textContent = discount > 0 ? `${discount}% off` : '';
+        document.getElementById('popupCategory').textContent = med.diseaseCategory || '';
+        document.getElementById('popupDetailLink').href = `medicine-detail.html?id=${id}`;
+        document.getElementById('popupQueryBtn').onclick = () => {
+          closeMedPopup();
+          openQueryModal(id);
+        };
+
+        const rxEl = document.getElementById('popupRx');
+        rxEl.innerHTML = med.requiresPrescription
+          ? `<span class="rx-badge"><span style="font-weight:800;letter-spacing:0.03em;">Rx</span>&thinsp;Prescription Required</span>`
+          : `<span class="otc-badge"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>OTC</span>`;
+
+        renderPopupCarousel();
+
+        const popup = document.getElementById('medPopup');
+        popup.classList.remove('hidden');
+        popup.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function renderPopupCarousel() {
+        const imgs = MED_IMAGES;
+        document.getElementById('popupImg').src = imgs[popupIdx];
+        const dotsEl = document.getElementById('popupDots');
+        dotsEl.innerHTML = imgs
+          .map((_, i) => `<span class="popup-dot${i === popupIdx ? ' active' : ''}" onclick="popupGoTo(${i})"></span>`)
+          .join('');
+      }
+
+      function popupGoTo(idx) {
+        popupIdx = idx;
+        renderPopupCarousel();
+      }
+
+      function popupPrev() {
+        popupIdx = (popupIdx - 1 + MED_IMAGES.length) % MED_IMAGES.length;
+        renderPopupCarousel();
+      }
+
+      function popupNext() {
+        popupIdx = (popupIdx + 1) % MED_IMAGES.length;
+        renderPopupCarousel();
+      }
+
+      function closeMedPopup() {
+        const popup = document.getElementById('medPopup');
+        popup.classList.add('hidden');
+        popup.classList.remove('flex');
+        document.body.style.overflow = '';
+        activeMedId = null;
+      }
+
+      let galleryImgs = MED_IMAGES;
+      let galleryIdx = 0;
+
+      function openLightbox(id) {
+        galleryImgs = getCardImgs(id);
+        galleryIdx = cardIndex[id] !== undefined ? cardIndex[id] % galleryImgs.length : 0;
+        renderGallery();
+        const lb = document.getElementById('lightbox');
+        lb.classList.remove('hidden');
+        lb.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function openLightboxFromPopup() {
+        galleryImgs = MED_IMAGES;
+        galleryIdx = popupIdx;
+        renderGallery();
+        const lb = document.getElementById('lightbox');
+        lb.classList.remove('hidden');
+        lb.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function galleryGoTo(idx) {
+        galleryIdx = idx;
+        renderGallery();
+      }
+
+      function renderGallery() {
+        document.getElementById('galleryMainImg').src = galleryImgs[galleryIdx];
+        const thumbsEl = document.getElementById('galleryThumbs');
+        thumbsEl.innerHTML = galleryImgs
+          .map(
+            (src, i) =>
+              `<img src="${src}" alt="Image ${i + 1}" onclick="galleryGoTo(${i})" title="Image ${i + 1}"
+                class="w-16 h-16 object-contain rounded-lg border-2 cursor-pointer transition-all bg-white p-1 ${i === galleryIdx ? 'border-blue-500 shadow-md' : 'border-slate-200 opacity-60 hover:opacity-100 hover:border-blue-300'}" />`
+          )
+          .join('');
+      }
+
+      function closeLightbox() {
+        const lb = document.getElementById('lightbox');
+        lb.classList.add('hidden');
+        lb.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+
+      function openQueryModal(id) {
+        const med = allMedicines.find((m) => m.id === id);
+        if (!med) return;
+        document.getElementById('qfMedicine').value = `${med.brandName} (${med.saltName} ${med.strength})`;
+        document.getElementById('qfQty').value = '';
+        document.getElementById('qfName').value = '';
+        document.getElementById('qfEmail').value = '';
+        document.getElementById('qfPhone').value = '';
+        document.getElementById('qfCity').value = '';
+        document.getElementById('qfMessage').value = '';
+        document.getElementById('qfError').classList.add('hidden');
+        document.querySelectorAll('input[name="qfRx"]').forEach((r) => (r.checked = false));
+        document.getElementById('queryModalForm').classList.remove('hidden');
+        document.getElementById('queryModalSuccess').classList.add('hidden');
+        const modal = document.getElementById('queryModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeQueryModal() {
+        const modal = document.getElementById('queryModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+
+      function submitQuery() {
+        const name = document.getElementById('qfName').value.trim();
+        const email = document.getElementById('qfEmail').value.trim();
+        const phone = document.getElementById('qfPhone').value.trim();
+        const errEl = document.getElementById('qfError');
+        if (!name) {
+          errEl.textContent = 'Please enter your name.';
+          errEl.classList.remove('hidden');
+          return;
+        }
+        if (!email && !phone) {
+          errEl.textContent = 'Please provide at least an email or phone number.';
+          errEl.classList.remove('hidden');
+          return;
+        }
+        errEl.classList.add('hidden');
+        document.getElementById('queryModalForm').classList.add('hidden');
+        document.getElementById('queryModalSuccess').classList.remove('hidden');
+      }
+
+      function clearFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('categoryFilter').value = '';
+        document.getElementById('indicationFilter').value = '';
+        document.getElementById('manufacturerFilter').value = '';
+        setSort('alpha');
+        applyFilters();
+      }
+
+      function bindEvents() {
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+        document.getElementById('indicationFilter').addEventListener('change', applyFilters);
+        document.getElementById('manufacturerFilter').addEventListener('change', applyFilters);
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeLightbox();
+          closeMedPopup();
+          closeQueryModal();
+        }
+      });
+
+      init();
+    </script>
+
+    <!-- Query Modal -->
+    <div
+      id="queryModal"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="queryModalTitle"
+    >
+      <div class="absolute inset-0 bg-black/50" onclick="closeQueryModal()"></div>
+      <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-blue-100 flex-shrink-0">
+          <div>
+            <h2 id="queryModalTitle" class="font-bold text-slate-900 text-base">Send a Query</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Our team will respond within 24 hours</p>
+          </div>
+          <button
+            type="button"
+            onclick="closeQueryModal()"
+            title="Close"
+            aria-label="Close"
+            class="text-slate-500 hover:text-slate-600 p-1"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <div id="queryModalForm" class="overflow-y-auto p-5 space-y-4">
+          <div>
+            <label for="qfMedicine" class="block text-xs font-semibold text-slate-500 mb-1">Medicine</label>
+            <input
+              id="qfMedicine"
+              type="text"
+              readonly
+              aria-label="Medicine name"
+              class="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-100 rounded-lg text-slate-700 cursor-default"
+            />
+          </div>
+          <div>
+            <label for="qfQty" class="block text-xs font-semibold text-slate-500 mb-1">Quantity Required</label>
+            <input
+              id="qfQty"
+              type="number"
+              min="1"
+              aria-label="Quantity"
+              class="w-28 px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+          <div>
+            <label for="qfName" class="block text-xs font-semibold text-slate-500 mb-1">
+              Your Name
+              <span class="text-red-400">*</span>
+            </label>
+            <input
+              id="qfName"
+              type="text"
+              placeholder="Full name"
+              aria-label="Your name"
+              class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="qfEmail" class="block text-xs font-semibold text-slate-500 mb-1">Email</label>
+              <input
+                id="qfEmail"
+                type="email"
+                placeholder="your@email.com"
+                aria-label="Email address"
+                class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+            <div>
+              <label for="qfPhone" class="block text-xs font-semibold text-slate-500 mb-1">Phone</label>
+              <input
+                id="qfPhone"
+                type="tel"
+                placeholder="+91 XXXXX XXXXX"
+                aria-label="Phone number"
+                class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 -mt-2">At least one contact method is required</p>
+          <div>
+            <label for="qfCity" class="block text-xs font-semibold text-slate-500 mb-1">City / Delivery Location</label>
+            <input
+              id="qfCity"
+              type="text"
+              placeholder="e.g. Delhi, Mumbai, Bengaluru"
+              aria-label="City"
+              class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-slate-500 mb-1.5">Do you have a valid prescription?</p>
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input type="radio" name="qfRx" value="yes" class="accent-blue-600" />
+                Yes
+              </label>
+              <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input type="radio" name="qfRx" value="no" class="accent-blue-600" />
+                No
+              </label>
+              <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input type="radio" name="qfRx" value="arranging" class="accent-blue-600" />
+                Arranging
+              </label>
+            </div>
+          </div>
+          <div>
+            <label for="qfMessage" class="block text-xs font-semibold text-slate-500 mb-1">
+              Your Message / Additional Details
+            </label>
+            <textarea
+              id="qfMessage"
+              rows="4"
+              placeholder="Any additional information — dosage query, insurance, bulk order, patient details, urgency, etc."
+              aria-label="Your message"
+              class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 resize-y"
+            ></textarea>
+          </div>
+          <p id="qfError" class="hidden text-xs text-red-500"></p>
+          <button
+            type="button"
+            onclick="submitQuery()"
+            class="w-full flex items-center justify-center gap-2 py-2.5 bg-teal-500 hover:bg-teal-600 text-white font-semibold text-sm rounded-xl transition-colors"
+          >
+            <svg
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              viewBox="0 0 24 24"
+            >
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+            Submit Query
+          </button>
+        </div>
+
+        <div id="queryModalSuccess" class="hidden p-8 text-center">
+          <div class="w-14 h-14 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg
+              width="28"
+              height="28"
+              fill="none"
+              stroke="#0D9488"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              viewBox="0 0 24 24"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h3 class="font-bold text-slate-900 text-base mb-2">Query Successfully Submitted!</h3>
+          <p class="text-sm text-slate-500 mb-4">
+            Thank you for reaching out. Our team will review your query and get back to you within
+            <strong>24 hours</strong>
+            .
+          </p>
+          <div class="bg-teal-50 border border-teal-100 rounded-xl px-4 py-3 text-sm text-teal-800 mb-4">
+            You can also reach us directly on WhatsApp for faster support.
+          </div>
+          <div class="flex gap-2 justify-center">
+            <button
+              type="button"
+              onclick="closeQueryModal()"
+              class="px-5 py-2 border border-slate-200 text-slate-600 text-sm font-semibold rounded-full hover:bg-slate-50 transition-colors"
+            >
+              Close
+            </button>
+            <a
+              href="https://wa.me/911800123456"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-full transition-colors"
+            >
+              WhatsApp Us
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Medicine Popup -->
+    <div
+      id="medPopup"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60"
+      onclick="closeMedPopup()"
+    >
+      <div
+        class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        onclick="event.stopPropagation()"
+      >
+        <!-- Close -->
+        <button
+          type="button"
+          onclick="closeMedPopup()"
+          aria-label="Close"
+          class="absolute top-3 right-3 z-10 text-slate-500 hover:text-slate-700 bg-white rounded-full p-1.5 shadow"
+        >
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+
+        <div class="flex flex-col sm:flex-row gap-0">
+          <!-- Image carousel -->
+          <div
+            class="relative bg-blue-50 rounded-t-2xl sm:rounded-l-2xl sm:rounded-tr-none flex-shrink-0 sm:w-64 h-56 sm:h-auto flex items-center justify-center overflow-hidden"
+          >
+            <img
+              id="popupImg"
+              src=""
+              alt="Medicine"
+              class="w-full h-full object-contain p-4 cursor-zoom-in"
+              onclick="openLightboxFromPopup()"
+              title="Click to magnify"
+            />
+            <!-- Prev -->
+            <button
+              type="button"
+              onclick="popupPrev()"
+              class="carousel-arrow carousel-arrow-left popup-carousel-arrow"
+              aria-label="Previous image"
+              title="Previous image"
+            >
+              <svg
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <!-- Next -->
+            <button
+              type="button"
+              onclick="popupNext()"
+              class="carousel-arrow carousel-arrow-right popup-carousel-arrow"
+              aria-label="Next image"
+              title="Next image"
+            >
+              <svg
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+            <!-- Dots -->
+            <div id="popupDots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 transition-all"></div>
+            <!-- Zoom hint -->
+            <span
+              class="absolute top-2 right-2 bg-black/30 text-white text-xs px-1.5 py-0.5 rounded-full flex items-center gap-1"
+            >
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                <line x1="11" y1="8" x2="11" y2="14" />
+                <line x1="8" y1="11" x2="14" y2="11" />
+              </svg>
+              Zoom
+            </span>
+          </div>
+
+          <!-- Info -->
+          <div class="flex flex-col p-5 flex-1 gap-3">
+            <div>
+              <h2 id="popupBrandName" class="text-xl font-bold text-slate-900 leading-snug mb-1"></h2>
+              <p id="popupSalt" class="text-sm text-slate-500 mb-0.5"></p>
+              <p id="popupMeta" class="text-xs text-slate-500"></p>
+            </div>
+
+            <div class="flex items-center gap-3 flex-wrap">
+              <div id="popupRx"></div>
+              <span
+                id="popupCategory"
+                class="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs font-medium rounded-full"
+              ></span>
+            </div>
+
+            <div class="flex items-baseline gap-2">
+              <span id="popupPrice" class="text-2xl font-bold text-slate-900"></span>
+              <span id="popupMrp" class="text-sm text-slate-500 line-through"></span>
+              <span
+                id="popupDiscount"
+                class="text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full"
+              ></span>
+            </div>
+
+            <div class="flex gap-2 mt-auto pt-2">
+              <button
+                id="popupQueryBtn"
+                type="button"
+                class="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-full transition-colors"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                Send Query
+              </button>
+              <a
+                id="popupDetailLink"
+                href="#"
+                class="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-colors"
+              >
+                View Full Details
+                <svg
+                  width="12"
+                  height="12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  viewBox="0 0 24 24"
+                >
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image gallery popup -->
+    <div
+      id="lightbox"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/88"
+      onclick="closeLightbox()"
+    >
+      <div
+        class="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-w-lg w-full"
+        onclick="event.stopPropagation()"
+      >
+        <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100">
+          <p class="text-sm font-semibold text-slate-700">Product Images</p>
+          <button
+            type="button"
+            onclick="closeLightbox()"
+            aria-label="Close gallery"
+            title="Close"
+            class="text-slate-500 hover:text-slate-700 transition-colors"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div class="gallery-main bg-slate-50 flex items-center justify-center">
+          <img id="galleryMainImg" src="" alt="Medicine image" class="max-w-full max-h-full object-contain p-6" />
+        </div>
+        <div id="galleryThumbs" class="flex gap-3 p-4 overflow-x-auto justify-center bg-white"></div>
+      </div>
+    </div>
+  </body>
+</html>

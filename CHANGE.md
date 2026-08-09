@@ -1,6 +1,6 @@
 # CHANGE.md — Migration Roadmap
 
-This file tracks the phased plan to migrate the MediFy static HTML prototype into a production-grade atomic + Next.js application. The repo root **is** the atomic project — there is no separate legacy prototype folder to preserve.
+This file tracks the phased plan to migrate the MediFy static HTML prototype into a production-grade atomic + Next.js application. The original prototype lives in `Legacy pages/` at the repo root (`category.html`, `medicine-detail.html`, `login.html`) — that folder is the extraction source and visual baseline for Phase 1. It is backed up separately, so it can be edited or updated during migration if needed; it isn't a frozen, hands-off reference.
 
 ---
 
@@ -58,11 +58,11 @@ Branch: `feature/atomic-migration`
 
 | File | Extracted From | What It Contains |
 | --- | --- | --- |
-| `components/molecules/Modal.js` | All 4 modals (both pages) | `openModal(id)`, `closeModal(id)`, body scroll lock, single Escape key listener |
-| `components/molecules/Carousel.js` | 4 carousel copies (both pages) | `Carousel(images, el)` class with `goTo()`, `prev()`, `next()`, `renderDots()` |
-| `components/molecules/MedicineCard.js` | category.html lines 534–625 | `buildCard(m)` → HTML string, carousel state, all card buttons |
-| `components/molecules/FAQItem.js` | medicine-detail.html | `toggleFaq()`, `faqAnswerHtml()` |
-| `components/molecules/ContactCard.js` | medicine-detail.html | `sideContactHtml()` for office contact cards |
+| `components/molecules/Modal.js` | All 4 modals (`Legacy pages/category.html` + `Legacy pages/medicine-detail.html`) | `openModal(id)`, `closeModal(id)`, body scroll lock, single Escape key listener |
+| `components/molecules/Carousel.js` | 4 carousel copies (both legacy pages) | `Carousel(images, el)` class with `goTo()`, `prev()`, `next()`, `renderDots()` |
+| `components/molecules/MedicineCard.js` | `Legacy pages/category.html` lines 534–625 | `buildCard(m)` → HTML string, carousel state, all card buttons |
+| `components/molecules/FAQItem.js` | `Legacy pages/medicine-detail.html` | `toggleFaq()`, `faqAnswerHtml()` |
+| `components/molecules/ContactCard.js` | `Legacy pages/medicine-detail.html` | `sideContactHtml()` for office contact cards |
 
 **Responsiveness for molecules:**
 
@@ -81,14 +81,14 @@ Branch: `feature/atomic-migration`
 
 | File | Extracted From | What It Contains |
 | --- | --- | --- |
-| `components/organisms/FilterBar.js` | category.html lines 369–503 | `init()`, `applyFilters()` (pure — returns array), `setSort()`, `clearFilters()` |
-| `components/organisms/InfiniteScroll.js` | category.html lines 505–649 | `setup(sentinel, onLoad)`, `loadNextBatch()` |
-| `components/organisms/QueryModal.js` | Both pages (duplicated) | Single shared `openQueryModal(medicine)`, `closeQueryModal()`, `submitQuery()` |
-| `components/organisms/CallModal.js` | medicine-detail.html | `openCallModal()`, `submitCallRequest()` |
-| `components/organisms/SaltModal.js` | medicine-detail.html | `openSaltModal()`, `renderSaltList()`, `setSaltSort()` |
-| `components/organisms/MfrModal.js` | medicine-detail.html | `openMfrModal()`, `renderMfrList()`, `setMfrSort()` |
-| `components/organisms/SubstitutesPanel.js` | medicine-detail.html | `renderSubstitutes()`, `loadMoreSubs()`, `renderMobileInlineBlocks()` |
-| `components/organisms/ScrollSpyNav.js` | medicine-detail.html lines 1784–1821 | `setupScrollSpy(sectionIds, desktopNav, mobileNav)` |
+| `components/organisms/FilterBar.js` | `Legacy pages/category.html` lines 369–503 | `init()`, `applyFilters()` (pure — returns array), `setSort()`, `clearFilters()` |
+| `components/organisms/InfiniteScroll.js` | `Legacy pages/category.html` lines 505–649 | `setup(sentinel, onLoad)`, `loadNextBatch()` |
+| `components/organisms/QueryModal.js` | Both legacy pages (duplicated) | Single shared `openQueryModal(medicine)`, `closeQueryModal()`, `submitQuery()` |
+| `components/organisms/CallModal.js` | `Legacy pages/medicine-detail.html` | `openCallModal()`, `submitCallRequest()` |
+| `components/organisms/SaltModal.js` | `Legacy pages/medicine-detail.html` | `openSaltModal()`, `renderSaltList()`, `setSaltSort()` |
+| `components/organisms/MfrModal.js` | `Legacy pages/medicine-detail.html` | `openMfrModal()`, `renderMfrList()`, `setMfrSort()` |
+| `components/organisms/SubstitutesPanel.js` | `Legacy pages/medicine-detail.html` | `renderSubstitutes()`, `loadMoreSubs()`, `renderMobileInlineBlocks()` |
+| `components/organisms/ScrollSpyNav.js` | `Legacy pages/medicine-detail.html` lines 1784–1821 | `setupScrollSpy(sectionIds, desktopNav, mobileNav)` |
 
 **Responsiveness for organisms:**
 
@@ -156,7 +156,7 @@ Branch: `feature/atomic-migration`
 
 ### Step 9 — Login page
 
-- `pages/login.html` — PIN entry form, redirect to intended page on success
+- Port `Legacy pages/login.html` → `pages/login.html` — same PIN logic, redirect paths adjusted for `pages/` depth
 - **Commit:** `feat: login page`
 
 ---
@@ -166,7 +166,7 @@ Branch: `feature/atomic-migration`
 - Run all 3 pages through the 26-item functional checklist (see below) at **375px (mobile), 768px (tablet), and 1280px (desktop)**
 - Verify responsiveness: no layout breaks, text readable, buttons tappable (≥44px), sticky elements position correctly at each breakpoint
 - Open PR: `feature/atomic-migration` → `main` with checklist evidence + responsive design verification screenshots
-- Merge only after full sign-off
+- Merge only after full sign-off against `Legacy pages/`
 
 ---
 
@@ -198,6 +198,7 @@ tests/
 **Coverage per `.feature` file:**
 
 - Each checklist item gets at least 3 scenarios: **positive** (happy path), **negative** (invalid input / missing data), **edge case** (boundary values, empty states, large datasets)
+- Both legacy (`Legacy pages/`, served at `localhost:8000`) and atomic (`pages/`, served at `localhost:8001`) must pass the same `.feature` files — parity is proven when both pass identically
 
 **Run command:**
 
@@ -219,14 +220,14 @@ npx cucumber-js tests/features/
 
 ### Step 10b — Visual Regression Testing with BackstopJS (runs before sign-off)
 
-**Purpose:** Gherkin verifies behavior; BackstopJS guards against unintended visual regressions between commits. Together they give functional + visual confidence before any page is merged.
+**Purpose:** Gherkin verifies behavior; BackstopJS verifies appearance. Together they give functional + visual parity against `Legacy pages/` before any atomic page is merged.
 
 **How it works:**
 
-1. Capture baseline screenshots of each page at all 3 breakpoints once the page is approved
-2. On later changes, capture new screenshots and diff against the baseline
-3. Any visual difference (layout shift, font change, color drift, spacing) flagged as failure with a red highlight overlay
-4. Intentional changes get approved, which updates the baseline
+1. Capture baseline screenshots from **legacy pages** (`Legacy pages/`, `localhost:8000`) at all 3 breakpoints
+2. Capture test screenshots from **atomic pages** (`pages/`, `localhost:8001`) at same breakpoints
+3. BackstopJS diffs both sets pixel-by-pixel — atomic must match legacy exactly
+4. Any visual difference (layout shift, font change, color drift, spacing) flagged as failure with a red highlight overlay
 
 **Viewports tested:**
 
@@ -247,10 +248,10 @@ npx cucumber-js tests/features/
 # Install
 npm install --save-dev backstopjs
 
-# Step 1: Capture baseline (run once a page is approved, against localhost:8000)
+# Step 1: Capture legacy baseline (run once against localhost:8000, serving Legacy pages/)
 npx backstop reference
 
-# Step 2: On later changes, run and compare against the baseline
+# Step 2: Run atomic pages and compare (against localhost:8001, serving pages/)
 npx backstop test
 
 # Step 3: If a difference is intentional (e.g. responsiveness improvement), approve it
@@ -268,20 +269,20 @@ npx backstop approve
 
 ---
 
-## Phase 1 — Functional Checklist (must pass before merge)
+## Phase 1 — Functional Parity Checklist (must pass before merge)
 
 | # | Check | How to verify |
 | --- | --- | --- |
-| 1 | All medicines load | Card count matches `data/medicines.json` |
-| 2 | Search filters | Results match expected filtered set |
-| 3 | Category / indication / manufacturer dropdowns | Options populated, correctly ordered |
-| 4 | All 5 sort modes | First + last item correct per sort |
+| 1 | All medicines load | Card count matches `Legacy pages/category.html` |
+| 2 | Search filters | Results match legacy exactly |
+| 3 | Category / indication / manufacturer dropdowns | Same options, same order as legacy |
+| 4 | All 5 sort modes | First + last item matches legacy per sort |
 | 5 | Infinite scroll | Next batch loads on scroll; no duplicates |
 | 6 | Medicine card carousel | Prev/next cycles images correctly |
 | 7 | Add to cart | Badge increments; `localStorage.cart` correct |
 | 8 | Open popup (category) | Correct name, price, category shown |
 | 9 | Navigate to detail | Correct `?id=` in URL |
-| 10 | Medicine detail loads | Brand, salt, price, images match source data |
+| 10 | Medicine detail loads | Brand, salt, price, images match legacy |
 | 11 | Qty change | Syncs between desktop and mobile cart bar |
 | 12 | Salt modal | Populates, search filters, sort works |
 | 13 | Manufacturer modal | Same as salt modal |
@@ -391,9 +392,10 @@ npx backstop approve
 
 ---
 
-### Step 10 — Release
+### Step 10 — Cutover
 
-- Full functional checklist repeated + stakeholder sign-off
+- Full parity checklist repeated + stakeholder sign-off
+- Remove `Legacy pages/` in a **single dedicated commit** — rollback = revert that one commit (a separate backup of `Legacy pages/` is also kept outside the repo)
 - Tag release `v1.0-nextjs-launch`
 - Deploy to Vercel production
 
@@ -401,7 +403,8 @@ npx backstop approve
 
 ## Ground Rules (applies to both phases)
 
-- **No design changes** in Phase 1 — pixel-identical to the original prototype design
+- **`Legacy pages/` is the extraction source and visual baseline for Phase 1** — it can be edited/updated if needed (it's backed up separately), but avoid mixing legacy edits into atomic-work commits so history stays easy to follow
+- **No design changes** in Phase 1 — pixel-identical to `Legacy pages/`
 - **No new features** until Phase 2 is complete
 - **One PR per page** — not one giant PR for everything
 
