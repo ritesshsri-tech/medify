@@ -300,6 +300,8 @@ npx backstop approve
 | 25 | Sticky elements | Cart bar, nav, scroll-spy position correctly at all breakpoints; no overlap |
 | 26 | Modal responsiveness | Full-width on mobile; constrained width on desktop; form inputs stack mobile, side-by-side desktop |
 
+**Known Phase 1 exception — item 24:** `Legacy pages/category.html`'s medicine-card action buttons (Send Query, WhatsApp, + Add) render at ~28px tall on mobile, below the 44px target. This is a direct conflict with the "pixel-identical to legacy" ground rule, which item 24 itself cannot satisfy without a design change. Left at legacy size for Phase 1; tests assert the actual ~28px height rather than a false 44px pass. Revisit sizing in the Phase 2 redesign, where "no design changes" no longer applies.
+
 ---
 
 ## Phase 2 — Next.js + Supabase (starts after Phase 1 merges)

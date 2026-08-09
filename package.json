@@ -1,0 +1,20 @@
+{
+  "name": "medify",
+  "version": "1.0.0",
+  "description": "MediFy atomic migration — plain HTML + vanilla JS modules, being migrated from Legacy pages/ per CHANGE.md.",
+  "main": "index.js",
+  "scripts": {
+    "test": "cucumber-js tests/features/",
+    "test:reference": "backstop reference",
+    "test:visual": "backstop test",
+    "test:visual:approve": "backstop approve",
+    "serve": "python3 -m http.server 8000"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@cucumber/cucumber": "^12.9.0",
+    "playwright": "^1.62.1"
+  }
+}
