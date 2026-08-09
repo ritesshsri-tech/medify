@@ -4,8 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MediFy | India's Trusted Pharmaceutical Distributor &amp; Retailer</title>
-    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="assets/favicon.png" type="image/png" />
     <style>
       :root {
         /* Primary — Blue */
@@ -120,6 +118,45 @@
         letter-spacing: 0.3px;
       }
 
+      /* ---------- Top utility bar ---------- */
+      .topbar {
+        background: var(--navy);
+        color: #cfd7f2;
+        font-size: 0.78rem;
+        padding: 6px 0;
+      }
+      .topbar .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .topbar-left,
+      .topbar-right {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .topbar a {
+        color: #cfd7f2;
+      }
+      .topbar-right .social {
+        display: flex;
+        gap: 10px;
+      }
+      .topbar-right .social a {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+      }
+
       /* ---------- Header ---------- */
       header.site-header {
         padding: 14px 0 0;
@@ -157,14 +194,11 @@
         font-weight: 700;
       }
 
-      /* ---------- Search (mobile-first: full width, wraps to its own row) ---------- */
       .search-block {
         flex: 1;
-        max-width: none;
-        width: 100%;
+        max-width: 600px;
         display: flex;
         min-width: 280px;
-        order: 3;
       }
       .search-block select {
         border: 2px solid var(--color-primary);
@@ -245,7 +279,6 @@
         font-size: 0.95rem;
       }
 
-      /* ---------- Nav (mobile-first: hidden list, hamburger shown) ---------- */
       nav.main-nav {
         display: flex;
         align-items: center;
@@ -253,25 +286,11 @@
         padding: 10px 0;
         flex-wrap: wrap;
         gap: 10px;
-        position: relative;
       }
       nav.main-nav ul {
-        display: none;
+        display: flex;
         gap: 26px;
         flex-wrap: wrap;
-      }
-      nav.main-nav ul.open {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 100%;
-        background: #fff;
-        padding: 16px 20px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-        z-index: 50;
       }
       nav.main-nav ul li a {
         font-size: 0.85rem;
@@ -427,7 +446,7 @@
         border-color: #15803d;
       }
 
-      /* ---------- Hero (mobile-first: single column) ---------- */
+      /* ---------- Hero ---------- */
       .hero {
         position: relative;
         overflow: hidden;
@@ -442,7 +461,7 @@
       .hero-grid {
         position: relative;
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 30px;
         align-items: center;
         padding: 28px 0;
@@ -453,7 +472,7 @@
         font-weight: 500;
       }
       .hero-copy h1 {
-        font-size: 1.9rem;
+        font-size: 2.5rem;
         font-weight: 800;
         line-height: 1.15;
         margin: 2px 0 6px;
@@ -474,7 +493,7 @@
       }
       .hero-checklist {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 8px 24px;
         margin-bottom: 22px;
         max-width: 460px;
@@ -642,7 +661,7 @@
         border-radius: 6px;
       }
 
-      /* ---------- Stats strip (mobile-first: 3-col grid, no dividers) ---------- */
+      /* ---------- Stats strip ---------- */
       .stats-strip {
         background: transparent;
         display: flex;
@@ -650,7 +669,7 @@
       }
       .stats-strip .container {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         gap: 10px;
         padding: 14px 20px;
         max-width: 1200px;
@@ -664,9 +683,8 @@
         align-items: center;
         gap: 10px;
         color: #fff;
-        border-right: none;
+        border-right: 1px solid rgba(255, 255, 255, 0.14);
         padding-right: 8px;
-        padding-bottom: 10px;
       }
       .stat-item:last-child {
         border-right: none;
@@ -691,7 +709,7 @@
         line-height: 1.2;
       }
 
-      /* ---------- Product categories (mobile-first: 2-col grid) ---------- */
+      /* ---------- Product categories ---------- */
       .section {
         padding: 28px 0;
         width: 100%;
@@ -706,7 +724,7 @@
       }
       .cat-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 18px;
       }
       .cat-card {
@@ -798,7 +816,7 @@
       /* ---------- Why choose (icon row) ---------- */
       .why-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(9, 1fr);
         gap: 14px;
         text-align: center;
       }
@@ -821,10 +839,10 @@
         color: var(--color-text-primary);
       }
 
-      /* ---------- Breakthrough drugs (mobile-first: 2-col grid) ---------- */
+      /* ---------- Breakthrough drugs ---------- */
       .drug-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(5, 1fr) 1.1fr;
         gap: 14px;
       }
       .drug-card {
@@ -876,16 +894,15 @@
         font-weight: 800;
         font-size: 0.95rem;
         gap: 10px;
-        grid-column: span 2;
       }
       .drug-cta svg {
         color: var(--green);
       }
 
-      /* ---------- Certificates (mobile-first: 2-col grid) ---------- */
+      /* ---------- Certificates ---------- */
       .cert-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(6, 1fr) 1.3fr;
         gap: 14px;
         align-items: stretch;
       }
@@ -928,13 +945,12 @@
         padding: 16px;
         font-weight: 800;
         font-size: 0.9rem;
-        grid-column: span 2;
       }
 
-      /* ---------- Services (mobile-first: 1-col stack) ---------- */
+      /* ---------- Services ---------- */
       .service-cards {
         display: grid;
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 14px;
       }
       .service-card {
@@ -1004,7 +1020,7 @@
         font-size: 0.62rem;
       }
 
-      /* ---------- Why hospitals trust (mobile-first: stacked) ---------- */
+      /* ---------- Why hospitals trust ---------- */
       .trust-band {
         background: transparent;
         color: #fff;
@@ -1015,7 +1031,7 @@
       }
       .trust-grid {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 0;
         align-items: stretch;
         max-width: 1200px;
@@ -1023,7 +1039,7 @@
         width: 100%;
       }
       .trust-copy {
-        padding: 32px 24px;
+        padding: 28px 40px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -1061,10 +1077,10 @@
         display: block;
       }
 
-      /* ---------- Testimonials (mobile-first: 1-col stack) ---------- */
+      /* ---------- Testimonials ---------- */
       .testi-grid {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
         gap: 20px;
       }
       .testi-card {
@@ -1107,7 +1123,7 @@
         color: var(--text-muted);
       }
 
-      /* ---------- Bottom CTA (mobile-first: stacked, centered) ---------- */
+      /* ---------- Bottom CTA ---------- */
       .bottom-cta {
         background: transparent;
         color: #fff;
@@ -1124,8 +1140,6 @@
         background: var(--navy);
         border-radius: 12px;
         max-width: 1200px;
-        flex-direction: column;
-        text-align: center;
       }
       .bottom-cta h3 {
         font-size: 1.15rem;
@@ -1162,7 +1176,7 @@
         border-color: #fff;
       }
 
-      /* ---------- Footer (mobile-first: 2-col grid) ---------- */
+      /* ---------- Footer ---------- */
       footer {
         background: #f5f8fe;
         color: var(--color-text-primary);
@@ -1171,7 +1185,7 @@
       }
       .footer-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1.6fr 1fr 1fr 1fr 1.2fr;
         gap: 24px;
         padding-bottom: 28px;
       }
@@ -1261,39 +1275,17 @@
         color: #fff;
       }
 
-      /* ---------- Mobile menu toggle (mobile-first: visible) ---------- */
+      /* ---------- Mobile menu toggle ---------- */
       .nav-toggle {
-        display: block;
+        display: none;
         background: none;
         border: none;
         color: var(--navy);
         font-size: 1.4rem;
       }
 
-      /* ==================================================================
-         Responsive — mobile-first. Base rules above render the ≤720px
-         (legacy "mobile") layout. The tiers below progressively restore
-         the legacy tablet (721–1024px) and desktop (≥1025px) layouts,
-         exactly matching what Legacy pages/index.html rendered at each
-         width via its desktop-first max-width overrides.
-         ================================================================== */
-
-      /* ---------- Tablet tier (721px and up) ---------- */
-      @media (min-width: 721px) {
-        nav.main-nav ul {
-          display: flex;
-        }
-        nav.main-nav ul.open {
-          display: flex;
-        }
-        .nav-toggle {
-          display: none;
-        }
-        .search-block {
-          order: initial;
-          max-width: 600px;
-          width: auto;
-        }
+      /* ---------- Responsive ---------- */
+      @media (max-width: 1024px) {
         .cat-grid {
           grid-template-columns: repeat(3, 1fr);
         }
@@ -1316,63 +1308,71 @@
         .service-cards {
           grid-template-columns: repeat(3, 1fr);
         }
-        .footer-grid {
-          grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        }
-        .hero-copy h1 {
-          font-size: 2.5rem;
-        }
-        .hero-checklist {
-          grid-template-columns: 1fr 1fr;
-        }
-        .bottom-cta .container {
-          flex-direction: row;
-          text-align: left;
-        }
-      }
-
-      /* ---------- Desktop tier (1025px and up) ---------- */
-      @media (min-width: 1025px) {
-        .cat-grid {
-          grid-template-columns: repeat(5, 1fr);
-        }
-        .drug-grid {
-          grid-template-columns: repeat(5, 1fr) 1.1fr;
-        }
-        .drug-cta {
-          grid-column: auto;
-        }
-        .cert-grid {
-          grid-template-columns: repeat(6, 1fr) 1.3fr;
-        }
-        .cert-cta {
-          grid-column: auto;
-        }
-        .why-grid {
-          grid-template-columns: repeat(9, 1fr);
-          gap: 14px;
-        }
-        .service-cards {
-          grid-template-columns: repeat(4, 1fr);
-        }
         .trust-grid {
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 1fr;
         }
         .trust-copy {
-          padding: 28px 40px;
+          padding: 32px 24px;
         }
         .testi-grid {
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: 1fr;
         }
         .hero-grid {
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 1fr;
         }
         .stats-strip .container {
-          grid-template-columns: repeat(6, 1fr);
+          grid-template-columns: repeat(3, 1fr);
         }
         .stat-item {
-          border-right: 1px solid rgba(255, 255, 255, 0.14);
-          padding-bottom: 0;
+          border-right: none;
+          padding-bottom: 10px;
+        }
+      }
+      @media (max-width: 720px) {
+        nav.main-nav ul {
+          display: none;
+        }
+        .nav-toggle {
+          display: block;
+        }
+        .search-block {
+          order: 3;
+          max-width: none;
+          width: 100%;
+        }
+        .cat-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .drug-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .drug-cta {
+          grid-column: span 2;
+        }
+        .cert-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .cert-cta {
+          grid-column: span 2;
+        }
+        .why-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .service-cards {
+          grid-template-columns: repeat(1, 1fr);
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .hero-copy h1 {
+          font-size: 1.9rem;
+        }
+        .hero-checklist {
+          grid-template-columns: 1fr;
+        }
+        .bottom-cta .container {
+          flex-direction: column;
+          text-align: center;
         }
       }
     </style>
@@ -1381,7 +1381,7 @@
     <script>
       if (!localStorage.getItem('currentUser')) {
         sessionStorage.setItem('loginRedirect', window.location.href);
-        window.location.replace('pages/login.html');
+        window.location.href = 'pages/login.html';
       }
     </script>
 
@@ -1579,7 +1579,7 @@
               </svg>
               Rx Upload
             </a>
-            <button type="button" onclick="window.openCallModal()" class="order-call-btn">
+            <button type="button" onclick="openCallModal()" class="order-call-btn">
               <svg
                 width="14"
                 height="14"
@@ -2388,223 +2388,15 @@
       </div>
     </footer>
 
-    <!-- Get a Call Modal (shared organism, ported from Legacy pages/medicine-detail.html) -->
-    <div
-      id="callModal"
-      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="callModalTitle"
-      style="position: fixed; inset: 0; z-index: 50; padding: 16px"
-    >
-      <div
-        class="absolute inset-0 bg-black/50"
-        onclick="window.closeCallModal()"
-        style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5)"
-      ></div>
-      <div
-        class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm"
-        style="
-          position: relative;
-          background: #fff;
-          border-radius: 16px;
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-          width: 100%;
-          max-width: 384px;
-          margin: 0 auto;
-        "
-      >
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--color-primary-light);
-          "
-        >
-          <div>
-            <h2 id="callModalTitle" style="font-weight: 800; color: #0f172a; font-size: 1rem; margin: 0">
-              Get a Call to Order
-            </h2>
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin: 2px 0 0">
-              We'll call you within 30 minutes
-            </p>
-          </div>
-          <button
-            type="button"
-            onclick="window.closeCallModal()"
-            title="Close"
-            aria-label="Close"
-            style="background: none; border: none; color: var(--text-muted); padding: 4px; cursor: pointer"
-          >
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
-
-        <div id="callModalForm" style="padding: 20px; display: flex; flex-direction: column; gap: 16px">
-          <div>
-            <label
-              for="callPhone"
-              style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px"
-            >
-              Your Phone Number
-            </label>
-            <div style="display: flex; gap: 8px">
-              <select
-                id="callCountryCode"
-                aria-label="Country code"
-                title="Country code"
-                style="
-                  width: 96px;
-                  padding: 10px 8px;
-                  font-size: 0.85rem;
-                  border: 1px solid var(--color-border-strong);
-                  border-radius: 8px;
-                  background: #fff;
-                "
-              >
-                <option value="+91">🇮🇳 +91</option>
-                <option value="+1">🇺🇸 +1</option>
-                <option value="+44">🇬🇧 +44</option>
-                <option value="+971">🇦🇪 +971</option>
-                <option value="+65">🇸🇬 +65</option>
-                <option value="+61">🇦🇺 +61</option>
-                <option value="+49">🇩🇪 +49</option>
-              </select>
-              <input
-                id="callPhone"
-                type="tel"
-                placeholder="Enter phone number"
-                aria-label="Phone number"
-                style="
-                  flex: 1;
-                  padding: 10px 12px;
-                  font-size: 0.85rem;
-                  border: 1px solid var(--color-border-strong);
-                  border-radius: 8px;
-                  min-width: 0;
-                "
-                onkeydown="if (event.key === 'Enter') window.submitCallRequest();"
-              />
-            </div>
-            <p id="callPhoneError" class="hidden" style="font-size: 0.75rem; color: var(--color-danger); margin-top: 4px">
-              Please enter a valid phone number
-            </p>
-          </div>
-          <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0">
-            Our team will call you on this number to help you place your order for
-            <span id="callMedicineName" style="font-weight: 600; color: var(--text-muted)"></span>
-            .
-          </p>
-          <button
-            type="button"
-            onclick="window.submitCallRequest()"
-            style="
-              width: 100%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 8px;
-              padding: 10px;
-              background: var(--color-primary);
-              color: #fff;
-              font-weight: 600;
-              font-size: 0.85rem;
-              border: none;
-              border-radius: 12px;
-              cursor: pointer;
-            "
-          >
-            <svg
-              width="15"
-              height="15"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
-              />
-            </svg>
-            Call Me
-          </button>
-        </div>
-
-        <div id="callModalSuccess" class="hidden" style="padding: 24px; text-align: center">
-          <div
-            style="
-              width: 56px;
-              height: 56px;
-              background: var(--color-success-light);
-              border-radius: 50%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin: 0 auto 12px;
-            "
-          >
-            <svg width="28" height="28" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-          </div>
-          <h3 style="font-weight: 800; color: #0f172a; font-size: 1rem; margin: 0 0 4px">Request Received!</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0 0 4px">We will call you at</p>
-          <p id="callConfirmNumber" style="font-weight: 800; color: var(--color-primary); font-size: 1rem; margin: 0 0 12px"></p>
-          <p style="font-size: 0.85rem; color: var(--color-text-primary); background: var(--color-primary-light); border-radius: 12px; padding: 12px 16px; margin: 0">
-            Our team will reach out within
-            <strong>30 minutes</strong>
-            to help you place your order.
-          </p>
-          <button
-            type="button"
-            onclick="window.closeCallModal()"
-            style="
-              margin-top: 16px;
-              padding: 8px 24px;
-              background: var(--color-primary);
-              color: #fff;
-              font-size: 0.85rem;
-              font-weight: 600;
-              border: none;
-              border-radius: 999px;
-              cursor: pointer;
-            "
-          >
-            Done
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <style>
-      .hidden {
-        display: none !important;
-      }
-      #callModal:not(.hidden) {
-        display: flex !important;
-      }
-    </style>
-
-    <script type="module">
-      import * as CallModalOrganism from './components/organisms/CallModal.js';
-
-      window.openCallModal = () => CallModalOrganism.openCallModal(null);
-      window.closeCallModal = CallModalOrganism.closeCallModal;
-      window.submitCallRequest = CallModalOrganism.submitCallRequest;
-
-      // Mobile nav toggle: close menu on link click (mobile)
+    <script>
+      // Mobile nav toggle handled inline; close menu on link click (mobile)
       document.querySelectorAll('nav.main-nav ul a').forEach(function (link) {
         link.addEventListener('click', function () {
           document.querySelector('nav.main-nav ul').classList.remove('open');
         });
       });
+
+      // Simple smooth-scroll fallback for older browsers is covered by CSS scroll-behavior.
 
       // Search form handler - redirect to category page
       const searchForm = document.getElementById('indexSearchForm');
@@ -2613,10 +2405,16 @@
           e.preventDefault();
           const q = document.getElementById('indexSearchInput').value.trim();
           if (q) {
-            window.location.href = 'pages/category.html?search=' + encodeURIComponent(q);
+            window.location.href = '/pages/category.html?search=' + encodeURIComponent(q);
           }
         });
       }
+
+      // Mobile nav open state styling (progressive enhancement)
+      var style = document.createElement('style');
+      style.innerHTML =
+        '@media (max-width:720px){nav.main-nav ul.open{display:flex;flex-direction:column;gap:12px;position:absolute;left:0;right:0;top:100%;background:#fff;padding:16px 20px;box-shadow:0 8px 20px rgba(0,0,0,.08);z-index:50;}}';
+      document.head.appendChild(style);
     </script>
   </body>
 </html>

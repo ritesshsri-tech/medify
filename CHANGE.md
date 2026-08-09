@@ -141,16 +141,19 @@ Branch: `feature/atomic-migration`
 ### Step 8 — Homepage
 
 - `index.html` at the **repo root** (not `pages/`) — the homepage is the site's entry point, and static hosts serve root-level `index.html` automatically for the bare domain with no rewrite/redirect needed. This also previews Phase 2, where `app/page.tsx` is inherently the root route in Next.js's own routing convention.
-- References assets/scripts as `./assets/`, `./js/header.js` (root-relative), not `../` like the other pages under `pages/`
-- Sections are mostly static HTML; minimal JS for marquee + auth guard
-- Wire saffron button, marquee animation, auth guard
+- Full mobile-first atomic port of `Legacy pages/index.html` (2420 lines — own custom header/nav/hero/stats-strip/category grid/breakthrough-drugs/certificates/services/partners/trust-band/testimonials/footer, not a placeholder). An earlier placeholder homepage existed only to give Vercel something to deploy during setup and was replaced by this port.
+- Keeps its own header/nav markup and styles rather than the shared `js/header.js` — verified the two are genuinely different designs (this page's topbar+logo+search+nav-with-CTA-buttons layout vs. `js/header.js`'s fixed 76px bar with an auth dropdown), so sharing would have been a real design change
+- CSS rewritten mobile-first: base styles render the legacy ≤720px layout directly, with `min-width: 721px` / `min-width: 1025px` tiers layering on tablet/desktop, verified to match the legacy breakpoints exactly at 375/768/1280px
+- References assets/scripts as `./assets/`, `./components/...` (root-relative), matching this file's root-level depth
+- Auth guard ported, redirecting to `pages/login.html`
+- Hero "Request a Call to Order" button wired to the shared `components/organisms/CallModal.js` organism (already built in Step 5, also used by `pages/medicine-detail.html`)
 
 **Responsiveness:**
 
-- **Mobile (375px):** Hero full-width; search bar full-width stretched; marquee scrolls at mobile speed; CTA buttons stack vertically; sections single-column; padding reduced
-- **Tablet (768px):** Hero remains full-width; search bar responsive; CTA buttons side-by-side where space allows; sections adapt to tablet column count; spacing increased
-- **Desktop (1280px):** Hero with side margins; search bar prominent; marquee scrolls normally; multi-column sections; full spacing per design tokens
-- **Test:** Load homepage at each breakpoint; verify marquee animation, search input size, CTA button layout, section responsiveness, no horizontal scroll
+- **Mobile (375px):** Nav collapses behind a hamburger toggle; search bar full-width, wraps to its own row; hero single-column; category/drug/cert grids at 2 columns; stats strip at 3 columns; footer at 2 columns
+- **Tablet (768px, ≥721px tier):** Full nav visible, hamburger hidden; search bar returns to inline max-width; category/drug/cert grids at 3 columns; hero stays single-column until the desktop tier
+- **Desktop (1280px, ≥1025px tier):** Hero becomes 2-column; category grid at 5 columns; stats strip at 6 columns with dividers; footer at 5 columns; trust-band and testimonials expand to multi-column
+- **Test:** Load homepage at each breakpoint; verify hamburger toggle open/close, search input layout, category/stats/footer grid column counts, no unexpected horizontal scroll (see the item 21 exception note below for the one known ~4px overflow carried over from legacy)
 
 **Commit:** `feat: homepage — atomic assembly`
 
@@ -307,6 +310,10 @@ npx backstop approve
 **Known Phase 1 deviation — item 16:** `Legacy pages/medicine-detail.html`'s `toggleFaq()` only toggled the clicked FAQ and never closed the others, so legacy actually allowed multiple FAQs open at once despite the checklist requiring "one open at a time." Unlike item 24, this was fixed rather than left pixel-identical — `components/molecules/FAQItem.js`'s `toggleFaq()` now closes all other open FAQs before opening the clicked one, satisfying checklist item 16 exactly. This is a deliberate, small behavior deviation from legacy.
 
 **Known Phase 1 deviation — item 19:** `Legacy pages/login.html`'s 4th-digit `input` handler called `submitPin()` (which sets the wrong-PIN error text) and then unconditionally called `clearError()` immediately after, wiping the error out before it was ever visible — so wrong-PIN feedback silently never worked in legacy (only the shake animation + red border showed). Fixed in `pages/login.html` by moving `clearError()` to the top of the handler so it only clears *stale* errors from a prior attempt, not the one `submitPin()` just set. Deliberate deviation from legacy, same treatment as item 16.
+
+**Known Phase 1 exception — item 21 (homepage):** `Legacy pages/index.html`'s `.stats-strip .container` grid (`grid-template-columns: repeat(3, 1fr)` at ≤720px) produces ~4px of horizontal overflow at 375px viewport width — the six `.stat-item` cells don't shrink below their content's intrinsic min-width (icon + unbreakable label text like "Pan India" / "Fast & Safe"), so the grid tracks overflow their container slightly. Confirmed present in `Legacy pages/index.html` itself (not introduced by the port) by testing both files head-to-head at 375px. Left pixel-identical in `index.html` per the "no design changes" ground rule; `tests/features/homepage.feature` asserts the overflow stays within the known ~4px rather than asserting zero. Revisit in the Phase 2 redesign.
+
+**Known Phase 1 deviation — item 8 (homepage):** `Legacy pages/index.html`'s hero "Request a Call to Order" button called `onclick="openCallModal()"`, but no such function existed anywhere in the file — clicking it would throw a ReferenceError and do nothing. Fixed by wiring it to the shared `components/organisms/CallModal.js` organism (the same one `pages/medicine-detail.html` already uses), consistent with the project's practice of sharing organisms across pages. Deliberate deviation from legacy, same treatment as items 16 and 19.
 
 ---
 
