@@ -302,6 +302,8 @@ npx backstop approve
 
 **Known Phase 1 exception — item 24:** `Legacy pages/category.html`'s medicine-card action buttons (Send Query, WhatsApp, + Add) render at ~28px tall on mobile, below the 44px target. This is a direct conflict with the "pixel-identical to legacy" ground rule, which item 24 itself cannot satisfy without a design change. Left at legacy size for Phase 1; tests assert the actual ~28px height rather than a false 44px pass. Revisit sizing in the Phase 2 redesign, where "no design changes" no longer applies.
 
+**Known Phase 1 deviation — item 16:** `Legacy pages/medicine-detail.html`'s `toggleFaq()` only toggled the clicked FAQ and never closed the others, so legacy actually allowed multiple FAQs open at once despite the checklist requiring "one open at a time." Unlike item 24, this was fixed rather than left pixel-identical — `components/molecules/FAQItem.js`'s `toggleFaq()` now closes all other open FAQs before opening the clicked one, satisfying checklist item 16 exactly. This is a deliberate, small behavior deviation from legacy.
+
 ---
 
 ## Phase 2 — Next.js + Supabase (starts after Phase 1 merges)

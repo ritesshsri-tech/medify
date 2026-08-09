@@ -39,6 +39,15 @@ export function toggleFaq(i) {
   if (!answer) return;
   const btn = answer.previousElementSibling;
   const isOpen = answer.classList.contains('open');
-  answer.classList.toggle('open', !isOpen);
-  if (btn) btn.setAttribute('aria-expanded', String(!isOpen));
+
+  const list = answer.closest('#faqList') || answer.parentElement.parentElement;
+  list.querySelectorAll('.faq-answer.open').forEach((el) => {
+    el.classList.remove('open');
+    if (el.previousElementSibling) el.previousElementSibling.setAttribute('aria-expanded', 'false');
+  });
+
+  if (!isOpen) {
+    answer.classList.add('open');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
 }

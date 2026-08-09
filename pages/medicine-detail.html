@@ -1,0 +1,1775 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medicine Detail — MediFy</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="../assets/favicon.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: #f5f8fe;
+        color: #0f172a;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        padding: 28px;
+        margin-bottom: 20px;
+        box-shadow:
+          0 1px 4px rgba(37, 99, 235, 0.07),
+          0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      .section-title {
+        font-size: 18px;
+        font-weight: 400;
+        color: #0f172a;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eaf1fe;
+      }
+      .quick-link {
+        display: block;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #475569;
+        text-decoration: none;
+        transition: all 0.15s;
+        margin-bottom: 2px;
+      }
+      .quick-link:hover,
+      .quick-link.active {
+        background: #eaf1fe;
+        color: #2563eb;
+        font-weight: 600;
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 500;
+        margin: 2px;
+      }
+      .faq-answer {
+        display: none;
+      }
+      .faq-answer.open {
+        display: block;
+      }
+      .faq-btn[aria-expanded='true'] svg {
+        transform: rotate(180deg);
+      }
+      .contact-card {
+        background: #f5f8fe;
+        border: 1px solid #bfdbfe;
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 12px;
+      }
+      .rx-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 3px 10px;
+        background: #fff1f2;
+        color: #be123c;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid #fecdd3;
+        white-space: nowrap;
+      }
+      .otc-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        background: #e7f6ec;
+        color: #166534;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid #bbf7d0;
+      }
+      .detail-img-wrap:hover .detail-carousel-arrow {
+        opacity: 1;
+      }
+      .detail-carousel-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.92);
+        border: none;
+        border-radius: 999px;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        z-index: 2;
+      }
+      .detail-carousel-arrow-left {
+        left: 6px;
+      }
+      .detail-carousel-arrow-right {
+        right: 6px;
+      }
+      .detail-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: #cbd5e1;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          width 0.2s;
+      }
+      .detail-dot.active {
+        background: #2563eb;
+        width: 16px;
+      }
+      .detail-dot:hover {
+        background: #93c5fd;
+      }
+      .gallery-main {
+        height: 320px;
+      }
+      .modal-sort-btn.active {
+        background: #2563eb;
+        color: #fff;
+        border-color: #2563eb;
+      }
+      .whatsapp-float {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        z-index: 300;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 54px;
+        height: 54px;
+        background: #25d366;
+        border-radius: 50%;
+        box-shadow: 0 4px 16px rgba(37, 211, 102, 0.45);
+        transition: transform 0.15s;
+      }
+      .whatsapp-float:hover {
+        transform: scale(1.1);
+      }
+      /* Mobile section tab nav */
+      .mob-section-nav {
+        display: none;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        background: #fff;
+        border-bottom: 1px solid #bfdbfe;
+        position: sticky;
+        top: 76px;
+        z-index: 100;
+      }
+      .mob-section-nav::-webkit-scrollbar {
+        display: none;
+      }
+      .mob-section-tab {
+        display: inline-block;
+        padding: 10px 14px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #475569;
+        white-space: nowrap;
+        border-bottom: 2px solid transparent;
+        text-decoration: none;
+        transition: all 0.15s;
+        flex-shrink: 0;
+      }
+      .mob-section-tab.active {
+        color: #2563eb;
+        border-bottom-color: #2563eb;
+        font-weight: 700;
+      }
+      /* Sticky bottom cart bar — mobile only */
+      .mob-cart-bar {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        background: #fff;
+        border-top: 1px solid #bfdbfe;
+        padding: 10px 16px;
+        box-shadow: 0 -4px 16px rgba(37, 99, 235, 0.1);
+      }
+      @media (max-width: 1023px) {
+        .mob-section-nav {
+          display: flex;
+        }
+        .mob-cart-bar {
+          display: flex;
+        }
+        body {
+          padding-bottom: 72px;
+        }
+        .card {
+          padding: 16px;
+        }
+        .section-title {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      if (!localStorage.getItem('currentUser')) {
+        sessionStorage.setItem('loginRedirect', window.location.href);
+        window.location.replace('login.html');
+      }
+    </script>
+    <div id="appHeader"></div>
+
+    <!-- Mobile section tab nav -->
+    <nav class="mob-section-nav" id="mobSectionNav" aria-label="Page sections">
+      <a href="#intro" class="mob-section-tab active">Intro</a>
+      <a href="#description" class="mob-section-tab">Description</a>
+      <a href="#usage" class="mob-section-tab">Uses</a>
+      <a href="#sideeffects" class="mob-section-tab">Side Effects</a>
+      <a href="#faqs" class="mob-section-tab">FAQs</a>
+      <a href="#whoreachout" class="mob-section-tab">Who Can Help</a>
+      <a href="#delivered" class="mob-section-tab">Delivery</a>
+      <a href="#references" class="mob-section-tab">References</a>
+      <a href="#disclaimer" class="mob-section-tab">Disclaimer</a>
+    </nav>
+
+    <div class="max-w-[88rem] mx-auto px-4 py-6">
+      <!-- Breadcrumb -->
+      <div class="flex items-center gap-2 text-xs text-slate-500 mb-5">
+        <a href="category.html" class="hover:text-blue-600 transition-colors">Medicines</a>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+        <span id="breadcrumbName" class="text-slate-600">Loading…</span>
+      </div>
+
+      <div class="flex flex-col lg:flex-row gap-6 items-start" id="mainLayout">
+        <!-- LEFT: Quick Links sidebar -->
+        <aside class="hidden lg:block w-56 flex-shrink-0 sticky top-24">
+          <div class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm">
+            <nav id="quickLinks">
+              <a href="#intro" class="quick-link active">Introduction</a>
+              <a href="#description" class="quick-link">Product Description</a>
+              <a href="#usage" class="quick-link">What is it used for?</a>
+              <a href="#sideeffects" class="quick-link">Side Effects</a>
+              <a href="#faqs" class="quick-link">FAQs</a>
+              <a href="#whoreachout" class="quick-link">Who Can Reach Out</a>
+              <a href="#delivered" class="quick-link">Delivered Medicines</a>
+              <a href="#references" class="quick-link">References</a>
+              <a href="#disclaimer" class="quick-link">Disclaimer</a>
+            </nav>
+          </div>
+
+          <!-- About This Content sidebar card -->
+          <div class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm mt-3">
+            <p class="text-xs font-700 text-slate-500 uppercase tracking-wider mb-3">About This Content</p>
+            <div class="space-y-3">
+              <div>
+                <p class="text-xs text-slate-500 mb-1">Written by</p>
+                <div class="flex items-start gap-2">
+                  <div
+                    id="sideWrittenByPhoto"
+                    class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden flex-shrink-0 mt-0.5"
+                  >
+                    <svg width="16" height="16" fill="none" stroke="#93C5FD" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p id="sideWrittenBy" class="text-sm font-semibold text-slate-800 leading-tight"></p>
+                    <p id="sideWrittenByQual" class="text-[10px] text-slate-500 mt-0.5 leading-snug"></p>
+                    <p id="sideWrittenByExp" class="text-[10px] text-blue-600 font-medium mt-0.5"></p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 mb-1">Reviewed by</p>
+                <div class="flex items-start gap-2">
+                  <div
+                    id="sideReviewedByPhoto"
+                    class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden flex-shrink-0 mt-0.5"
+                  >
+                    <svg width="16" height="16" fill="none" stroke="#93C5FD" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p id="sideReviewedBy" class="text-sm font-semibold text-slate-800 leading-tight"></p>
+                    <p id="sideReviewedByQual" class="text-[10px] text-slate-500 mt-0.5 leading-snug"></p>
+                    <p id="sideReviewedByExp" class="text-[10px] text-blue-600 font-medium mt-0.5"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="border-t border-blue-50 pt-3">
+                <p class="text-xs text-slate-500 mb-0.5">Content details</p>
+                <p id="sideLastUpdated" class="text-xs font-semibold text-slate-700"></p>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- RIGHT: Main content -->
+        <main class="flex-1 min-w-0">
+          <!-- Loading state -->
+          <div id="loadingState" class="card text-center py-16">
+            <svg class="animate-spin mx-auto text-blue-400 mb-3" width="32" height="32" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+            </svg>
+            <p class="text-slate-500 text-sm">Loading medicine details…</p>
+          </div>
+
+          <!-- Error state -->
+          <div id="errorState" class="card text-center py-16 hidden">
+            <svg
+              class="mx-auto text-red-300 mb-3"
+              width="40"
+              height="40"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <p class="text-slate-600 font-medium">Medicine not found</p>
+            <a
+              href="category.html"
+              class="mt-4 inline-block px-5 py-2 bg-blue-600 text-white text-sm font-semibold rounded-full"
+            >
+              Back to Medicines
+            </a>
+          </div>
+
+          <!-- All sections (hidden until loaded) -->
+          <div id="allSections" class="hidden">
+            <!-- 1. INTRODUCTION -->
+            <section id="intro" class="card">
+              <!-- Top row: info + image -->
+              <div class="flex flex-col lg:flex-row gap-6 mb-4">
+                <!-- Left: info column -->
+                <div class="flex-1 min-w-0">
+                  <div class="mb-4">
+                    <h1 id="medBrandName" class="text-xl lg:text-3xl font-800 text-slate-900"></h1>
+                  </div>
+
+                  <div class="flex flex-col gap-y-3 mb-5 text-sm">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-slate-500 font-medium">Salt Name</span>
+                      </div>
+                      <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                        <p id="medSaltName" class="text-slate-800 font-semibold"></p>
+                        <button
+                          type="button"
+                          onclick="window.openSaltModal()"
+                          class="text-xs text-blue-600 hover:text-blue-800 font-medium underline underline-offset-2"
+                        >
+                          View other Mfg
+                        </button>
+                      </div>
+                      <p class="text-[10px] text-slate-500 mt-0.5">
+                        Note: This link page features list of medicines by other company brands
+                      </p>
+                    </div>
+                    <div>
+                      <span class="text-slate-500 font-medium">Manufactured by</span>
+                      <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                        <p id="medManufacturer" class="text-slate-800 font-semibold"></p>
+                        <button
+                          type="button"
+                          onclick="window.openMfrModal()"
+                          class="text-xs text-blue-600 hover:text-blue-800 font-medium underline underline-offset-2"
+                        >
+                          View all medicines
+                        </button>
+                      </div>
+                      <p class="text-[10px] text-slate-500 mt-0.5">
+                        Note: This link page features list of medicines by other manufacturer
+                      </p>
+                    </div>
+                    <div class="flex gap-x-8 flex-wrap gap-y-3">
+                      <div>
+                        <span class="text-slate-500 font-medium">Form &amp; Strength</span>
+                        <p id="medFormStrength" class="text-slate-800 font-semibold mt-0.5"></p>
+                      </div>
+                      <div>
+                        <span class="text-slate-500 font-medium">Pack Size</span>
+                        <p id="medPackSize" class="text-slate-800 font-semibold mt-0.5"></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Price -->
+                  <div class="flex items-center gap-3 mb-2 flex-wrap">
+                    <div>
+                      <span id="medPrice" class="text-lg font-bold text-slate-900"></span>
+                      <span id="medMrp" class="text-sm text-slate-500 line-through ml-2"></span>
+                      <span
+                        id="medDiscount"
+                        class="ml-2 text-xs font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full"
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+                <!-- /info column -->
+
+                <!-- Right: image carousel -->
+                <div class="flex flex-col flex-shrink-0 lg:w-[345px] gap-2">
+                  <div
+                    class="relative lg:h-[241px] h-44 rounded-xl border border-blue-100 overflow-hidden detail-img-wrap"
+                  >
+                    <img
+                      id="detailImg"
+                      src=""
+                      alt="Medicine image"
+                      class="w-full h-full object-contain p-2 cursor-zoom-in"
+                      onclick="window.openDetailGallery()"
+                      title="Click to view all images"
+                    />
+                    <button
+                      type="button"
+                      onclick="window.detailCarouselPrev()"
+                      class="detail-carousel-arrow detail-carousel-arrow-left"
+                      aria-label="Previous image"
+                      title="Previous image"
+                    >
+                      <svg
+                        width="13"
+                        height="13"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        viewBox="0 0 24 24"
+                      >
+                        <polyline points="15 18 9 12 15 6" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      onclick="window.detailCarouselNext()"
+                      class="detail-carousel-arrow detail-carousel-arrow-right"
+                      aria-label="Next image"
+                      title="Next image"
+                    >
+                      <svg
+                        width="13"
+                        height="13"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        viewBox="0 0 24 24"
+                      >
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </button>
+                    <div id="detailDots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5"></div>
+                  </div>
+                  <p class="text-[11px] text-slate-500 leading-snug">
+                    We are a Government-approved and authorised pharmaceutical CFA, Distributor and Retailer of leading
+                    medicine manufacturers in India.
+                  </p>
+                </div>
+                <!-- /carousel -->
+              </div>
+              <!-- /top row -->
+
+              <!-- Bottom row: buttons + trust signals + order bar — spans full width -->
+              <div class="border-t border-slate-100 pt-4">
+                <!-- Qty + action buttons -->
+                <div class="flex items-center gap-3 mb-4 flex-wrap">
+                  <div class="flex items-center border border-blue-200 rounded-full overflow-hidden">
+                    <button
+                      type="button"
+                      onclick="window.changeQty(-1)"
+                      aria-label="Decrease quantity"
+                      class="w-9 h-9 flex items-center justify-center text-blue-600 hover:bg-blue-50 font-bold text-lg transition-colors"
+                    >
+                      −
+                    </button>
+                    <span id="qtyDisplay" class="w-8 text-center text-sm font-semibold text-slate-800">1</span>
+                    <button
+                      type="button"
+                      onclick="window.changeQty(1)"
+                      aria-label="Increase quantity"
+                      class="w-9 h-9 flex items-center justify-center text-blue-600 hover:bg-blue-50 font-bold text-lg transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    id="addToCartBtn"
+                    onclick="window.addMedicineToCart()"
+                    class="flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full text-sm transition-colors"
+                  >
+                    <svg
+                      width="15"
+                      height="15"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle cx="9" cy="21" r="1" />
+                      <circle cx="20" cy="21" r="1" />
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                    </svg>
+                    Add to Cart
+                  </button>
+                  <button
+                    type="button"
+                    onclick="window.sendQuery()"
+                    class="flex items-center gap-2 px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-full text-sm transition-colors"
+                  >
+                    <svg
+                      width="15"
+                      height="15"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Send Query
+                  </button>
+                  <button
+                    type="button"
+                    onclick="window.shareMedicine()"
+                    title="Share"
+                    aria-label="Share this medicine"
+                    class="w-9 h-9 flex items-center justify-center border border-slate-200 rounded-full text-slate-500 hover:border-blue-300 hover:text-blue-600 transition-colors"
+                  >
+                    <svg
+                      width="15"
+                      height="15"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                  </button>
+                  <span id="medRxBadge" class="ml-auto"></span>
+                </div>
+                <!-- Trust signals -->
+                <div class="flex items-center justify-center flex-wrap gap-x-3 gap-y-1 mb-3 text-xs text-slate-500">
+                  <span class="flex items-center gap-1">
+                    <svg
+                      width="12"
+                      height="12"
+                      fill="none"
+                      stroke="#16A34A"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      viewBox="0 0 24 24"
+                    >
+                      <rect x="1" y="3" width="15" height="13" rx="2" />
+                      <path d="M16 8h4l3 5v3h-7V8z" />
+                      <circle cx="5.5" cy="18.5" r="2.5" />
+                      <circle cx="18.5" cy="18.5" r="2.5" />
+                    </svg>
+                    Delivery 1–3 days
+                  </span>
+                  <span class="text-slate-300">·</span>
+                  <span class="flex items-center gap-1">
+                    <svg
+                      width="12"
+                      height="12"
+                      fill="none"
+                      stroke="#2563EB"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                      <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                    Sold &amp; Dispatched by MediFy
+                  </span>
+                  <span class="text-slate-300">·</span>
+                  <span class="flex items-center gap-1">
+                    <svg
+                      width="12"
+                      height="12"
+                      fill="none"
+                      stroke="#7C3AED"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    GST invoice
+                  </span>
+                  <span class="text-slate-300">·</span>
+                  <span class="flex items-center gap-1">
+                    <svg
+                      width="12"
+                      height="12"
+                      fill="none"
+                      stroke="#DC2626"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="15" y1="9" x2="9" y2="15" />
+                      <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
+                    Non-returnable after dispensing
+                  </span>
+                </div>
+                <!-- Order on call bar -->
+                <div
+                  class="flex items-center justify-center flex-wrap gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="#2563EB"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
+                    />
+                  </svg>
+                  <span class="text-sm text-slate-500">Order medicine on call —</span>
+                  <a href="tel:+911800123456" class="text-sm font-semibold text-blue-700 hover:underline">
+                    +91 1800-123-456
+                  </a>
+                  <button
+                    type="button"
+                    onclick="window.openCallModal()"
+                    class="flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-full transition-colors"
+                  >
+                    <svg
+                      width="12"
+                      height="12"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
+                      />
+                    </svg>
+                    Get a Call to Order
+                  </button>
+                  <a
+                    id="waOrderBtn"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-center gap-1.5 px-4 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-semibold rounded-full transition-colors"
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"
+                      />
+                      <path
+                        d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.528 5.845L.057 23.882l6.186-1.444A11.934 11.934 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.793 9.793 0 0 1-5.006-1.374l-.36-.213-3.67.857.885-3.567-.234-.375A9.818 9.818 0 0 1 2.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"
+                      />
+                    </svg>
+                    Order on WhatsApp
+                  </a>
+                </div>
+              </div>
+              <!-- /bottom row -->
+            </section>
+
+            <!-- 2. PRODUCT DESCRIPTION -->
+            <section id="description" class="card">
+              <h2 class="section-title">Product Description</h2>
+              <p id="medDescription" class="text-sm text-slate-700 leading-relaxed"></p>
+            </section>
+
+            <!-- 3. WHAT IS IT USED FOR -->
+            <section id="usage" class="card">
+              <h2 id="usageTitle" class="section-title"></h2>
+              <p id="medUsage" class="text-sm text-slate-700 leading-relaxed mb-4"></p>
+              <ul id="medTreatmentList" class="space-y-2"></ul>
+            </section>
+
+            <!-- 4. SIDE EFFECTS -->
+            <section id="sideeffects" class="card">
+              <h2 id="sideEffectsTitle" class="section-title"></h2>
+              <p class="text-sm text-slate-500 mb-4">
+                Consult your doctor immediately if you experience any serious side effects. The following list is not
+                exhaustive.
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-amber-400 rounded-full inline-block"></span>
+                    Common Side Effects
+                  </p>
+                  <ul id="medSideEffectsCommon" class="space-y-1.5"></ul>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-red-500 rounded-full inline-block"></span>
+                    Serious Side Effects
+                  </p>
+                  <ul id="medSideEffectsSerious" class="space-y-1.5"></ul>
+                </div>
+              </div>
+            </section>
+
+            <!-- 5. SUBSTITUTE OPTIONS -->
+            <!-- 6. FAQS -->
+            <section id="faqs" class="card">
+              <h2 class="section-title">Frequently Asked Questions</h2>
+              <div id="faqList" class="space-y-2"></div>
+            </section>
+
+            <!-- 7. WHO CAN REACH OUT -->
+            <section id="whoreachout" class="card">
+              <h2 class="section-title">Who Can Reach Out</h2>
+              <div id="medWhoReachOut" class="text-sm text-slate-700 leading-relaxed space-y-1"></div>
+            </section>
+
+            <!-- 8. DELIVERED MEDICINES -->
+            <section id="delivered" class="card">
+              <h2 class="section-title">Delivered Medicines</h2>
+              <p id="medDelivered" class="text-sm text-slate-700 leading-relaxed"></p>
+            </section>
+
+            <!-- 9. REFERENCES -->
+            <section id="references" class="card">
+              <h2 class="section-title">References</h2>
+              <ul id="medReferences" class="space-y-2"></ul>
+            </section>
+
+            <!-- 12. DISCLAIMER -->
+            <section id="disclaimer" class="card">
+              <h2 class="section-title">Disclaimer</h2>
+              <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                <p id="medDisclaimer" class="text-xs text-amber-900 leading-relaxed"></p>
+              </div>
+            </section>
+          </div>
+          <!-- /allSections -->
+        </main>
+
+        <!-- RIGHT: Single column — substitutes (conditional) + distributor (always on desktop) -->
+        <aside id="rightCol" class="hidden lg:flex flex-col w-56 flex-shrink-0 lg:sticky top-24 space-y-3">
+          <!-- Substitute Options — shown only when substitutes exist -->
+          <div id="subsSidebar" style="display: none">
+            <div class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm">
+              <p class="text-xs font-700 text-slate-500 uppercase tracking-wider mb-1">Substitute Options</p>
+              <p class="text-xs text-slate-500 mb-3">Same salt · Same strength</p>
+              <div id="subsCards" class="space-y-2"></div>
+              <button
+                type="button"
+                id="subsLoadMore"
+                onclick="window.loadMoreSubs()"
+                class="hidden w-full mt-3 flex items-center justify-center gap-1 text-xs text-blue-600 font-semibold py-2 border border-blue-100 rounded-lg hover:bg-blue-50 transition-colors"
+              >
+                Load more
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              <p id="subsNone" class="hidden text-xs text-slate-500 italic text-center py-2">No substitutes found</p>
+            </div>
+          </div>
+
+          <!-- Head Office -->
+          <div id="sideHeadOffice" class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm">
+            <p class="text-xs font-700 text-slate-500 uppercase tracking-wider mb-3">Head Office</p>
+            <div id="sideHeadOfficeBody" class="space-y-1"></div>
+          </div>
+
+          <!-- Branch Offices -->
+          <div id="sideBranchOffices" class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm">
+            <p class="text-xs font-700 text-slate-500 uppercase tracking-wider mb-3">Branch Offices</p>
+            <div id="sideBranchOfficesBody" class="space-y-3"></div>
+          </div>
+
+          <!-- Licensed Vendor Partners -->
+          <div id="sideVendorPartners" class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm">
+            <p class="text-xs font-700 text-slate-500 uppercase tracking-wider mb-3">Licensed Vendor Partners</p>
+            <div id="sideVendorPartnersBody" class="space-y-3"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Salt Modal -->
+    <div
+      id="saltModal"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="saltModalTitle"
+    >
+      <div class="absolute inset-0 bg-black/50" onclick="window.closeSaltModal()"></div>
+      <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-blue-100">
+          <div>
+            <h2 id="saltModalTitle" class="font-bold text-slate-900 text-base"></h2>
+            <p id="saltModalCount" class="text-xs text-slate-500 mt-0.5"></p>
+          </div>
+          <button
+            type="button"
+            onclick="window.closeSaltModal()"
+            title="Close"
+            aria-label="Close"
+            class="text-slate-500 hover:text-slate-600 p-1"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div class="px-5 py-3 border-b border-blue-50 space-y-2">
+          <div class="relative">
+            <svg
+              class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300"
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              id="saltSearch"
+              type="text"
+              placeholder="Search brand or manufacturer…"
+              aria-label="Search medicines by salt"
+              oninput="window.renderSaltList()"
+              class="w-full pl-8 pr-3 py-2 text-sm border border-blue-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+          <div class="flex gap-1.5 flex-wrap">
+            <button
+              type="button"
+              id="saltSort-alpha"
+              onclick="window.setSaltSort('alpha')"
+              class="modal-sort-btn active px-3 py-1 text-xs rounded-full border border-blue-200 bg-blue-600 text-white font-medium"
+            >
+              A–Z
+            </button>
+            <button
+              type="button"
+              id="saltSort-alpha-desc"
+              onclick="window.setSaltSort('alpha-desc')"
+              class="modal-sort-btn px-3 py-1 text-xs rounded-full border border-slate-200 text-slate-600 font-medium hover:border-blue-300"
+            >
+              Z–A
+            </button>
+            <button
+              type="button"
+              id="saltSort-price-asc"
+              onclick="window.setSaltSort('price-asc')"
+              class="modal-sort-btn px-3 py-1 text-xs rounded-full border border-slate-200 text-slate-600 font-medium hover:border-blue-300"
+            >
+              Price ↑
+            </button>
+            <button
+              type="button"
+              id="saltSort-price-desc"
+              onclick="window.setSaltSort('price-desc')"
+              class="modal-sort-btn px-3 py-1 text-xs rounded-full border border-slate-200 text-slate-600 font-medium hover:border-blue-300"
+            >
+              Price ↓
+            </button>
+          </div>
+        </div>
+        <div id="saltModalBody" class="overflow-y-auto p-5 space-y-3 flex-1"></div>
+      </div>
+    </div>
+
+    <!-- Manufacturer Modal -->
+    <div
+      id="mfrModal"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="mfrModalTitle"
+    >
+      <div class="absolute inset-0 bg-black/50" onclick="window.closeMfrModal()"></div>
+      <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-blue-100">
+          <div>
+            <h2 id="mfrModalTitle" class="font-bold text-slate-900 text-base"></h2>
+            <p id="mfrModalCount" class="text-xs text-slate-500 mt-0.5"></p>
+          </div>
+          <button
+            type="button"
+            onclick="window.closeMfrModal()"
+            title="Close"
+            aria-label="Close"
+            class="text-slate-500 hover:text-slate-600 p-1"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div class="px-5 py-3 border-b border-blue-50 space-y-2">
+          <div class="relative">
+            <svg
+              class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300"
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              id="mfrSearch"
+              type="text"
+              placeholder="Search brand or form…"
+              aria-label="Search medicines by manufacturer"
+              oninput="window.renderMfrList()"
+              class="w-full pl-8 pr-3 py-2 text-sm border border-blue-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+          <div class="flex gap-1.5 flex-wrap">
+            <button
+              type="button"
+              id="mfrSort-alpha"
+              onclick="window.setMfrSort('alpha')"
+              class="modal-sort-btn active px-3 py-1 text-xs rounded-full border border-blue-200 bg-blue-600 text-white font-medium"
+            >
+              A–Z
+            </button>
+            <button
+              type="button"
+              id="mfrSort-alpha-desc"
+              onclick="window.setMfrSort('alpha-desc')"
+              class="modal-sort-btn px-3 py-1 text-xs rounded-full border border-slate-200 text-slate-600 font-medium hover:border-blue-300"
+            >
+              Z–A
+            </button>
+            <button
+              type="button"
+              id="mfrSort-price-asc"
+              onclick="window.setMfrSort('price-asc')"
+              class="modal-sort-btn px-3 py-1 text-xs rounded-full border border-slate-200 text-slate-600 font-medium hover:border-blue-300"
+            >
+              Price ↑
+            </button>
+            <button
+              type="button"
+              id="mfrSort-price-desc"
+              onclick="window.setMfrSort('price-desc')"
+              class="modal-sort-btn px-3 py-1 text-xs rounded-full border border-slate-200 text-slate-600 font-medium hover:border-blue-300"
+            >
+              Price ↓
+            </button>
+          </div>
+        </div>
+        <div id="mfrModalBody" class="overflow-y-auto p-5 space-y-3 flex-1"></div>
+      </div>
+    </div>
+
+    <script src="../js/header.js"></script>
+    <script type="module">
+      import { fetchMedicines, fetchSiteConfig } from '../js/data.js';
+      import { addToCart as addToCartStore } from '../js/cart.js';
+      import { sub, paise, discount as discountPct } from '../js/utils.js';
+      import { openModal, closeModal } from '../components/molecules/Modal.js';
+      import { Carousel } from '../components/molecules/Carousel.js';
+      import { renderFaqList, toggleFaq } from '../components/molecules/FAQItem.js';
+      import { sideContactHtml, renderContactList } from '../components/molecules/ContactCard.js';
+      import * as SaltModal from '../components/organisms/SaltModal.js';
+      import * as MfrModal from '../components/organisms/MfrModal.js';
+      import * as QueryModalOrganism from '../components/organisms/QueryModal.js';
+      import * as CallModalOrganism from '../components/organisms/CallModal.js';
+      import * as SubstitutesPanel from '../components/organisms/SubstitutesPanel.js';
+      import { setupScrollSpy } from '../components/organisms/ScrollSpyNav.js';
+
+      let medicine = null;
+      let siteConfig = null;
+      let allMedicines = [];
+      let currentQty = 1;
+
+      async function init() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        if (!id) {
+          showError();
+          return;
+        }
+
+        try {
+          [allMedicines, siteConfig] = await Promise.all([fetchMedicines(), fetchSiteConfig()]);
+          medicine = allMedicines.find((m) => m.id === id);
+          if (!medicine) {
+            showError();
+            return;
+          }
+          render();
+        } catch (e) {
+          showError();
+        }
+      }
+
+      function showError() {
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('errorState').classList.remove('hidden');
+      }
+
+      function render() {
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('allSections').classList.remove('hidden');
+
+        document.title = `${medicine.brandName} — MediFy`;
+        document.getElementById('breadcrumbName').textContent = medicine.brandName;
+
+        renderIntro();
+        renderDescription();
+        renderUsage();
+        renderSideEffects();
+        SubstitutesPanel.renderSubstitutes(medicine, allMedicines, siteConfig);
+        renderFaqs();
+        renderWhoReachOut();
+        renderDelivered();
+        renderReferences();
+        renderAboutContent();
+        renderSideDistributor();
+        renderDisclaimer();
+        setupScrollSpy(
+          ['intro', 'description', 'usage', 'sideeffects', 'faqs', 'whoreachout', 'delivered', 'references', 'disclaimer'],
+          document.getElementById('quickLinks'),
+          document.getElementById('mobSectionNav')
+        );
+      }
+
+      // --- Detail image carousel ---
+      const FALLBACK_IMAGES = [
+        '../assets/Medicine1.webp',
+        '../assets/Medicine2.avif',
+        '../assets/Medicine3.jpeg',
+        '../assets/Medicine4.webp',
+        '../assets/Medicine5.jpeg',
+        '../assets/Medicine6.jpg',
+      ];
+      let detailCarousel = null;
+
+      function initDetailCarousel(med) {
+        const images = Array.isArray(med.image) && med.image.length > 0 ? med.image : FALLBACK_IMAGES;
+        detailCarousel = new Carousel(images, {
+          imgEl: document.getElementById('detailImg'),
+          dotsEl: document.getElementById('detailDots'),
+          dotClass: 'detail-dot',
+        });
+        document.getElementById('detailDots').addEventListener('click', (e) => {
+          const dot = e.target.closest('.detail-dot');
+          if (!dot) return;
+          const idx = [...dot.parentElement.children].indexOf(dot);
+          detailCarousel.goTo(idx);
+        });
+        detailCarousel.goTo(0);
+      }
+
+      window.detailCarouselPrev = () => detailCarousel && detailCarousel.prev();
+      window.detailCarouselNext = () => detailCarousel && detailCarousel.next();
+
+      // --- Detail gallery lightbox ---
+      let galleryCarousel = null;
+
+      window.openDetailGallery = function () {
+        galleryCarousel = new Carousel(detailCarousel.images, { imgEl: document.getElementById('galleryMainImg') });
+        galleryCarousel.onChange = renderGalleryThumbs;
+        galleryCarousel.goTo(detailCarousel.index);
+        openModal('detailGallery');
+      };
+
+      window.closeDetailGallery = function () {
+        closeModal('detailGallery');
+      };
+
+      function renderGalleryThumbs() {
+        const thumbsEl = document.getElementById('galleryThumbs');
+        thumbsEl.innerHTML = galleryCarousel.images
+          .map(
+            (src, i) =>
+              `<img src="${src}" alt="Medicine image ${i + 1}" onclick="window.galleryGoTo(${i})" title="Image ${i + 1}"
+                class="w-16 h-16 object-contain rounded-lg border-2 cursor-pointer transition-all bg-white p-1 ${i === galleryCarousel.index ? 'border-blue-500 shadow-md' : 'border-slate-200 opacity-60 hover:opacity-100 hover:border-blue-300'}" />`
+          )
+          .join('');
+      }
+
+      window.galleryGoTo = function (idx) {
+        galleryCarousel.goTo(idx);
+      };
+
+      function renderIntro() {
+        document.getElementById('medBrandName').textContent = medicine.brandName;
+        document.getElementById('medSaltName').textContent = medicine.saltName;
+        document.getElementById('medManufacturer').textContent = medicine.manufacturer;
+        document.getElementById('medFormStrength').textContent = `${medicine.form} — ${medicine.strength}`;
+        document.getElementById('medPackSize').textContent = medicine.packSize;
+
+        document.getElementById('medPrice').textContent = paise(medicine.sellingPricePaise);
+        const off = discountPct(medicine.mrpPaise, medicine.sellingPricePaise);
+        if (off > 0) {
+          document.getElementById('medMrp').textContent = paise(medicine.mrpPaise);
+          document.getElementById('medDiscount').textContent = `${off}% off`;
+        }
+
+        const mobPrice = document.getElementById('mobCartPrice');
+        const mobName = document.getElementById('mobCartName');
+        if (mobPrice) mobPrice.textContent = paise(medicine.sellingPricePaise);
+        if (mobName) mobName.textContent = `${medicine.brandName} · ${medicine.form} ${medicine.strength}`;
+
+        document.getElementById('medRxBadge').innerHTML = medicine.requiresPrescription
+          ? `<span class="rx-badge"><span style="font-weight:800;letter-spacing:0.03em;">Rx</span>&thinsp;Prescription Required</span>`
+          : `<span class="otc-badge"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>OTC</span>`;
+
+        const waBtn = document.getElementById('waOrderBtn');
+        if (waBtn) {
+          const waMsg = `Hi, I'd like to order ${medicine.brandName} (${medicine.form} ${medicine.strength}). Please help me with the process.`;
+          waBtn.href = `https://wa.me/911800123456?text=${encodeURIComponent(waMsg)}`;
+        }
+
+        initDetailCarousel(medicine);
+      }
+
+      function renderDescription() {
+        const descSection = document.getElementById('description');
+        if (medicine.description) {
+          document.getElementById('medDescription').textContent = medicine.description;
+        } else {
+          descSection.style.display = 'none';
+        }
+      }
+
+      function renderUsage() {
+        document.getElementById('usageTitle').textContent = `What is ${medicine.saltName} used for?`;
+        const usageEl = document.getElementById('medUsage');
+        usageEl.style.display = 'none';
+        const list = document.getElementById('medTreatmentList');
+        list.innerHTML = (medicine.treatmentFor || [])
+          .map(
+            (t) =>
+              `<li class="flex items-start gap-2 text-sm text-slate-700"><svg class="flex-shrink-0 mt-0.5" width="14" height="14" fill="none" stroke="#2563EB" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>${t}</li>`
+          )
+          .join('');
+      }
+
+      function renderSideEffects() {
+        document.getElementById('sideEffectsTitle').textContent = `What are the side effects of ${medicine.brandName}?`;
+        document.getElementById('medSideEffectsCommon').innerHTML = (medicine.sideEffectsCommon || [])
+          .map(
+            (s) =>
+              `<li class="flex items-start gap-2 text-sm text-slate-700"><span class="w-1.5 h-1.5 bg-amber-400 rounded-full flex-shrink-0 mt-1.5"></span>${s}</li>`
+          )
+          .join('');
+        document.getElementById('medSideEffectsSerious').innerHTML = (medicine.sideEffectsSerious || [])
+          .map(
+            (s) =>
+              `<li class="flex items-start gap-2 text-sm text-slate-700"><span class="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0 mt-1.5"></span>${s}</li>`
+          )
+          .join('');
+      }
+
+      function renderFaqs() {
+        document.getElementById('faqList').innerHTML = renderFaqList(siteConfig.faqs, medicine.brandName);
+      }
+      window.toggleFaq = toggleFaq;
+
+      function renderWhoReachOut() {
+        document.getElementById('medWhoReachOut').textContent = siteConfig.whoCanReachOut;
+      }
+
+      function renderDelivered() {
+        document.getElementById('medDelivered').textContent = siteConfig.deliveredMedicines;
+      }
+
+      function renderReferences() {
+        document.getElementById('medReferences').innerHTML = (medicine.references || [])
+          .map(
+            (r, i) => `
+<li class="flex items-start gap-2 text-sm">
+  <span class="text-slate-500 font-medium flex-shrink-0">${i + 1}.</span>
+  <a href="${r.url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${r.label}</a>
+</li>`
+          )
+          .join('');
+      }
+
+      function setPersonPhoto(photoElId, nameElId, photoUrl, name) {
+        const photoEl = document.getElementById(photoElId);
+        const nameEl = document.getElementById(nameElId);
+        nameEl.textContent = name;
+        if (photoUrl) {
+          photoEl.innerHTML = `<img src="${photoUrl}" alt="${name}" class="w-full h-full object-cover" />`;
+        }
+      }
+
+      function renderAboutContent() {
+        setPersonPhoto('sideWrittenByPhoto', 'sideWrittenBy', siteConfig.writtenByPhoto || '', siteConfig.writtenBy);
+        document.getElementById('sideWrittenByQual').textContent = siteConfig.writtenByQualification || '';
+        document.getElementById('sideWrittenByExp').textContent = siteConfig.writtenByExperience || '';
+        setPersonPhoto('sideReviewedByPhoto', 'sideReviewedBy', siteConfig.reviewedByPhoto || '', siteConfig.reviewedBy);
+        document.getElementById('sideReviewedByQual').textContent = siteConfig.reviewedByQualification || '';
+        document.getElementById('sideReviewedByExp').textContent = siteConfig.reviewedByExperience || '';
+        document.getElementById('sideLastUpdated').textContent = siteConfig.contentLastUpdated || '';
+      }
+
+      function renderSideDistributor() {
+        document.getElementById('sideHeadOfficeBody').innerHTML = sideContactHtml(siteConfig.headOffice);
+        document.getElementById('sideBranchOfficesBody').innerHTML = renderContactList(siteConfig.branchOffices || []);
+        document.getElementById('sideVendorPartnersBody').innerHTML = renderContactList(siteConfig.vendorPartners || []);
+      }
+
+      function renderDisclaimer() {
+        document.getElementById('medDisclaimer').textContent = sub(siteConfig.disclaimer, medicine.brandName);
+      }
+
+      // --- Quantity + cart ---
+      window.changeQty = function (delta) {
+        currentQty = Math.max(1, currentQty + delta);
+        document.getElementById('qtyDisplay').textContent = currentQty;
+        const mob = document.getElementById('mobQtyDisplay');
+        if (mob) mob.textContent = currentQty;
+      };
+
+      window.addMedicineToCart = function () {
+        if (!medicine) return;
+        for (let i = 0; i < currentQty; i++) addToCartStore(medicine);
+
+        const btn = document.getElementById('addToCartBtn');
+        const orig = btn.innerHTML;
+        btn.innerHTML =
+          '<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Added!';
+        btn.style.background = '#16A34A';
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.style.background = '';
+        }, 1500);
+      };
+
+      window.shareMedicine = function () {
+        const url = window.location.href;
+        const text = `Check out ${medicine.brandName} (${medicine.saltName} ${medicine.strength}) on MediFy: ${url}`;
+        if (navigator.share) {
+          navigator.share({ title: medicine.brandName, text, url }).catch(() => {});
+        } else {
+          window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+      };
+
+      // --- Salt / Manufacturer modals ---
+      window.openSaltModal = () => SaltModal.openSaltModal(medicine, allMedicines);
+      window.renderSaltList = SaltModal.renderSaltList;
+      window.setSaltSort = SaltModal.setSaltSort;
+      window.closeSaltModal = SaltModal.closeSaltModal;
+
+      window.openMfrModal = () => MfrModal.openMfrModal(medicine, allMedicines);
+      window.renderMfrList = MfrModal.renderMfrList;
+      window.setMfrSort = MfrModal.setMfrSort;
+      window.closeMfrModal = MfrModal.closeMfrModal;
+
+      // --- Substitutes ---
+      window.loadMoreSubs = SubstitutesPanel.loadMoreSubs;
+
+      // --- Query modal ---
+      window.sendQuery = function () {
+        QueryModalOrganism.openQueryModal(medicine, { qty: currentQty });
+      };
+      window.closeQueryModal = QueryModalOrganism.closeQueryModal;
+      window.submitQuery = QueryModalOrganism.submitQuery;
+
+      // --- Call modal ---
+      window.openCallModal = () => CallModalOrganism.openCallModal(medicine);
+      window.closeCallModal = CallModalOrganism.closeCallModal;
+      window.submitCallRequest = CallModalOrganism.submitCallRequest;
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          window.closeDetailGallery();
+          window.closeSaltModal();
+          window.closeMfrModal();
+          window.closeCallModal();
+          window.closeQueryModal();
+        }
+      });
+
+      init();
+    </script>
+
+    <!-- Send Query Modal -->
+    <div
+      id="queryModal"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="queryModalTitle"
+    >
+      <div class="absolute inset-0 bg-black/50" onclick="window.closeQueryModal()"></div>
+      <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-blue-100 flex-shrink-0">
+          <div>
+            <h2 id="queryModalTitle" class="font-bold text-slate-900 text-base">Send a Query</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Our team will respond within 24 hours</p>
+          </div>
+          <button
+            type="button"
+            onclick="window.closeQueryModal()"
+            title="Close"
+            aria-label="Close"
+            class="text-slate-500 hover:text-slate-600 p-1"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <div id="queryModalForm" class="overflow-y-auto p-5 space-y-4">
+          <div>
+            <label for="qfMedicine" class="block text-xs font-semibold text-slate-500 mb-1">Medicine</label>
+            <input
+              id="qfMedicine"
+              type="text"
+              readonly
+              aria-label="Medicine name"
+              class="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-100 rounded-lg text-slate-700 cursor-default"
+            />
+          </div>
+          <div>
+            <label for="qfQty" class="block text-xs font-semibold text-slate-500 mb-1">Quantity Required</label>
+            <input
+              id="qfQty"
+              type="number"
+              min="1"
+              aria-label="Quantity"
+              class="w-28 px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+          <div>
+            <label for="qfName" class="block text-xs font-semibold text-slate-500 mb-1">
+              Your Name
+              <span class="text-red-400">*</span>
+            </label>
+            <input
+              id="qfName"
+              type="text"
+              placeholder="Full name"
+              aria-label="Your name"
+              class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="qfEmail" class="block text-xs font-semibold text-slate-500 mb-1">Email</label>
+              <input
+                id="qfEmail"
+                type="email"
+                placeholder="your@email.com"
+                aria-label="Email address"
+                class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+            <div>
+              <label for="qfPhone" class="block text-xs font-semibold text-slate-500 mb-1">Phone</label>
+              <input
+                id="qfPhone"
+                type="tel"
+                placeholder="+91 XXXXX XXXXX"
+                aria-label="Phone number"
+                class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 -mt-2">At least one contact method is required</p>
+          <div>
+            <label for="qfCity" class="block text-xs font-semibold text-slate-500 mb-1">City / Delivery Location</label>
+            <input
+              id="qfCity"
+              type="text"
+              placeholder="e.g. Delhi, Mumbai, Bengaluru"
+              aria-label="City"
+              class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-slate-500 mb-1.5">Do you have a valid prescription?</p>
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input type="radio" name="qfRx" value="yes" class="accent-blue-600" />
+                Yes
+              </label>
+              <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input type="radio" name="qfRx" value="no" class="accent-blue-600" />
+                No
+              </label>
+              <label class="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input type="radio" name="qfRx" value="arranging" class="accent-blue-600" />
+                Arranging
+              </label>
+            </div>
+          </div>
+          <div>
+            <label for="qfMessage" class="block text-xs font-semibold text-slate-500 mb-1">
+              Your Message / Additional Details
+            </label>
+            <textarea
+              id="qfMessage"
+              rows="4"
+              placeholder="Any additional information — dosage query, insurance, bulk order, patient details, urgency, etc."
+              aria-label="Your message"
+              class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 resize-y"
+            ></textarea>
+          </div>
+          <p id="qfError" class="hidden text-xs text-red-500"></p>
+          <button
+            type="button"
+            onclick="window.submitQuery()"
+            class="w-full flex items-center justify-center gap-2 py-2.5 bg-teal-500 hover:bg-teal-600 text-white font-semibold text-sm rounded-xl transition-colors"
+          >
+            <svg
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              viewBox="0 0 24 24"
+            >
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+            Submit Query
+          </button>
+        </div>
+
+        <div id="queryModalSuccess" class="hidden p-8 text-center">
+          <div class="w-14 h-14 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg
+              width="28"
+              height="28"
+              fill="none"
+              stroke="#0D9488"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              viewBox="0 0 24 24"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h3 class="font-bold text-slate-900 text-base mb-2">Query Successfully Submitted!</h3>
+          <p class="text-sm text-slate-500 mb-4">
+            Thank you for reaching out. Our team will review your query and get back to you within
+            <strong>24 hours</strong>
+            .
+          </p>
+          <div class="bg-teal-50 border border-teal-100 rounded-xl px-4 py-3 text-sm text-teal-800 mb-4">
+            You can also reach us directly on WhatsApp for faster support.
+          </div>
+          <div class="flex gap-2 justify-center">
+            <button
+              type="button"
+              onclick="window.closeQueryModal()"
+              class="px-5 py-2 border border-slate-200 text-slate-600 text-sm font-semibold rounded-full hover:bg-slate-50 transition-colors"
+            >
+              Close
+            </button>
+            <a
+              href="https://wa.me/911800123456"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold rounded-full transition-colors"
+            >
+              WhatsApp Us
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Get a Call Modal -->
+    <div
+      id="callModal"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="callModalTitle"
+    >
+      <div class="absolute inset-0 bg-black/50" onclick="window.closeCallModal()"></div>
+      <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-blue-100">
+          <div>
+            <h2 id="callModalTitle" class="font-bold text-slate-900 text-base">Get a Call to Order</h2>
+            <p class="text-xs text-slate-500 mt-0.5">We'll call you within 30 minutes</p>
+          </div>
+          <button
+            type="button"
+            onclick="window.closeCallModal()"
+            title="Close"
+            aria-label="Close"
+            class="text-slate-500 hover:text-slate-600 p-1"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <div id="callModalForm" class="p-5 space-y-4">
+          <div>
+            <label for="callPhone" class="block text-xs font-semibold text-slate-600 mb-1.5">Your Phone Number</label>
+            <div class="flex gap-2">
+              <select
+                id="callCountryCode"
+                aria-label="Country code"
+                title="Country code"
+                class="w-24 px-2 py-2.5 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+              >
+                <option value="+91">🇮🇳 +91</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+971">🇦🇪 +971</option>
+                <option value="+65">🇸🇬 +65</option>
+                <option value="+61">🇦🇺 +61</option>
+                <option value="+49">🇩🇪 +49</option>
+              </select>
+              <input
+                id="callPhone"
+                type="tel"
+                placeholder="Enter phone number"
+                aria-label="Phone number"
+                class="flex-1 px-3 py-2.5 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                onkeydown="if (event.key === 'Enter') window.submitCallRequest();"
+              />
+            </div>
+            <p id="callPhoneError" class="hidden text-xs text-red-500 mt-1">Please enter a valid phone number</p>
+          </div>
+          <p class="text-xs text-slate-500">
+            Our team will call you on this number to help you place your order for
+            <span id="callMedicineName" class="font-semibold text-slate-600"></span>
+            .
+          </p>
+          <button
+            type="button"
+            onclick="window.submitCallRequest()"
+            class="w-full flex items-center justify-center gap-2 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition-colors"
+          >
+            <svg
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
+              />
+            </svg>
+            Call Me
+          </button>
+        </div>
+
+        <div id="callModalSuccess" class="hidden p-6 text-center">
+          <div class="w-14 h-14 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg
+              width="28"
+              height="28"
+              fill="none"
+              stroke="#16A34A"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              viewBox="0 0 24 24"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h3 class="font-bold text-slate-900 text-base mb-1">Request Received!</h3>
+          <p class="text-sm text-slate-500 mb-1">We will call you at</p>
+          <p id="callConfirmNumber" class="font-bold text-blue-700 text-base mb-3"></p>
+          <p class="text-sm text-slate-600 bg-blue-50 rounded-xl px-4 py-3">
+            Our team will reach out within
+            <strong>30 minutes</strong>
+            to help you place your order.
+          </p>
+          <button
+            type="button"
+            onclick="window.closeCallModal()"
+            class="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-colors"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky bottom cart bar — mobile only -->
+    <div class="mob-cart-bar" id="mobCartBar">
+      <div class="flex-1 min-w-0">
+        <p id="mobCartPrice" class="text-base font-bold text-slate-900"></p>
+        <p id="mobCartName" class="text-xs text-slate-500 truncate"></p>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <div class="flex items-center border border-blue-200 rounded-full overflow-hidden">
+          <button
+            type="button"
+            onclick="window.changeQty(-1)"
+            aria-label="Decrease quantity"
+            class="w-8 h-8 flex items-center justify-center text-blue-600 hover:bg-blue-50 font-bold text-lg transition-colors"
+          >
+            −
+          </button>
+          <span id="mobQtyDisplay" class="w-7 text-center text-sm font-semibold text-slate-800">1</span>
+          <button
+            type="button"
+            onclick="window.changeQty(1)"
+            aria-label="Increase quantity"
+            class="w-8 h-8 flex items-center justify-center text-blue-600 hover:bg-blue-50 font-bold text-lg transition-colors"
+          >
+            +
+          </button>
+        </div>
+        <button
+          type="button"
+          onclick="window.addMedicineToCart()"
+          class="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full text-sm transition-colors"
+        >
+          <svg
+            width="14"
+            height="14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+          </svg>
+          Add to Cart
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating WhatsApp button -->
+    <a
+      href="https://wa.me/911800123456"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat on WhatsApp"
+      title="Chat on WhatsApp"
+      class="whatsapp-float"
+    >
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"
+        />
+      </svg>
+    </a>
+
+    <!-- Detail page image gallery lightbox -->
+    <div
+      id="detailGallery"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/88"
+      onclick="window.closeDetailGallery()"
+    >
+      <div
+        class="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-w-lg w-full"
+        onclick="event.stopPropagation()"
+      >
+        <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100">
+          <p class="text-sm font-semibold text-slate-700">Product Images</p>
+          <button
+            type="button"
+            onclick="window.closeDetailGallery()"
+            aria-label="Close gallery"
+            title="Close"
+            class="text-slate-500 hover:text-slate-700 transition-colors"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div class="gallery-main bg-slate-50 flex items-center justify-center">
+          <img id="galleryMainImg" src="" alt="Medicine image" class="max-w-full max-h-full object-contain p-6" />
+        </div>
+        <div id="galleryThumbs" class="flex gap-3 p-4 overflow-x-auto justify-center bg-white"></div>
+      </div>
+    </div>
+  </body>
+</html>
