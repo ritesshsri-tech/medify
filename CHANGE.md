@@ -1,44 +1,40 @@
 # CHANGE.md — Migration Roadmap
 
-This file tracks the phased plan to migrate the MediFy static HTML prototype into a production-grade atomic + Next.js application. Legacy files at the repo root are **never touched** during this process — stakeholders are actively reviewing the prototype.
+This file tracks the phased plan to migrate the MediFy static HTML prototype into a production-grade atomic + Next.js application. The repo root **is** the atomic project — there is no separate legacy prototype folder to preserve.
 
 ---
 
 ## Phase 1 — Atomic Decomposition (Plain HTML + Vanilla JS Modules)
 
-All work lives inside a new `Medify/` folder at the repo root. No framework, no build step — same Tailwind CDN + vanilla JS as today, but split into proper component files.
+All work lives at the repo root. No framework, no build step — same Tailwind CDN + vanilla JS as today, but split into proper component files.
 
 Branch: `feature/atomic-migration`
 
 ---
 
-### Step 1 — Scaffold `Medify/` folder structure
+### Step 1 — Scaffold folder structure
 
 - Create directory tree: `data/`, `assets/`, `js/`, `components/atoms/`, `components/molecules/`, `components/organisms/`, `pages/`, `tests/features/`, `tests/step-definitions/`
-- Add `Medify/.gitignore` covering `.next/`, `node_modules/`, `.env.local`
-- Add `Medify/README.md` explaining how to run the dev server and the data sync rule
+- Add `.gitignore` covering `.next/`, `node_modules/`, `.env.local`
+- Add `README.md` explaining how to run the dev server and the data sync rule
 - Create and checkout branch `feature/atomic-migration`
-- **Commit:** `chore: scaffold Medify/ folder structure`
+- **Commit:** `chore: scaffold folder structure`
 
-### Step 1a — Copy Assets into `Medify/assets/`
+### Step 1a — Assets
 
-- Copy all files from root `assets/` → `Medify/assets/` (logo, favicon, hero images, product images, any UI images)
-- `Medify/` must be fully self-contained — no relative paths pointing back to root `assets/`
-- All pages inside `Medify/pages/` reference `../assets/` (relative to `Medify/`) — never `../../assets/`
-- **Why copy not symlink:** Symlinks break on Vercel builds; relative cross-folder paths create hidden coupling between legacy and atomic
-- **Note:** If root `assets/` is updated during migration (e.g. new product image added), manually sync the change to `Medify/assets/` — document this rule in `Medify/README.md`
-- **Commit:** `chore: copy assets into Medify/assets/`
+- All UI images (logo, favicon, hero images, product images) live in root `assets/`
+- All pages inside `pages/` reference assets as `../assets/`
+- **Commit:** `chore: add assets`
 
 ---
 
 ### Step 2 — Data layer
 
-- Copy `docs/medicines.json` → `Medify/data/medicines.json`
-- Copy `docs/site-config.json` → `Medify/data/site-config.json`
-- Write `Medify/js/data.js` — `fetchMedicines()` + `fetchSiteConfig()` with module-level cache so multiple callers don't re-fetch
-- Write `Medify/js/utils.js` — `paise(n)` (paise → ₹ INR), `sub(text, brandName)` ([BRAND_NAME] substitution), `truncate(str, n)`
-- Write `Medify/js/cart.js` — `getCart()`, `addToCart(medicine)`, `updateQty(id, delta)`, `removeFromCart(id)` — all write to `localStorage.cart`
-- Copy `js/header.js` → `Medify/js/header.js` (evolves independently from here)
+- `data/medicines.json`, `data/site-config.json`, `data/manufacturers.json` — source data
+- Write `js/data.js` — `fetchMedicines()` + `fetchSiteConfig()` with module-level cache so multiple callers don't re-fetch
+- Write `js/utils.js` — `paise(n)` (paise → ₹ INR), `sub(text, brandName)` ([BRAND_NAME] substitution), `truncate(str, n)`
+- Write `js/cart.js` — `getCart()`, `addToCart(medicine)`, `updateQty(id, delta)`, `removeFromCart(id)` — all write to `localStorage.cart`
+- `js/header.js` — shared header logic
 - **Commit:** `feat: data service, cart manager, and shared utils`
 
 ---
@@ -111,7 +107,7 @@ Branch: `feature/atomic-migration`
 
 ### Step 6 — Category page
 
-- `Medify/pages/category.html` — thin HTML shell
+- `pages/category.html` — thin HTML shell
 - Imports `FilterBar`, `InfiniteScroll`, `MedicineCard`, `QueryModal`, `Modal`, `Carousel` via `<script type="module">`
 - Inline script reduced to wiring only: call `init()`, pass callbacks, set up observer
 
@@ -128,7 +124,7 @@ Branch: `feature/atomic-migration`
 
 ### Step 7 — Medicine detail page
 
-- `Medify/pages/medicine-detail.html` — thin HTML shell
+- `pages/medicine-detail.html` — thin HTML shell
 - Imports all relevant organisms: `Carousel`, `SubstitutesPanel`, `ScrollSpyNav`, `SaltModal`, `MfrModal`, `QueryModal`, `CallModal`, `FAQItem`, `ContactCard`
 
 **Responsiveness:**
@@ -144,7 +140,7 @@ Branch: `feature/atomic-migration`
 
 ### Step 8 — Homepage
 
-- `Medify/pages/index.html` — sections are mostly static HTML; minimal JS for marquee + auth guard
+- `pages/index.html` — sections are mostly static HTML; minimal JS for marquee + auth guard
 - Wire saffron button, marquee animation, auth guard
 
 **Responsiveness:**
@@ -160,7 +156,7 @@ Branch: `feature/atomic-migration`
 
 ### Step 9 — Login page
 
-- Direct copy of `pages/login.html` — same PIN logic, redirect paths adjusted for `Medify/pages/` depth
+- `pages/login.html` — PIN entry form, redirect to intended page on success
 - **Commit:** `feat: login page`
 
 ---
@@ -170,7 +166,7 @@ Branch: `feature/atomic-migration`
 - Run all 3 pages through the 26-item functional checklist (see below) at **375px (mobile), 768px (tablet), and 1280px (desktop)**
 - Verify responsiveness: no layout breaks, text readable, buttons tappable (≥44px), sticky elements position correctly at each breakpoint
 - Open PR: `feature/atomic-migration` → `main` with checklist evidence + responsive design verification screenshots
-- Merge only after full sign-off — legacy files remain live throughout
+- Merge only after full sign-off
 
 ---
 
@@ -186,7 +182,7 @@ Branch: `feature/atomic-migration`
 **Folder structure:**
 
 ```text
-Medify/tests/
+tests/
 ├── features/
 │   ├── category-page.feature       # Items 1–9, 21–26
 │   ├── medicine-detail.feature     # Items 10–17, 21–26
@@ -202,12 +198,11 @@ Medify/tests/
 **Coverage per `.feature` file:**
 
 - Each checklist item gets at least 3 scenarios: **positive** (happy path), **negative** (invalid input / missing data), **edge case** (boundary values, empty states, large datasets)
-- Both legacy (`localhost:8000`) and atomic (`localhost:8001`) must pass the same `.feature` files — parity is proven when both pass identically
 
 **Run command:**
 
 ```bash
-npx cucumber-js Medify/tests/features/
+npx cucumber-js tests/features/
 ```
 
 **When to write `.feature` files:**
@@ -224,14 +219,14 @@ npx cucumber-js Medify/tests/features/
 
 ### Step 10b — Visual Regression Testing with BackstopJS (runs before sign-off)
 
-**Purpose:** Gherkin verifies behavior; BackstopJS verifies appearance. Together they give 100% functional + visual parity before any atomic page is merged.
+**Purpose:** Gherkin verifies behavior; BackstopJS guards against unintended visual regressions between commits. Together they give functional + visual confidence before any page is merged.
 
 **How it works:**
 
-1. Capture baseline screenshots from **legacy pages** (`localhost:8000`) at all 3 breakpoints
-2. Capture test screenshots from **atomic pages** (`localhost:8001`) at same breakpoints
-3. BackstopJS diffs both sets pixel-by-pixel — atomic must match legacy exactly
-4. Any visual difference (layout shift, font change, color drift, spacing) flagged as failure with a red highlight overlay
+1. Capture baseline screenshots of each page at all 3 breakpoints once the page is approved
+2. On later changes, capture new screenshots and diff against the baseline
+3. Any visual difference (layout shift, font change, color drift, spacing) flagged as failure with a red highlight overlay
+4. Intentional changes get approved, which updates the baseline
 
 **Viewports tested:**
 
@@ -252,10 +247,10 @@ npx cucumber-js Medify/tests/features/
 # Install
 npm install --save-dev backstopjs
 
-# Step 1: Capture legacy baseline (run once against localhost:8000)
+# Step 1: Capture baseline (run once a page is approved, against localhost:8000)
 npx backstop reference
 
-# Step 2: Run atomic pages and compare (against localhost:8001)
+# Step 2: On later changes, run and compare against the baseline
 npx backstop test
 
 # Step 3: If a difference is intentional (e.g. responsiveness improvement), approve it
@@ -273,20 +268,20 @@ npx backstop approve
 
 ---
 
-## Phase 1 — Functional Parity Checklist (must pass before merge)
+## Phase 1 — Functional Checklist (must pass before merge)
 
 | # | Check | How to verify |
 | --- | --- | --- |
-| 1 | All medicines load | Card count matches legacy |
-| 2 | Search filters | Results match legacy exactly |
-| 3 | Category / indication / manufacturer dropdowns | Same options, same order |
-| 4 | All 5 sort modes | First + last item matches legacy per sort |
+| 1 | All medicines load | Card count matches `data/medicines.json` |
+| 2 | Search filters | Results match expected filtered set |
+| 3 | Category / indication / manufacturer dropdowns | Options populated, correctly ordered |
+| 4 | All 5 sort modes | First + last item correct per sort |
 | 5 | Infinite scroll | Next batch loads on scroll; no duplicates |
 | 6 | Medicine card carousel | Prev/next cycles images correctly |
 | 7 | Add to cart | Badge increments; `localStorage.cart` correct |
 | 8 | Open popup (category) | Correct name, price, category shown |
 | 9 | Navigate to detail | Correct `?id=` in URL |
-| 10 | Medicine detail loads | Brand, salt, price, images match |
+| 10 | Medicine detail loads | Brand, salt, price, images match source data |
 | 11 | Qty change | Syncs between desktop and mobile cart bar |
 | 12 | Salt modal | Populates, search filters, sort works |
 | 13 | Manufacturer modal | Same as salt modal |
@@ -312,9 +307,9 @@ npx backstop approve
 
 ### Step 1 — Next.js project init
 
-- `npx create-next-app@latest` inside `Medify/` — App Router, Tailwind CSS (npm, not CDN), TypeScript optional
+- `npx create-next-app@latest` at the repo root — App Router, Tailwind CSS (npm, not CDN), TypeScript optional
 - Configure `next.config.js`, update `.gitignore`
-- **Commit:** `chore: init Next.js app inside Medify/`
+- **Commit:** `chore: init Next.js app`
 
 ---
 
@@ -323,8 +318,8 @@ npx backstop approve
 - Create Supabase project
 - Design schema: `medicines`, `manufacturers`, `orders`, `prescriptions`, `users` tables
 - Import `medicines.json` data via migration script
-- `Medify/.env.local` — Supabase URL + anon key (never committed)
-- Commit `Medify/.env.example` with placeholder variable names
+- `.env.local` — Supabase URL + anon key (never committed)
+- Commit `.env.example` with placeholder variable names
 - **Commit:** `chore: Supabase schema and seed migration`
 
 ---
@@ -396,24 +391,19 @@ npx backstop approve
 
 ---
 
-### Step 10 — Cutover
+### Step 10 — Release
 
-- Full parity checklist repeated + stakeholder sign-off
-- Remove legacy HTML files in a **single dedicated commit** — rollback = revert that one commit
-- Tag release `v1.0-atomic-cutover`
-- Deploy `Medify/` to Vercel production
-- Keep legacy site on fallback subdomain for 2-week grace period
+- Full functional checklist repeated + stakeholder sign-off
+- Tag release `v1.0-nextjs-launch`
+- Deploy to Vercel production
 
 ---
 
 ## Ground Rules (applies to both phases)
 
-- **Never edit files outside `Medify/`** once migration starts — zero diff outside that folder in any migration commit
-- **No commit mixes legacy + Medify files** — even for incidental formatting
-- **No design changes** in Phase 1 — pixel-identical to legacy
+- **No design changes** in Phase 1 — pixel-identical to the original prototype design
 - **No new features** until Phase 2 is complete
 - **One PR per page** — not one giant PR for everything
-- **Legacy stays live** throughout — stakeholders can always access the prototype
 
 ---
 
