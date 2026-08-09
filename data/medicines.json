@@ -523,12 +523,12 @@
       }
     ],
     "image": [
-      "../MedicineImg/Ab-Pacli100MgInj1.png",
-      "../MedicineImg/Ab-Pacli100MgInj2.png",
-      "../MedicineImg/Ab-Pacli100MgInj3.png",
-      "../MedicineImg/Ab-Pacli100MgInj4.png",
-      "../MedicineImg/Ab-Pacli100MgInj5.png",
-      "../MedicineImg/Ab-Pacli100MgInj6.png"
+      "../assets/Ab-Pacli100MgInj1.png",
+      "../assets/Ab-Pacli100MgInj2.png",
+      "../assets/Ab-Pacli100MgInj3.png",
+      "../assets/Ab-Pacli100MgInj4.png",
+      "../assets/Ab-Pacli100MgInj5.png",
+      "../assets/Ab-Pacli100MgInj6.png"
     ]
   },
   {
@@ -12551,12 +12551,12 @@
       }
     ],
     "image": [
-      "../MedicineImg/Abalam Tab1.png",
-      "../MedicineImg/Abalam Tab2.png",
-      "../MedicineImg/Abalam Tab3.png",
-      "../MedicineImg/Abalam Tab4.png",
-      "../MedicineImg/Abalam Tab5.png",
-      "../MedicineImg/Abalam Tab6.png"
+      "../assets/Abalam Tab1.png",
+      "../assets/Abalam Tab2.png",
+      "../assets/Abalam Tab3.png",
+      "../assets/Abalam Tab4.png",
+      "../assets/Abalam Tab5.png",
+      "../assets/Abalam Tab6.png"
     ]
   },
   {
@@ -29692,11 +29692,11 @@
       }
     ],
     "image": [
-      "../MedicineImg/Abacip-L1.png",
-      "../MedicineImg/Abacip-L2.png",
-      "../MedicineImg/Abacip-L3.png",
-      "../MedicineImg/Abacip-L4.png",
-      "../MedicineImg/Abacip-L5.png"
+      "../assets/Abacip-L1.png",
+      "../assets/Abacip-L2.png",
+      "../assets/Abacip-L3.png",
+      "../assets/Abacip-L4.png",
+      "../assets/Abacip-L5.png"
     ]
   },
   {
