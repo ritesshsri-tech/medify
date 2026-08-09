@@ -36,6 +36,23 @@ Feature: Cart
     When I reload the page
     Then localStorage.cart still contains that medicine with qty 3
 
-  # Item 11 (qty sync between desktop and mobile cart bar, and decrease-clamped-
-  # to-1) requires pages/medicine-detail.html, which does not exist yet
-  # (Step 7 of the migration roadmap). Deferred until that page is built.
+  # Item 11 — Qty change syncs between desktop and mobile cart bar
+  # (desktop and mobile cart bars are never both visible at once — only one
+  # shows per breakpoint — so "syncs" means the underlying qty state carries
+  # over correctly when the viewport switches between them)
+  Scenario: Quantity increased on desktop is reflected after switching to mobile viewport
+    Given I open the detail page for a known medicine at desktop width
+    When I increase the quantity via the desktop control
+    And I switch to mobile width
+    Then the mobile quantity display shows 2
+
+  Scenario: Quantity increased on mobile is reflected after switching to desktop viewport
+    Given I open the detail page for a known medicine at mobile width
+    When I increase the quantity via the mobile control
+    And I switch to desktop width
+    Then the desktop quantity display shows 2
+
+  Scenario: Decreasing quantity below 1 is clamped to 1
+    Given I open the detail page for a known medicine at desktop width
+    When I decrease the quantity via the desktop control
+    Then the desktop quantity display shows 1

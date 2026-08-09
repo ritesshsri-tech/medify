@@ -304,6 +304,8 @@ npx backstop approve
 
 **Known Phase 1 deviation — item 16:** `Legacy pages/medicine-detail.html`'s `toggleFaq()` only toggled the clicked FAQ and never closed the others, so legacy actually allowed multiple FAQs open at once despite the checklist requiring "one open at a time." Unlike item 24, this was fixed rather than left pixel-identical — `components/molecules/FAQItem.js`'s `toggleFaq()` now closes all other open FAQs before opening the clicked one, satisfying checklist item 16 exactly. This is a deliberate, small behavior deviation from legacy.
 
+**Known Phase 1 deviation — item 19:** `Legacy pages/login.html`'s 4th-digit `input` handler called `submitPin()` (which sets the wrong-PIN error text) and then unconditionally called `clearError()` immediately after, wiping the error out before it was ever visible — so wrong-PIN feedback silently never worked in legacy (only the shake animation + red border showed). Fixed in `pages/login.html` by moving `clearError()` to the top of the handler so it only clears *stale* errors from a prior attempt, not the one `submitPin()` just set. Deliberate deviation from legacy, same treatment as item 16.
+
 ---
 
 ## Phase 2 — Next.js + Supabase (starts after Phase 1 merges)

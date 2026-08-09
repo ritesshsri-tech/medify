@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediFy — Access</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="../assets/favicon.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family:
+          'Inter',
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #f5f8fe;
+        color: #0f172a;
+      }
+      .pin-digit {
+        width: 56px;
+        height: 64px;
+        border: 2px solid #bfdbfe;
+        border-radius: 12px;
+        background: #fff;
+        font-size: 28px;
+        font-weight: 700;
+        color: #1e3a8a;
+        text-align: center;
+        outline: none;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+        caret-color: transparent;
+      }
+      .pin-digit:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+      .pin-digit.filled {
+        border-color: #2563eb;
+        background: #eff6ff;
+      }
+      .login-logo {
+        height: 60px;
+      }
+      .pin-digit.error {
+        border-color: #dc2626;
+        background: #fef2f2;
+        animation: shake 0.35s ease;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-6px);
+        }
+        40% {
+          transform: translateX(6px);
+        }
+        60% {
+          transform: translateX(-4px);
+        }
+        80% {
+          transform: translateX(4px);
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex items-center justify-center px-4">
+    <!-- Background decoration -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+      <div
+        class="absolute -top-32 -right-32 w-96 h-96 rounded-full opacity-10"
+        style="background: radial-gradient(circle, #2563eb, transparent)"
+      ></div>
+      <div
+        class="absolute -bottom-32 -left-32 w-96 h-96 rounded-full opacity-10"
+        style="background: radial-gradient(circle, #3b82f6, transparent)"
+      ></div>
+    </div>
+
+    <div class="relative w-full max-w-sm">
+      <!-- Card -->
+      <div class="bg-white rounded-2xl border border-blue-100 shadow-lg px-8 py-10 text-center">
+        <!-- Logo -->
+        <div class="flex items-center justify-center mb-8">
+          <img src="../assets/medify-logo.svg" alt="MediFy" class="login-logo" />
+        </div>
+
+        <!-- Heading -->
+        <h1 class="text-lg font-semibold text-slate-800 mb-1">Enter your PIN</h1>
+        <p class="text-sm text-slate-500 mb-8">4-digit access PIN required to continue</p>
+
+        <!-- PIN inputs -->
+        <div class="flex justify-center gap-3 mb-3" id="pinRow">
+          <input
+            class="pin-digit"
+            id="p0"
+            type="password"
+            inputmode="numeric"
+            maxlength="1"
+            pattern="[0-9]"
+            autocomplete="off"
+          />
+          <input
+            class="pin-digit"
+            id="p1"
+            type="password"
+            inputmode="numeric"
+            maxlength="1"
+            pattern="[0-9]"
+            autocomplete="off"
+          />
+          <input
+            class="pin-digit"
+            id="p2"
+            type="password"
+            inputmode="numeric"
+            maxlength="1"
+            pattern="[0-9]"
+            autocomplete="off"
+          />
+          <input
+            class="pin-digit"
+            id="p3"
+            type="password"
+            inputmode="numeric"
+            maxlength="1"
+            pattern="[0-9]"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- Error message -->
+        <p id="pinError" class="text-xs text-red-600 mb-6 h-4"></p>
+
+        <!-- Submit -->
+        <button
+          id="submitBtn"
+          onclick="submitPin()"
+          class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        // Redirect if already authenticated
+        if (localStorage.getItem('currentUser')) {
+          const dest = sessionStorage.getItem('loginRedirect') || '../index.html';
+          sessionStorage.removeItem('loginRedirect');
+          window.location.replace(dest);
+        }
+
+        const VALID_PINS = ['0000', '4321'];
+        const inputs = [
+          document.getElementById('p0'),
+          document.getElementById('p1'),
+          document.getElementById('p2'),
+          document.getElementById('p3'),
+        ];
+        const errorEl = document.getElementById('pinError');
+
+        // Auto-focus first digit
+        inputs[0].focus();
+
+        inputs.forEach(function (input, idx) {
+          input.addEventListener('input', function (e) {
+            const val = e.target.value.replace(/\D/g, '');
+            e.target.value = val ? val[0] : '';
+
+            // Clear any stale error before this keystroke's own outcome
+            // (including a fresh wrong-PIN error from submitPin() below)
+            // renders, so a new error isn't wiped out by its own trigger.
+            clearError();
+
+            if (val) {
+              e.target.classList.add('filled');
+              if (idx < 3) inputs[idx + 1].focus();
+              else submitPin();
+            } else {
+              e.target.classList.remove('filled');
+            }
+          });
+
+          input.addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace' && !input.value && idx > 0) {
+              inputs[idx - 1].value = '';
+              inputs[idx - 1].classList.remove('filled');
+              inputs[idx - 1].focus();
+            }
+          });
+
+          input.addEventListener('paste', function (e) {
+            e.preventDefault();
+            const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+            pasted.split('').forEach(function (ch, i) {
+              if (inputs[idx + i]) {
+                inputs[idx + i].value = ch;
+                inputs[idx + i].classList.add('filled');
+              }
+            });
+            const next = Math.min(idx + pasted.length, 3);
+            inputs[next].focus();
+            if (pasted.length >= 4 - idx) submitPin();
+          });
+        });
+
+        function clearError() {
+          errorEl.textContent = '';
+          inputs.forEach(function (inp) {
+            inp.classList.remove('error');
+          });
+        }
+
+        function showError() {
+          errorEl.textContent = 'Incorrect PIN. Please try again.';
+          inputs.forEach(function (inp) {
+            inp.classList.add('error');
+            inp.classList.remove('filled');
+          });
+          setTimeout(function () {
+            inputs.forEach(function (inp) {
+              inp.value = '';
+              inp.classList.remove('error');
+            });
+            inputs[0].focus();
+          }, 900);
+        }
+
+        window.submitPin = function () {
+          const pin = inputs
+            .map(function (inp) {
+              return inp.value;
+            })
+            .join('');
+          if (pin.length < 4) return;
+
+          if (VALID_PINS.includes(pin)) {
+            localStorage.setItem('currentUser', JSON.stringify({ name: 'MediFy User', role: 'user' }));
+            const dest = sessionStorage.getItem('loginRedirect') || '../index.html';
+            sessionStorage.removeItem('loginRedirect');
+            window.location.replace(dest);
+          } else {
+            showError();
+          }
+        };
+      })();
+    </script>
+  </body>
+</html>
