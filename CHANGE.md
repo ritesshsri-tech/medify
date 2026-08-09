@@ -140,7 +140,9 @@ Branch: `feature/atomic-migration`
 
 ### Step 8 — Homepage
 
-- `pages/index.html` — sections are mostly static HTML; minimal JS for marquee + auth guard
+- `index.html` at the **repo root** (not `pages/`) — the homepage is the site's entry point, and static hosts serve root-level `index.html` automatically for the bare domain with no rewrite/redirect needed. This also previews Phase 2, where `app/page.tsx` is inherently the root route in Next.js's own routing convention.
+- References assets/scripts as `./assets/`, `./js/header.js` (root-relative), not `../` like the other pages under `pages/`
+- Sections are mostly static HTML; minimal JS for marquee + auth guard
 - Wire saffron button, marquee animation, auth guard
 
 **Responsiveness:**

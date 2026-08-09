@@ -23,7 +23,7 @@
 <nav style="position:fixed;top:0;left:0;right:0;z-index:200;height:76px;background:#fff;box-shadow:0 2px 8px rgba(37,99,235,0.08);display:flex;align-items:center;padding:0 24px;gap:16px;font-family:'Inter',system-ui,sans-serif;">
 
   <!-- Logo -->
-  <a href="../pages/index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;">
+  <a href="../index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;">
     <img src="../assets/medify-logo.svg" alt="MediFy" style="height:52px;" onerror="this.style.display='none'">
   </a>
 
@@ -46,7 +46,7 @@
   <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
 
     <!-- Home CTA -->
-    <a href="../pages/index.html" style="padding:8px 18px;border:1.5px solid #2563EB;border-radius:999px;background:#2563EB;color:#fff;font-size:13px;font-weight:600;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563EB'">Home</a>
+    <a href="../index.html" style="padding:8px 18px;border:1.5px solid #2563EB;border-radius:999px;background:#2563EB;color:#fff;font-size:13px;font-weight:600;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563EB'">Home</a>
 
     <!-- Cart -->
     <a href="../pages/cart.html" style="position:relative;display:flex;align-items:center;text-decoration:none;">
