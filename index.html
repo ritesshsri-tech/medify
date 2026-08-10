@@ -250,7 +250,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 10px 0;
+        padding: 10px 20px;
         flex-wrap: wrap;
         gap: 10px;
         position: relative;
@@ -445,12 +445,12 @@
         grid-template-columns: 1fr;
         gap: 30px;
         align-items: center;
-        padding: 28px 0;
+        padding: 28px 20px;
       }
       .hero-copy .eyebrow {
         font-size: 1.15rem;
-        color: var(--color-text-secondary);
-        font-weight: 500;
+        color: var(--color-primary);
+        font-weight: 600;
       }
       .hero-copy h1 {
         font-size: 1.9rem;
@@ -647,12 +647,13 @@
         background: transparent;
         display: flex;
         justify-content: center;
+        padding: 0 20px;
       }
       .stats-strip .container {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        padding: 14px 20px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px 14px;
+        padding: 14px 16px;
         max-width: 1200px;
         width: 100%;
         margin: 0 auto;
@@ -681,11 +682,13 @@
         color: var(--color-primary-light);
       }
       .stat-item .stat-num {
+        display: block;
         font-weight: 800;
         font-size: 1rem;
         line-height: 1.1;
       }
       .stat-item .stat-label {
+        display: block;
         font-size: 0.68rem;
         color: #c7d0ee;
         line-height: 1.2;
@@ -1183,7 +1186,7 @@
       }
       .footer-logo img {
         height: 36px;
-        filter: brightness(0) invert(1);
+        width: auto;
       }
       .footer-logo .brand {
         color: var(--color-text-primary);
@@ -1278,6 +1281,13 @@
          width via its desktop-first max-width overrides.
          ================================================================== */
 
+      /* ---------- Large phone tier (481px and up) ---------- */
+      @media (min-width: 481px) {
+        .stats-strip .container {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
       /* ---------- Tablet tier (721px and up) ---------- */
       @media (min-width: 721px) {
         nav.main-nav ul {
@@ -1368,7 +1378,7 @@
           grid-template-columns: 1fr 1fr;
         }
         .stats-strip .container {
-          grid-template-columns: repeat(6, 1fr);
+          grid-template-columns: repeat(6, minmax(0, 1fr));
         }
         .stat-item {
           border-right: 1px solid rgba(255, 255, 255, 0.14);
@@ -1478,7 +1488,7 @@
             </svg>
             Talk to Us
           </a>
-          <a href="#products" class="nav-btn nav-btn-outline">Browse Products</a>
+          <a href="pages/category.html" class="nav-btn nav-btn-outline">Browse Products</a>
         </div>
         <button
           class="nav-toggle"
@@ -1731,7 +1741,7 @@
             <div class="cat-body">
               <h3>ONCOLOGY MEDICINES</h3>
               <p>Wide range of cancer care medicines including Chemotherapy, Immunotherapy &amp; Targeted Therapy.</p>
-              <a href="#" class="cat-explore">Explore More →</a>
+              <a href="pages/category.html" class="cat-explore">Explore More →</a>
             </div>
           </div>
 
@@ -1746,7 +1756,7 @@
             <div class="cat-body">
               <h3>SPECIALTY MEDICINES</h3>
               <p>Medicines for Rare Diseases, Neurology, Rheumatology, Gastroenterology, Endocrinology &amp; more.</p>
-              <a href="#" class="cat-explore">Explore More →</a>
+              <a href="pages/category.html" class="cat-explore">Explore More →</a>
             </div>
           </div>
 
@@ -1761,7 +1771,7 @@
             <div class="cat-body">
               <h3>OTC MEDICINES</h3>
               <p>Pain Relief, Vitamins, Nutraceuticals, Personal Care, Digestive Care &amp; many more.</p>
-              <a href="#" class="cat-explore">Explore More →</a>
+              <a href="pages/category.html" class="cat-explore">Explore More →</a>
             </div>
           </div>
 
@@ -1776,7 +1786,7 @@
             <div class="cat-body">
               <h3>SLEEP THERAPY DEVICES</h3>
               <p>CPAP, BiPAP, Masks, Humidifiers &amp; Accessories for Better Sleep &amp; Better Life.</p>
-              <a href="#" class="cat-explore">Explore More →</a>
+              <a href="pages/category.html" class="cat-explore">Explore More →</a>
             </div>
           </div>
 
@@ -1791,7 +1801,7 @@
             <div class="cat-body">
               <h3>RESPIRATORY CARE</h3>
               <p>Ventilators, Oxygen Therapy, Nebulizers, Respiratory Consumables &amp; Other Solutions.</p>
-              <a href="#" class="cat-explore">Explore More →</a>
+              <a href="pages/category.html" class="cat-explore">Explore More →</a>
             </div>
           </div>
         </div>
@@ -2285,8 +2295,7 @@
         <div class="footer-grid">
           <div>
             <div class="footer-logo">
-              <img src="assets/medify-logo.svg" alt="MediFy" onerror="this.style.display = 'none'" />
-              <span class="brand">MediFy</span>
+              <img src="assets/medify-logo.svg" alt="MediFy" onerror="this.replaceWith(Object.assign(document.createElement('span'), { className: 'brand', innerText: 'MediFy' }))" />
             </div>
             <p>
               MediFy is a trusted pharmaceutical distributor and retailer in India offering a wide range of quality
@@ -2315,11 +2324,11 @@
           <div class="footer-col">
             <h5>OUR PRODUCTS</h5>
             <ul>
-              <li><a href="#">Oncology Medicines</a></li>
-              <li><a href="#">Specialty Medicines</a></li>
-              <li><a href="#">OTC Medicines</a></li>
-              <li><a href="#">Sleep Therapy Devices</a></li>
-              <li><a href="#">Respiratory Devices</a></li>
+              <li><a href="pages/category.html">Oncology Medicines</a></li>
+              <li><a href="pages/category.html">Specialty Medicines</a></li>
+              <li><a href="pages/category.html">OTC Medicines</a></li>
+              <li><a href="pages/category.html">Sleep Therapy Devices</a></li>
+              <li><a href="pages/category.html">Respiratory Devices</a></li>
             </ul>
           </div>
 

@@ -11,9 +11,17 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 16px;
         font-family:
           'Inter',
           system-ui,
@@ -21,6 +29,90 @@
           sans-serif;
         background: #f5f8fe;
         color: #0f172a;
+      }
+      .bg-decor {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .bg-decor span {
+        position: absolute;
+        width: 384px;
+        height: 384px;
+        border-radius: 50%;
+        opacity: 0.1;
+      }
+      .bg-decor span.top {
+        top: -128px;
+        right: -128px;
+        background: radial-gradient(circle, #2563eb, transparent);
+      }
+      .bg-decor span.bottom {
+        bottom: -128px;
+        left: -128px;
+        background: radial-gradient(circle, #3b82f6, transparent);
+      }
+      .login-wrap {
+        position: relative;
+        width: 100%;
+        max-width: 384px;
+      }
+      .login-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #dbeafe;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        padding: 40px 32px;
+        text-align: center;
+      }
+      .login-logo-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 32px;
+      }
+      .login-heading {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0 0 4px;
+      }
+      .login-subtext {
+        font-size: 0.875rem;
+        color: #64748b;
+        margin: 0 0 32px;
+      }
+      .pin-row {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .pin-error {
+        font-size: 0.75rem;
+        color: #dc2626;
+        margin: 0 0 24px;
+        height: 16px;
+      }
+      .submit-btn {
+        width: 100%;
+        padding: 12px;
+        background: #2563eb;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .submit-btn:hover {
+        background: #1d4ed8;
+      }
+      .submit-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
       .pin-digit {
         width: 56px;
@@ -74,33 +166,27 @@
       }
     </style>
   </head>
-  <body class="min-h-screen flex items-center justify-center px-4">
+  <body>
     <!-- Background decoration -->
-    <div class="fixed inset-0 pointer-events-none overflow-hidden">
-      <div
-        class="absolute -top-32 -right-32 w-96 h-96 rounded-full opacity-10"
-        style="background: radial-gradient(circle, #2563eb, transparent)"
-      ></div>
-      <div
-        class="absolute -bottom-32 -left-32 w-96 h-96 rounded-full opacity-10"
-        style="background: radial-gradient(circle, #3b82f6, transparent)"
-      ></div>
+    <div class="bg-decor">
+      <span class="top"></span>
+      <span class="bottom"></span>
     </div>
 
-    <div class="relative w-full max-w-sm">
+    <div class="login-wrap">
       <!-- Card -->
-      <div class="bg-white rounded-2xl border border-blue-100 shadow-lg px-8 py-10 text-center">
+      <div class="login-card">
         <!-- Logo -->
-        <div class="flex items-center justify-center mb-8">
+        <div class="login-logo-row">
           <img src="../assets/medify-logo.svg" alt="MediFy" class="login-logo" />
         </div>
 
         <!-- Heading -->
-        <h1 class="text-lg font-semibold text-slate-800 mb-1">Enter your PIN</h1>
-        <p class="text-sm text-slate-500 mb-8">4-digit access PIN required to continue</p>
+        <h1 class="login-heading">Enter your PIN</h1>
+        <p class="login-subtext">4-digit access PIN required to continue</p>
 
         <!-- PIN inputs -->
-        <div class="flex justify-center gap-3 mb-3" id="pinRow">
+        <div class="pin-row" id="pinRow">
           <input
             class="pin-digit"
             id="p0"
@@ -140,16 +226,10 @@
         </div>
 
         <!-- Error message -->
-        <p id="pinError" class="text-xs text-red-600 mb-6 h-4"></p>
+        <p id="pinError" class="pin-error"></p>
 
         <!-- Submit -->
-        <button
-          id="submitBtn"
-          onclick="submitPin()"
-          class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Continue
-        </button>
+        <button id="submitBtn" onclick="submitPin()" class="submit-btn">Continue</button>
       </div>
     </div>
 
