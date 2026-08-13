@@ -137,6 +137,7 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        flex: 1;
       }
       .logo-block img {
         height: 52px;
@@ -159,12 +160,9 @@
 
       /* ---------- Search (mobile-first: full width, wraps to its own row) ---------- */
       .search-block {
-        flex: 1;
-        max-width: none;
         width: 100%;
+        max-width: 700px;
         display: flex;
-        min-width: 280px;
-        order: 3;
       }
       .search-block select {
         border: 2px solid var(--color-primary);
@@ -216,6 +214,16 @@
       .search-block button:hover {
         background: var(--color-primary-dark);
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+      }
+      @media (max-width: 480px) {
+        .search-block select {
+          padding: 0 8px;
+          font-size: 0.8rem;
+        }
+        .search-block button {
+          padding: 0 14px;
+          font-size: 0.9rem;
+        }
       }
 
       .call-block {
@@ -286,7 +294,7 @@
         color: var(--color-primary);
       }
       .nav-cta-buttons {
-        display: flex;
+        display: none;
         align-items: center;
         gap: 10px;
         white-space: nowrap;
@@ -315,6 +323,15 @@
         background: transparent;
         color: var(--color-primary);
         border: 1.5px solid var(--color-primary);
+      }
+      .nav-btn-rx {
+        background: var(--color-amber);
+        color: #fff;
+        border: none;
+      }
+      .nav-btn-rx:hover {
+        background: #d97706;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
       }
       .nav-btn-outline:hover {
         background: var(--color-primary-light);
@@ -433,63 +450,75 @@
         overflow: hidden;
         background: #fff;
       }
-      .hero-watermark {
-        position: absolute;
-        inset: 0;
-        background: none;
-        pointer-events: none;
-      }
-      .hero-grid {
-        position: relative;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 30px;
-        align-items: center;
-        padding: 28px 20px;
-      }
-      .hero-copy .eyebrow {
-        font-size: 1.15rem;
-        color: var(--color-primary);
-        font-weight: 600;
-      }
-      .hero-copy h1 {
-        font-size: 1.9rem;
-        font-weight: 800;
-        line-height: 1.15;
-        margin: 2px 0 6px;
-        color: var(--color-primary-text);
-      }
-      .hero-copy h1 span {
-        display: block;
-        color: var(--color-text-primary);
-        font-size: 1.7rem;
-        font-weight: 800;
-        margin-top: 2px;
-      }
-      .hero-copy p.desc {
-        color: var(--color-text-secondary);
-        font-size: 0.95rem;
-        margin: 10px 0 16px;
-        max-width: 480px;
-      }
-      .hero-checklist {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 8px 24px;
-        margin-bottom: 22px;
-        max-width: 460px;
-      }
-      .hero-checklist li {
+      .hero-banner {
+        background-color: #fff;
         display: flex;
         align-items: center;
-        gap: 8px;
-        font-size: 0.86rem;
-        font-weight: 600;
-        color: var(--color-text-primary);
+        padding-top: 10px;
       }
-      .hero-checklist li svg {
-        flex: none;
-        color: var(--color-primary);
+      .hero-search-label {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0;
+        color: var(--color-primary-text);
+      }
+      .search-card {
+        position: relative;
+        background: #fff;
+        border-radius: 14px;
+        padding: 10px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+        width: 100%;
+        max-width: 720px;
+        display: flex;
+      }
+      .search-card::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 16px;
+        padding: 2px;
+        background: conic-gradient(
+          from var(--search-glow-angle, 0deg),
+          transparent 0deg,
+          transparent 260deg,
+          var(--color-primary) 300deg,
+          #60a5fa 330deg,
+          transparent 360deg
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        animation: search-glow-spin 4s linear infinite;
+        pointer-events: none;
+      }
+      @property --search-glow-angle {
+        syntax: '<angle>';
+        initial-value: 0deg;
+        inherits: false;
+      }
+      @keyframes search-glow-spin {
+        to {
+          --search-glow-angle: 360deg;
+        }
+      }
+      .hero-banner-inner {
+        background-image: url('assets/hero-search-banner.png');
+        background-size: 100% auto;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 18px;
+        padding: 36px 20px;
       }
       .hero-cta {
         display: flex;
@@ -545,15 +574,13 @@
           text-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
         }
       }
-      .hero-order-info {
-        display: flex;
+      .header-order-info {
+        display: none;
         align-items: center;
+        justify-content: center;
         gap: 8px;
-        margin-top: 16px;
         flex-wrap: wrap;
-        animation:
-          fade-in-up 0.8s ease-out 0.3s both,
-          glow-subtle 3s ease-in-out infinite;
+        flex: 1;
       }
       .order-label {
         font-size: 0.9rem;
@@ -567,7 +594,6 @@
         color: var(--color-primary);
         text-decoration: none;
         transition: all 0.3s ease;
-        animation: pulse-ring 2s infinite;
         padding: 4px 8px;
         border-radius: 4px;
       }
@@ -577,77 +603,13 @@
         transform: scale(1.05);
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
       }
-      .hero-order-actions {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 12px;
-      }
-      .order-rx-btn {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 14px;
-        background: var(--color-amber);
-        color: #fff;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        text-decoration: none;
-        transition: all 0.2s ease;
-      }
-      .order-rx-btn:hover {
-        background: #d97706;
-        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
-      }
-      .order-call-btn {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 14px;
-        background: var(--color-primary);
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      .order-call-btn:hover {
-        background: var(--color-primary-dark);
-        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
-      }
-      .order-whatsapp-btn {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 14px;
-        background: var(--color-success);
-        color: #fff;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        text-decoration: none;
-        transition: all 0.2s ease;
-      }
-      .order-whatsapp-btn:hover {
-        background: #15803d;
-        box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
-      }
-      .hero-image img {
-        width: 100%;
-        height: auto;
-        border-radius: 6px;
-      }
-
       /* ---------- Stats strip (mobile-first: 3-col grid, no dividers) ---------- */
       .stats-strip {
         background: transparent;
         display: flex;
         justify-content: center;
         padding: 0 20px;
+        margin-top: 12px;
       }
       .stats-strip .container {
         display: grid;
@@ -1299,10 +1261,11 @@
         .nav-toggle {
           display: none;
         }
-        .search-block {
-          order: initial;
-          max-width: 600px;
-          width: auto;
+        .nav-cta-buttons {
+          display: flex;
+        }
+        .header-order-info {
+          display: flex;
         }
         .cat-grid {
           grid-template-columns: repeat(3, 1fr);
@@ -1328,12 +1291,6 @@
         }
         .footer-grid {
           grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        }
-        .hero-copy h1 {
-          font-size: 2.5rem;
-        }
-        .hero-checklist {
-          grid-template-columns: 1fr 1fr;
         }
         .bottom-cta .container {
           flex-direction: row;
@@ -1374,8 +1331,8 @@
         .testi-grid {
           grid-template-columns: repeat(3, 1fr);
         }
-        .hero-grid {
-          grid-template-columns: 1fr 1fr;
+        .hero-banner-inner {
+          padding: 56px 20px;
         }
         .stats-strip .container {
           grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -1412,57 +1369,11 @@
               )
             "
           />
+          <div class="header-order-info">
+            <span class="order-label">Order medicine on call —</span>
+            <a href="tel:+911800123456" class="order-phone">+91 1800-123-456</a>
+          </div>
         </div>
-
-        <form id="indexSearchForm" role="search" style="flex: 1; position: relative; margin-left: 10px">
-          <input
-            id="indexSearchInput"
-            type="text"
-            placeholder="Search medicines, salts, brands, respiratory devices…"
-            style="
-              width: 100%;
-              padding: 10px 44px 10px 16px;
-              border: 2px solid #64748b;
-              border-radius: 999px;
-              font-size: 14px;
-              color: #0f172a;
-              background: #f5f8fe;
-              outline: none;
-              transition: border-color 0.2s;
-            "
-            onfocus="this.style.borderColor = '#2563EB'"
-            onblur="this.style.borderColor = '#64748B'"
-          />
-          <button
-            type="submit"
-            style="
-              position: absolute;
-              right: 12px;
-              top: 50%;
-              transform: translateY(-50%);
-              background: none;
-              border: none;
-              cursor: pointer;
-              padding: 0;
-              display: flex;
-              align-items: center;
-            "
-          >
-            <svg
-              width="18"
-              height="18"
-              fill="none"
-              stroke="#2563EB"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-          </button>
-        </form>
       </div>
 
       <nav class="main-nav container">
@@ -1475,6 +1386,15 @@
           <li><a href="#contact">Contact Us</a></li>
         </ul>
         <div class="nav-cta-buttons">
+          <a href="#" class="nav-btn nav-btn-rx" rel="noopener noreferrer nofollow">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+              <polyline points="13 2 13 9 20 9" />
+              <path d="M9 13h2M9 17h2" />
+              <path d="M14 13h2M14 17h2" />
+            </svg>
+            Rx Upload
+          </a>
           <a
             href="https://wa.me/919999156233"
             class="nav-btn nav-btn-whatsapp"
@@ -1502,139 +1422,25 @@
 
     <!-- ============ HERO ============ -->
     <section class="hero" id="home">
-      <div class="hero-watermark"></div>
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <div class="eyebrow">India's Trusted</div>
-          <h1>
-            Pharmaceutical
-            <span>CFA, Distributor &amp; Retailer</span>
-          </h1>
-          <p class="desc">Delivering Quality Medicines &amp; Medical Devices with Trust, Care &amp; Commitment.</p>
-          <ul class="hero-checklist">
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="currentColor"
-                  stroke-width="3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Oncology Medicines
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="currentColor"
-                  stroke-width="3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Sleep Therapy Devices
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="currentColor"
-                  stroke-width="3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Specialty Medicines
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="currentColor"
-                  stroke-width="3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Respiratory Devices
-            </li>
-            <li>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M20 6L9 17l-5-5"
-                  stroke="currentColor"
-                  stroke-width="3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              OTC Medicines
-            </li>
-          </ul>
-
-          <div class="hero-order-info">
-            <span class="order-label">Order medicine on call —</span>
-            <a href="tel:+911800123456" class="order-phone">+91 1800-123-456</a>
+      <div class="hero-banner">
+        <div class="container hero-banner-inner">
+          <h1 class="hero-search-label">Search Medicines &amp; Devices</h1>
+          <div class="search-card">
+            <form id="indexSearchForm" role="search" class="search-block">
+              <select aria-label="Delivery location">
+                <option>Delivery to</option>
+                <option>Chennai, 600017</option>
+              </select>
+              <input id="indexSearchInput" type="text" placeholder="Search Medicines…" />
+              <button type="submit">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                Search
+              </button>
+            </form>
           </div>
-
-          <div class="hero-order-actions">
-            <a href="#" class="order-rx-btn" rel="noopener noreferrer nofollow">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
-                <polyline points="13 2 13 9 20 9" />
-                <path d="M9 13h2M9 17h2" />
-                <path d="M14 13h2M14 17h2" />
-              </svg>
-              Rx Upload
-            </a>
-            <button type="button" onclick="window.openCallModal()" class="order-call-btn">
-              <svg
-                width="14"
-                height="14"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
-                />
-              </svg>
-              Request a Call to Order
-            </button>
-            <a
-              href="https://wa.me/919999156233"
-              class="order-whatsapp-btn"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"
-                />
-              </svg>
-              Order on WhatsApp
-            </a>
-          </div>
-        </div>
-        <div class="hero-image">
-          <img
-            src="assets/hero-pharma-products.png"
-            alt="Pharmaceutical products and medical devices"
-            onerror="
-              this.replaceWith(
-                Object.assign(document.createElement('div'), {
-                  className: 'ph',
-                  style: 'height:300px;border-radius:6px',
-                  innerText: 'HERO PHARMA PRODUCTS IMAGE',
-                })
-              )
-            "
-          />
         </div>
       </div>
     </section>
@@ -1808,18 +1614,6 @@
       </div>
     </section>
 
-    <!-- ============ WHY CHOOSE ============ -->
-    <section class="section bg-soft">
-      <div class="container">
-        <h2 class="section-title">WHY CHOOSE MEDIFY?</h2>
-        <img
-          src="assets/why-choose-benefits-strip.png"
-          alt="Why Choose MediFy - 9 Benefits Icons Strip"
-          style="width: 100%; height: auto; max-width: 1200px; margin: 0 auto; display: block"
-        />
-      </div>
-    </section>
-
     <!-- ============ BREAKTHROUGH DRUGS ============ -->
     <section class="section">
       <div class="container">
@@ -1984,6 +1778,18 @@
           </div>
           <div class="cert-cta">Committed to Quality, Safety &amp; Compliance</div>
         </div>
+      </div>
+    </section>
+
+    <!-- ============ WHY CHOOSE ============ -->
+    <section class="section bg-soft">
+      <div class="container">
+        <h2 class="section-title">WHY CHOOSE MEDIFY?</h2>
+        <img
+          src="assets/why-choose-benefits-strip.png"
+          alt="Why Choose MediFy - 9 Benefits Icons Strip"
+          style="width: 100%; height: auto; max-width: 1200px; margin: 0 auto; display: block"
+        />
       </div>
     </section>
 
