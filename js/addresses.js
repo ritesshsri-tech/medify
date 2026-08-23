@@ -9,7 +9,7 @@ function saveAddresses(addresses) {
 export function addAddress(address) {
   const addresses = getAddresses();
   const isFirst = addresses.length === 0;
-  const entry = { id: 'addr' + Date.now().toString().slice(-8), ...address, isDefault: isFirst };
+  const entry = { id: 'addr' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 1000), ...address, isDefault: isFirst };
   addresses.push(entry);
   saveAddresses(addresses);
   return entry;

@@ -1,13 +1,18 @@
-let _medicines = null;
+import { applyOverrides } from './medicineOverrides.js';
+
+let _baseMedicines = null;
 let _siteConfig = null;
 let _manufacturers = null;
 
 export async function fetchMedicines() {
-  if (_medicines) return _medicines;
-  const res = await fetch('../data/medicines.json');
-  if (!res.ok) throw new Error('Failed to load medicines.json');
-  _medicines = await res.json();
-  return _medicines;
+  if (!_baseMedicines) {
+    const res = await fetch('../data/medicines.json');
+    if (!res.ok) throw new Error('Failed to load medicines.json');
+    _baseMedicines = await res.json();
+  }
+  // Overrides are re-applied on every call (cheap in-memory merge) so
+  // admin catalog edits show up immediately without a page reload.
+  return applyOverrides(_baseMedicines);
 }
 
 export async function fetchSiteConfig() {

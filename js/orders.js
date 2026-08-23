@@ -1,4 +1,5 @@
 const TRACKING_STAGES = ['placed', 'packed', 'shipped', 'out_for_delivery', 'delivered'];
+const RX_STATUSES = ['pending', 'approved', 'rejected'];
 
 export function getOrders() {
   return JSON.parse(localStorage.getItem('orders') || '[]');
@@ -8,10 +9,19 @@ function saveOrders(orders) {
   localStorage.setItem('orders', JSON.stringify(orders));
 }
 
+function generateOrderId(existingOrders) {
+  let id;
+  do {
+    id = 'ORD' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 900 + 100);
+  } while (existingOrders.some((o) => o.id === id));
+  return id;
+}
+
 export function createOrder({ items, address, paymentMethod, total }) {
   const orders = getOrders();
+  const hasRxItem = items.some((i) => i.requiresPrescription);
   const order = {
-    id: 'ORD' + Date.now().toString().slice(-8),
+    id: generateOrderId(orders),
     placedAt: new Date().toISOString(),
     items,
     address,
@@ -19,6 +29,10 @@ export function createOrder({ items, address, paymentMethod, total }) {
     total,
     stage: 'placed',
     stageUpdatedAt: new Date().toISOString(),
+    rxStatus: hasRxItem ? 'pending' : null,
+    rxReviewedBy: null,
+    rxReviewedAt: null,
+    rxRejectReason: null,
   };
   orders.unshift(order);
   saveOrders(orders);
@@ -33,10 +47,41 @@ export function trackingStages() {
   return TRACKING_STAGES;
 }
 
-// Deterministically derive a display stage from elapsed time since placement,
-// so orders visibly "progress" on repeat visits without needing a backend.
+export function rxStatuses() {
+  return RX_STATUSES;
+}
+
+// Stage is admin-controlled (set via Dispatch Management); this simply
+// reads the stored value rather than deriving it, now that a real
+// operator drives progression instead of elapsed time.
 export function currentStage(order) {
-  const elapsedMin = (Date.now() - new Date(order.placedAt).getTime()) / 60000;
-  const idx = Math.min(TRACKING_STAGES.length - 1, Math.floor(elapsedMin / 2));
-  return TRACKING_STAGES[idx];
+  return order.stage || 'placed';
+}
+
+// An order with pending Rx approval cannot move past 'placed' — dispatch
+// is blocked until the pharmacist/admin approves the prescription.
+export function canDispatch(order) {
+  return order.rxStatus !== 'pending';
+}
+
+export function setOrderStage(id, stage, updatedBy) {
+  const orders = getOrders();
+  const order = orders.find((o) => o.id === id);
+  if (!order) return;
+  if (stage !== 'placed' && !canDispatch(order)) return;
+  order.stage = stage;
+  order.stageUpdatedAt = new Date().toISOString();
+  order.stageUpdatedBy = updatedBy || null;
+  saveOrders(orders);
+}
+
+export function setRxStatus(id, status, reviewedBy, rejectReason) {
+  const orders = getOrders();
+  const order = orders.find((o) => o.id === id);
+  if (!order) return;
+  order.rxStatus = status;
+  order.rxReviewedBy = reviewedBy || null;
+  order.rxReviewedAt = new Date().toISOString();
+  order.rxRejectReason = status === 'rejected' ? rejectReason || null : null;
+  saveOrders(orders);
 }

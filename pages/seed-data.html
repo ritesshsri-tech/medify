@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seed Demo Data — MediFy Dev Tool</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: #f1f5f9;
+        color: #0f172a;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="max-w-2xl mx-auto px-4 py-10">
+      <div class="card p-6">
+        <h1 class="text-lg font-800 mb-1">Seed Demo Data</h1>
+        <p class="text-sm text-slate-500 mb-6">
+          Dev-only utility. Populates localStorage with sample patient (orders, addresses, prescriptions) and staff
+          data so every screen has something to show. Safe to run multiple times &mdash; it resets first.
+        </p>
+
+        <div id="status" class="text-sm space-y-1 mb-6"></div>
+
+        <div class="flex gap-3">
+          <button
+            type="button"
+            onclick="window.runSeed()"
+            class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-colors"
+          >
+            Seed Demo Data
+          </button>
+          <button
+            type="button"
+            onclick="window.runReset()"
+            class="px-5 py-2.5 border border-red-200 text-red-600 hover:bg-red-50 text-sm font-semibold rounded-full transition-colors"
+          >
+            Reset All Data
+          </button>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-slate-100 text-sm space-y-2">
+          <p class="font-700 text-slate-700">Quick links after seeding:</p>
+          <ul class="list-disc list-inside text-slate-600 space-y-1">
+            <li><a href="../index.html" class="text-blue-600 hover:underline">Homepage</a> (patient: Demo Patient)</li>
+            <li><a href="account.html" class="text-blue-600 hover:underline">My Account</a> — orders, addresses, prescriptions</li>
+            <li><a href="admin-login.html" class="text-blue-600 hover:underline">Admin Login</a> — admin@medify.local / admin123</li>
+            <li><a href="admin.html" class="text-blue-600 hover:underline">Admin Panel</a> (if already logged in)</li>
+          </ul>
+          <p class="text-xs text-slate-400 mt-3">Additional staff logins seeded: pharmacist@medify.local / pharma123 &middot; delivery@medify.local / deliver123</p>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { createOrder, setOrderStage, setRxStatus } from '../js/orders.js';
+      import { addAddress } from '../js/addresses.js';
+      import { addPrescription } from '../js/prescriptions.js';
+      import { addStaff, getStaff } from '../js/staff.js';
+
+      const RX_MED = {
+        id: 'med_00001',
+        brandName: 'Veenat 400',
+        form: 'Tablet',
+        strength: '400 mg',
+        packSize: '10 Tablets',
+        price: 720000,
+        mrp: 850000,
+        image: '',
+        requiresPrescription: true,
+      };
+      const RX_MED_2 = {
+        id: 'med_00003',
+        brandName: 'Amoxicillin 500',
+        form: 'Capsule',
+        strength: '500 mg',
+        packSize: '10 Capsules',
+        price: 72000,
+        mrp: 85000,
+        image: '',
+        requiresPrescription: true,
+      };
+      const OTC_MED = {
+        id: 'med_00002',
+        brandName: 'Aspirin 500',
+        form: 'Tablet',
+        strength: '500 mg',
+        packSize: '10 Tablets',
+        price: 28000,
+        mrp: 35000,
+        image: '',
+        requiresPrescription: false,
+      };
+
+      function log(msg) {
+        const el = document.getElementById('status');
+        const p = document.createElement('p');
+        p.textContent = msg;
+        p.className = 'text-slate-700';
+        el.appendChild(p);
+      }
+
+      window.runReset = function () {
+        [
+          'currentUser',
+          'cart',
+          'orders',
+          'addresses',
+          'prescriptions',
+          'staff',
+          'currentStaff',
+          'medicinesAdded',
+          'medicinesEdited',
+          'medicinesDeletedIds',
+        ].forEach((k) => localStorage.removeItem(k));
+        document.getElementById('status').innerHTML = '';
+        log('All demo data cleared.');
+      };
+
+      window.runSeed = function () {
+        window.runReset();
+        document.getElementById('status').innerHTML = '';
+
+        // --- Patient identity ---
+        localStorage.setItem(
+          'currentUser',
+          JSON.stringify({ name: 'Demo Patient', phone: '9876500001', email: 'demo.patient@example.com', role: 'user' })
+        );
+        log('Signed in as Demo Patient.');
+
+        // --- Saved addresses ---
+        addAddress({ name: 'Demo Patient', phone: '9876500001', line1: '221B Residency Road', city: 'Bengaluru', state: 'Karnataka', pincode: '560025' });
+        addAddress({ name: 'Demo Patient (Office)', phone: '9876500002', line1: '4th Floor, Tech Park', city: 'Bengaluru', state: 'Karnataka', pincode: '560103' });
+        log('Added 2 saved addresses (first set as default).');
+
+        // --- Prescriptions ---
+        addPrescription({ fileName: 'veenat-rx-scan.jpg', forMedicineId: RX_MED.id, forMedicineName: RX_MED.brandName });
+        addPrescription({ fileName: 'amoxicillin-rx-scan.pdf', forMedicineId: RX_MED_2.id, forMedicineName: RX_MED_2.brandName });
+        log('Added 2 saved prescriptions.');
+
+        const addr = { name: 'Demo Patient', phone: '9876500001', line1: '221B Residency Road', city: 'Bengaluru', state: 'Karnataka', pincode: '560025' };
+
+        // --- Order 1: Rx pending approval (blocks dispatch) — tests Rx Approval queue ---
+        const order1 = createOrder({
+          items: [{ ...RX_MED, qty: 1, rxUploaded: true }],
+          address: addr,
+          paymentMethod: 'upi',
+          total: RX_MED.price,
+        });
+        log(`Order ${order1.id}: Rx item, pending approval (tests Prescription Approval + blocked Dispatch).`);
+
+        // --- Order 2: Rx approved, mid-dispatch — tests Dispatch Management ---
+        const order2 = createOrder({
+          items: [{ ...RX_MED_2, qty: 2, rxUploaded: true }],
+          address: addr,
+          paymentMethod: 'card',
+          total: RX_MED_2.price * 2,
+        });
+        setRxStatus(order2.id, 'approved', 'Admin');
+        setOrderStage(order2.id, 'shipped', 'Admin');
+        log(`Order ${order2.id}: Rx approved, stage set to Shipped (tests Dispatch stage updates).`);
+
+        // --- Order 3: Rx rejected — tests rejection banner ---
+        const order3 = createOrder({
+          items: [{ ...RX_MED, qty: 1, rxUploaded: true }],
+          address: addr,
+          paymentMethod: 'netbanking',
+          total: RX_MED.price,
+        });
+        setRxStatus(order3.id, 'rejected', 'Admin', 'Prescription image unclear, please re-upload.');
+        log(`Order ${order3.id}: Rx rejected with reason (tests rejection banner in My Orders).`);
+
+        // --- Order 4: OTC only, no Rx involved, already delivered ---
+        const order4 = createOrder({
+          items: [{ ...OTC_MED, qty: 3, rxUploaded: false }],
+          address: addr,
+          paymentMethod: 'cod',
+          total: OTC_MED.price * 3,
+        });
+        setOrderStage(order4.id, 'delivered', 'Admin');
+        log(`Order ${order4.id}: OTC only, marked Delivered (tests full tracking bar + order history).`);
+
+        // --- Order 5: OTC only, just placed — simplest happy path ---
+        const order5 = createOrder({
+          items: [{ ...OTC_MED, qty: 1, rxUploaded: false }],
+          address: addr,
+          paymentMethod: 'upi',
+          total: OTC_MED.price,
+        });
+        log(`Order ${order5.id}: OTC only, just placed (tests immediate post-checkout state).`);
+
+        // --- Staff accounts (admin already seeded by staff.js on first read) ---
+        getStaff(); // ensure default admin exists
+        addStaff({ name: 'Priya Sharma', email: 'pharmacist@medify.local', password: 'pharma123', role: 'pharmacist' });
+        addStaff({ name: 'Ravi Kumar', email: 'delivery@medify.local', password: 'deliver123', role: 'delivery' });
+        log('Added Pharmacist and Delivery staff logins.');
+
+        // --- A cart item ready to test the Rx-upload-before-checkout gate ---
+        localStorage.setItem(
+          'cart',
+          JSON.stringify([
+            { ...RX_MED, qty: 1, rxUploaded: false },
+            { ...OTC_MED, qty: 2, rxUploaded: false },
+          ])
+        );
+        log('Left 2 items in cart (1 Rx unresolved) — tests the checkout Rx-upload gate live.');
+
+        log('Done. Use the links below to explore.');
+      };
+    </script>
+  </body>
+</html>

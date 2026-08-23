@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login — MediFy</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="../assets/favicon.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 16px;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: #0f172a;
+        color: #0f172a;
+      }
+      .bg-decor {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .bg-decor span {
+        position: absolute;
+        width: 384px;
+        height: 384px;
+        border-radius: 50%;
+        opacity: 0.15;
+      }
+      .bg-decor span.top {
+        top: -128px;
+        right: -128px;
+        background: radial-gradient(circle, #2563eb, transparent);
+      }
+      .bg-decor span.bottom {
+        bottom: -128px;
+        left: -128px;
+        background: radial-gradient(circle, #1e3a8a, transparent);
+      }
+      .login-wrap {
+        position: relative;
+        width: 100%;
+        max-width: 380px;
+      }
+      .login-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+        padding: 40px 32px;
+      }
+      .login-logo-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+      }
+      .login-logo {
+        height: 48px;
+      }
+      .admin-tag {
+        text-align: center;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 24px;
+      }
+      .field-label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 5px;
+        display: block;
+      }
+      .field-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        color: #0f172a;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        margin-bottom: 16px;
+        font-family: inherit;
+      }
+      .field-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+      .submit-btn {
+        width: 100%;
+        padding: 12px;
+        background: #0f172a;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .submit-btn:hover {
+        background: #1e293b;
+      }
+      .field-error {
+        font-size: 0.75rem;
+        color: #dc2626;
+        margin: -12px 0 12px;
+        display: none;
+      }
+      .field-error.show {
+        display: block;
+      }
+      .demo-note {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 0.72rem;
+        color: #475569;
+        margin-bottom: 20px;
+        line-height: 1.4;
+      }
+      .back-link {
+        text-align: center;
+        font-size: 0.8rem;
+        margin-top: 20px;
+      }
+      .back-link a {
+        color: #94a3b8;
+        text-decoration: none;
+      }
+      .back-link a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-decor">
+      <span class="top"></span>
+      <span class="bottom"></span>
+    </div>
+
+    <div class="login-wrap">
+      <div class="login-card">
+        <div class="login-logo-row">
+          <img src="../assets/medify-logo.svg" alt="MediFy" class="login-logo" />
+        </div>
+        <p class="admin-tag">Staff &amp; Admin Portal</p>
+
+        <div class="demo-note">Demo credentials: <strong>admin@medify.local</strong> / <strong>admin123</strong></div>
+
+        <form id="adminLoginForm" onsubmit="return false;">
+          <label class="field-label" for="staffEmail">Email</label>
+          <input class="field-input" id="staffEmail" type="email" placeholder="you@medify.local" autocomplete="username" />
+
+          <label class="field-label" for="staffPassword">Password</label>
+          <input class="field-input" id="staffPassword" type="password" placeholder="Password" autocomplete="current-password" />
+          <p class="field-error" id="loginError">Invalid email or password</p>
+
+          <button type="submit" class="submit-btn" onclick="submitAdminLogin()">Sign In</button>
+        </form>
+
+        <p class="back-link"><a href="../index.html">&larr; Back to MediFy</a></p>
+      </div>
+    </div>
+
+    <script type="module">
+      import { findStaffByCredentials, setCurrentStaff, getCurrentStaff } from '../js/staff.js';
+
+      if (getCurrentStaff()) {
+        window.location.replace('admin.html');
+      }
+
+      window.submitAdminLogin = function () {
+        const email = document.getElementById('staffEmail').value.trim();
+        const password = document.getElementById('staffPassword').value;
+        const errorEl = document.getElementById('loginError');
+
+        const staff = findStaffByCredentials(email, password);
+        if (!staff) {
+          errorEl.classList.add('show');
+          return;
+        }
+        errorEl.classList.remove('show');
+        setCurrentStaff({ id: staff.id, name: staff.name, email: staff.email, role: staff.role });
+        window.location.replace('admin.html');
+      };
+    </script>
+  </body>
+</html>

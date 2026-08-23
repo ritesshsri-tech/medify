@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel — MediFy</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="../assets/favicon.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: #f1f5f9;
+        color: #0f172a;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      .quick-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #475569;
+        text-decoration: none;
+        transition: all 0.15s;
+        margin-bottom: 2px;
+        cursor: pointer;
+      }
+      .quick-link:hover,
+      .quick-link.active {
+        background: #eef2ff;
+        color: #4338ca;
+        font-weight: 600;
+      }
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+      .field-input {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        color: #0f172a;
+        outline: none;
+        font-family: inherit;
+      }
+      .field-input:focus {
+        border-color: #4338ca;
+        box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.12);
+      }
+      .field-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 4px;
+        display: block;
+      }
+      table.data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+      }
+      table.data-table th {
+        text-align: left;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #64748b;
+        padding: 8px 10px;
+        border-bottom: 1.5px solid #e2e8f0;
+      }
+      table.data-table td {
+        padding: 10px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: top;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 9px;
+        border-radius: 999px;
+        font-size: 10.5px;
+        font-weight: 700;
+      }
+      .badge-amber {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .badge-green {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .badge-red {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .badge-blue {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .badge-slate {
+        background: #f1f5f9;
+        color: #475569;
+      }
+      .stage-select {
+        font-size: 0.78rem;
+        padding: 5px 8px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 6px;
+      }
+      .stage-select:disabled {
+        background: #f1f5f9;
+        color: #94a3b8;
+      }
+      .btn-sm {
+        padding: 5px 12px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: opacity 0.15s;
+      }
+      .btn-sm:hover {
+        opacity: 0.85;
+      }
+      .btn-approve {
+        background: #16a34a;
+        color: #fff;
+      }
+      .btn-reject {
+        background: #dc2626;
+        color: #fff;
+      }
+      .btn-edit {
+        background: #eef2ff;
+        color: #4338ca;
+      }
+      .btn-delete {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import { getCurrentStaff } from '../js/staff.js';
+      if (!getCurrentStaff()) window.location.replace('admin-login.html');
+    </script>
+
+    <div class="max-w-7xl mx-auto px-4 py-6">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2">
+          <img src="../assets/medify-logo.svg" alt="MediFy" style="height: 34px" />
+          <span class="text-xs font-700 text-slate-400 uppercase tracking-wider border-l border-slate-300 pl-2 ml-1">Admin</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="staffName" class="text-sm font-600 text-slate-700"></span>
+          <span id="staffRole" class="badge badge-blue"></span>
+          <button type="button" id="staffSignOutBtn" class="text-xs font-semibold text-red-600 hover:underline">Sign Out</button>
+        </div>
+      </div>
+
+      <div class="flex flex-col lg:flex-row gap-6 items-start">
+        <!-- Sidebar -->
+        <aside class="w-full lg:w-56 flex-shrink-0 lg:sticky top-6">
+          <div class="card p-4">
+            <nav id="tabNav">
+              <a class="quick-link active" data-tab="dispatch" data-perm="dispatch">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                Dispatch Management
+              </a>
+              <a class="quick-link" data-tab="rx-approval" data-perm="rx-approval">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                Prescription Approval
+              </a>
+              <a class="quick-link" data-tab="catalog" data-perm="catalog">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                Medicine Catalog
+              </a>
+              <a class="quick-link" data-tab="staff" data-perm="staff">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Staff Management
+              </a>
+            </nav>
+          </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="flex-1 min-w-0 w-full">
+          <!-- DISPATCH MANAGEMENT -->
+          <div id="tab-dispatch" class="tab-panel active">
+            <div class="card p-5">
+              <h1 class="text-lg font-800 text-slate-900 mb-1">Dispatch Management</h1>
+              <p class="text-xs text-slate-500 mb-4">Update delivery stage for each order. Orders awaiting prescription approval cannot be dispatched.</p>
+              <div class="overflow-x-auto">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Order</th>
+                      <th>Items</th>
+                      <th>Total</th>
+                      <th>Rx Status</th>
+                      <th>Stage</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dispatchTableBody"></tbody>
+                </table>
+                <p id="dispatchEmpty" class="hidden text-sm text-slate-500 text-center py-10">No orders yet</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRESCRIPTION APPROVAL -->
+          <div id="tab-rx-approval" class="tab-panel">
+            <div class="card p-5">
+              <h1 class="text-lg font-800 text-slate-900 mb-1">Prescription Approval</h1>
+              <p class="text-xs text-slate-500 mb-4">Review uploaded prescriptions before an Rx order is released to dispatch.</p>
+              <div id="rxQueue" class="space-y-3"></div>
+              <p id="rxQueueEmpty" class="hidden text-sm text-slate-500 text-center py-10">No prescriptions pending review</p>
+            </div>
+          </div>
+
+          <!-- MEDICINE CATALOG -->
+          <div id="tab-catalog" class="tab-panel">
+            <div class="card p-5">
+              <div class="flex items-center justify-between mb-1">
+                <h1 class="text-lg font-800 text-slate-900">Medicine Catalog</h1>
+                <button type="button" onclick="window.openMedForm()" class="btn-sm btn-edit">+ Add Medicine</button>
+              </div>
+              <p class="text-xs text-slate-500 mb-4">Additions and edits are saved locally in this browser and layered on top of the base catalog.</p>
+
+              <input id="catalogSearch" class="field-input mb-4 max-w-sm" type="text" placeholder="Search by brand name..." />
+
+              <!-- Add/Edit form -->
+              <div id="medForm" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5 p-4 bg-indigo-50 rounded-xl">
+                <input type="hidden" id="medFormId" />
+                <div>
+                  <label class="field-label">Brand Name</label>
+                  <input id="medBrandName" class="field-input" type="text" />
+                </div>
+                <div>
+                  <label class="field-label">Salt Name</label>
+                  <input id="medSaltName" class="field-input" type="text" />
+                </div>
+                <div>
+                  <label class="field-label">Manufacturer</label>
+                  <input id="medManufacturer" class="field-input" type="text" />
+                </div>
+                <div>
+                  <label class="field-label">Category</label>
+                  <input id="medCategory" class="field-input" type="text" />
+                </div>
+                <div>
+                  <label class="field-label">Form</label>
+                  <input id="medForm2" class="field-input" type="text" placeholder="Tablet, Injection..." />
+                </div>
+                <div>
+                  <label class="field-label">Strength</label>
+                  <input id="medStrength" class="field-input" type="text" placeholder="500 mg" />
+                </div>
+                <div>
+                  <label class="field-label">Pack Size</label>
+                  <input id="medPackSize" class="field-input" type="text" placeholder="10 Tablets" />
+                </div>
+                <div>
+                  <label class="field-label">MRP (&#8377;)</label>
+                  <input id="medMrp" class="field-input" type="number" min="0" step="0.01" />
+                </div>
+                <div>
+                  <label class="field-label">Selling Price (&#8377;)</label>
+                  <input id="medSellingPrice" class="field-input" type="number" min="0" step="0.01" />
+                </div>
+                <div class="flex items-center gap-2 mt-5">
+                  <input type="checkbox" id="medRequiresRx" class="w-3.5 h-3.5" />
+                  <label for="medRequiresRx" class="text-xs text-slate-600">Requires Prescription</label>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="field-label">Description</label>
+                  <textarea id="medDescription" class="field-input" rows="2"></textarea>
+                </div>
+                <div class="sm:col-span-2 flex gap-2">
+                  <button type="button" onclick="window.saveMedicine()" class="btn-sm btn-edit">Save Medicine</button>
+                  <button type="button" onclick="window.closeMedForm()" class="btn-sm badge-slate">Cancel</button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Brand</th>
+                      <th>Category</th>
+                      <th>Manufacturer</th>
+                      <th>Price</th>
+                      <th>Rx</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="catalogTableBody"></tbody>
+                </table>
+              </div>
+              <div id="catalogLoadMoreWrap" class="text-center mt-4">
+                <button type="button" id="catalogLoadMoreBtn" class="btn-sm badge-slate">Load more</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STAFF MANAGEMENT -->
+          <div id="tab-staff" class="tab-panel">
+            <div class="card p-5">
+              <div class="flex items-center justify-between mb-1">
+                <h1 class="text-lg font-800 text-slate-900">Staff Management</h1>
+                <button type="button" onclick="window.openStaffForm()" class="btn-sm btn-edit">+ Add Staff</button>
+              </div>
+              <p class="text-xs text-slate-500 mb-4">Pharmacists can approve prescriptions and manage the catalog. Delivery staff manage dispatch. Admins have full access.</p>
+
+              <div id="staffForm" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5 p-4 bg-indigo-50 rounded-xl">
+                <div>
+                  <label class="field-label">Full Name</label>
+                  <input id="newStaffName" class="field-input" type="text" />
+                </div>
+                <div>
+                  <label class="field-label">Email</label>
+                  <input id="newStaffEmail" class="field-input" type="email" />
+                </div>
+                <div>
+                  <label class="field-label">Password</label>
+                  <input id="newStaffPassword" class="field-input" type="text" />
+                </div>
+                <div>
+                  <label class="field-label">Role</label>
+                  <select id="newStaffRole" class="field-input">
+                    <option value="pharmacist">Pharmacist</option>
+                    <option value="delivery">Delivery</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-2 flex gap-2">
+                  <button type="button" onclick="window.saveStaff()" class="btn-sm btn-edit">Add Staff Member</button>
+                  <button type="button" onclick="window.closeStaffForm()" class="btn-sm badge-slate">Cancel</button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Added</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="staffTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script type="module" src="../js/admin.js"></script>
+  </body>
+</html>
