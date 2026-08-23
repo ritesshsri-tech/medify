@@ -61,6 +61,7 @@
             <li><a href="admin.html" class="text-blue-600 hover:underline">Admin Panel</a> (if already logged in)</li>
           </ul>
           <p class="text-xs text-slate-400 mt-3">Additional staff logins seeded: pharmacist@medify.local / pharma123 &middot; delivery@medify.local / deliver123</p>
+          <p class="text-xs text-slate-400 mt-1">Note: orders, addresses and prescriptions are shared storage &mdash; the Patient 1 / Patient 2 quick-login buttons on the login page will see this same seeded data, not separate accounts.</p>
         </div>
       </div>
     </div>
@@ -70,6 +71,7 @@
       import { addAddress } from '../js/addresses.js';
       import { addPrescription } from '../js/prescriptions.js';
       import { addStaff, getStaff } from '../js/staff.js';
+      import { addMedicine, editMedicine } from '../js/medicineOverrides.js';
 
       const RX_MED = {
         id: 'med_00001',
@@ -201,6 +203,26 @@
           total: OTC_MED.price,
         });
         log(`Order ${order5.id}: OTC only, just placed (tests immediate post-checkout state).`);
+
+        // --- Medicine catalog overrides — demonstrates admin Add + Edit ---
+        addMedicine({
+          brandName: 'Metfor-Plus 500',
+          saltName: 'Metformin Hydrochloride',
+          manufacturer: 'Local Demo Pharma',
+          diseaseCategory: 'Endocrine Drugs',
+          form: 'Tablet',
+          strength: '500 mg',
+          packSize: '15 Tablets',
+          mrpPaise: 18000,
+          sellingPricePaise: 14500,
+          requiresPrescription: true,
+          description: 'Sample medicine added via the admin Medicine Catalog panel, for testing the "Locally Added" flow.',
+        });
+        editMedicine('med_00002', {
+          sellingPricePaise: 24000,
+          description: 'Aspirin 500 — description and price edited via the admin Medicine Catalog panel (demo edit).',
+        });
+        log('Added 1 medicine via Catalog and edited 1 existing medicine (Aspirin 500).');
 
         // --- Staff accounts (admin already seeded by staff.js on first read) ---
         getStaff(); // ensure default admin exists
