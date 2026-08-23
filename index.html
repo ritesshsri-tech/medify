@@ -45,8 +45,8 @@
         --oncology: #8e2e9e;
         --specialty: #1e8a3c;
         --otc: #f59e0b;
-        --sleep: #06b6d4;
-        --respiratory: #3b82f6;
+        --endocrine: #d946ef;
+        --diagnostic: #0891b2;
         --radius: 8px;
         --shadow: 0 1px 4px rgba(37, 99, 235, 0.07), 0 2px 8px rgba(0, 0, 0, 0.04);
         font-family:
@@ -753,37 +753,80 @@
       .cat-card.otc {
         --tint: var(--otc);
       }
-      .cat-card.sleep {
-        --tint: var(--sleep);
+      .cat-card.endocrine {
+        --tint: var(--endocrine);
       }
-      .cat-card.respiratory {
-        --tint: var(--respiratory);
+      .cat-card.diagnostic {
+        --tint: var(--diagnostic);
       }
 
-      /* ---------- Why choose (icon row) ---------- */
-      .why-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-        text-align: center;
-      }
-      .why-item .why-icon {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        border: 2px solid var(--color-primary);
-        margin: 0 auto 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--color-primary);
-        background: var(--color-primary-light);
+      /* ---------- Medical Tourism banner (fills leftover cat-grid slots) ---------- */
+      .cat-banner {
+        grid-column: 1 / -1;
+        position: relative;
+        border-radius: var(--radius);
+        overflow: hidden;
         box-shadow: var(--shadow);
+        min-height: 220px;
+        display: block;
+        text-decoration: none;
       }
-      .why-item span {
-        font-size: 0.72rem;
-        font-weight: 700;
-        color: var(--color-text-primary);
+      .cat-banner-slide {
+        width: 100%;
+        height: 100%;
+        min-height: 220px;
+        object-fit: cover;
+        display: block;
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        animation: cat-banner-fade 12s infinite;
+      }
+      .cat-banner-slide:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .cat-banner-slide:nth-child(2) {
+        animation-delay: 4s;
+      }
+      .cat-banner-slide:nth-child(3) {
+        animation-delay: 8s;
+      }
+      @keyframes cat-banner-fade {
+        0% {
+          opacity: 0;
+        }
+        4% {
+          opacity: 1;
+        }
+        29% {
+          opacity: 1;
+        }
+        33% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+      .cat-banner-text {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 8px;
+        padding: 28px 32px;
+        max-width: 50%;
+      }
+      .cat-banner-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fff;
+      }
+      .cat-banner-sub {
+        font-size: 0.9rem;
+        color: #dbe6ff;
       }
 
       /* ---------- Breakthrough drugs (mobile-first: 2-col grid) ---------- */
@@ -845,55 +888,6 @@
       }
       .drug-cta svg {
         color: var(--green);
-      }
-
-      /* ---------- Certificates (mobile-first: 2-col grid) ---------- */
-      .cert-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-        align-items: stretch;
-      }
-      .cert-card {
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        background: #fff;
-        box-shadow: var(--shadow);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 18px 10px;
-        gap: 8px;
-      }
-      .cert-card .cert-mark {
-        height: 80px;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .cert-card .cert-mark img {
-        max-height: 80px;
-      }
-      .cert-card .cert-label {
-        font-size: 0.68rem;
-        color: var(--text-muted);
-        font-weight: 600;
-      }
-      .cert-cta {
-        background: var(--navy);
-        color: #fff;
-        border-radius: var(--radius);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 16px;
-        font-weight: 800;
-        font-size: 0.9rem;
-        grid-column: span 2;
       }
 
       /* ---------- Services (mobile-first: 1-col stack) ---------- */
@@ -1276,16 +1270,6 @@
         .drug-cta {
           grid-column: span 3;
         }
-        .cert-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-        .cert-cta {
-          grid-column: span 3;
-        }
-        .why-grid {
-          grid-template-columns: repeat(4, 1fr);
-          gap: 20px;
-        }
         .service-cards {
           grid-template-columns: repeat(3, 1fr);
         }
@@ -1308,16 +1292,6 @@
         }
         .drug-cta {
           grid-column: auto;
-        }
-        .cert-grid {
-          grid-template-columns: repeat(6, 1fr) 1.3fr;
-        }
-        .cert-cta {
-          grid-column: auto;
-        }
-        .why-grid {
-          grid-template-columns: repeat(9, 1fr);
-          gap: 14px;
         }
         .service-cards {
           grid-template-columns: repeat(4, 1fr);
@@ -1581,35 +1555,45 @@
             </div>
           </div>
 
-          <div class="cat-card sleep">
+          <div class="cat-card endocrine">
             <div class="cat-img">
               <img
-                src="assets/SleepTherapy.jpg"
-                alt="Sleep Therapy Devices"
-                onerror="this.parentElement.innerHTML = '<div class=ph style=height:100%>SLEEP THERAPY IMAGE</div>'"
+                src="assets/sleep-apnea/awiqli.jpg"
+                alt="Endocrine Drugs"
+                onerror="this.parentElement.innerHTML = '<div class=ph style=height:100%>ENDOCRINE IMAGE</div>'"
               />
             </div>
             <div class="cat-body">
-              <h3>SLEEP THERAPY DEVICES</h3>
-              <p>CPAP, BiPAP, Masks, Humidifiers &amp; Accessories for Better Sleep &amp; Better Life.</p>
+              <h3>ENDOCRINE DRUGS</h3>
+              <p>Insulin, GLP-1 Therapies, Diabetes &amp; Thyroid Care for Comprehensive Endocrine Management.</p>
               <a href="pages/category.html" class="cat-explore">Explore More →</a>
             </div>
           </div>
 
-          <div class="cat-card respiratory">
+          <div class="cat-card diagnostic">
             <div class="cat-img">
               <img
-                src="assets/Respiratory.png"
-                alt="Respiratory Care"
-                onerror="this.parentElement.innerHTML = '<div class=ph style=height:100%>RESPIRATORY IMAGE</div>'"
+                src="assets/sleep-apnea/deck-mount-12--channel-ecg.jpeg"
+                alt="Clinical Diagnostic Test Kits"
+                onerror="this.parentElement.innerHTML = '<div class=ph style=height:100%>DIAGNOSTIC IMAGE</div>'"
               />
             </div>
             <div class="cat-body">
-              <h3>RESPIRATORY CARE</h3>
-              <p>Ventilators, Oxygen Therapy, Nebulizers, Respiratory Consumables &amp; Other Solutions.</p>
+              <h3>CLINICAL DIAGNOSTIC TEST KITS</h3>
+              <p>Rapid Test Kits, ECG &amp; Point-of-Care Diagnostics for Accurate Clinical Screening.</p>
               <a href="pages/category.html" class="cat-explore">Explore More →</a>
             </div>
           </div>
+
+          <a href="#contact" class="cat-banner">
+            <img class="cat-banner-slide" src="assets/MedicalTourism.png" alt="Medical Tourism" />
+            <img class="cat-banner-slide" src="assets/MedicalTourism1.png" alt="Medical Tourism" />
+            <img class="cat-banner-slide" src="assets/MedicalTourism2.png" alt="Medical Tourism" />
+            <span class="cat-banner-text">
+              <span class="cat-banner-title">Medical Tourism</span>
+              <span class="cat-banner-sub">End-to-end care for international patients</span>
+            </span>
+          </a>
         </div>
       </div>
     </section>
@@ -1705,91 +1689,94 @@
       </div>
     </section>
 
-    <!-- ============ CERTIFICATES ============ -->
+    <!-- ============ SLEEP APNEA & RESPIRATORY DEVICES ============ -->
     <section class="section bg-soft">
       <div class="container">
-        <h2 class="section-title">OUR CERTIFICATES &amp; STANDARDS</h2>
-        <div class="cert-grid">
-          <div class="cert-card">
-            <div class="cert-mark">
+        <h2 class="section-title">SLEEP APNEA &amp; RESPIRATORY DEVICES</h2>
+        <div class="drug-grid">
+          <div class="drug-card">
+            <div class="drug-img">
               <img
-                src="assets/GDP.png"
-                alt="GDP"
-                onerror="this.parentElement.innerHTML = '<div class=ph style=width:100%;height:100%>GDP LOGO</div>'"
+                src="assets/sleep-apnea/bipap-vt-400st.jpeg"
+                alt="BiPAP VT-400ST"
+                onerror="this.parentElement.innerHTML = '<div class=ph style=height:100%>IMAGE</div>'"
               />
             </div>
-            <span class="cert-label">Good Distribution Practice</span>
+            <div class="drug-body">
+              <h4>BiPAP Devices</h4>
+              <span class="tag">Bi-Level Therapy</span>
+              <p>Dual-pressure support for sleep apnea &amp; respiratory insufficiency.</p>
+            </div>
           </div>
-          <div class="cert-card">
-            <div class="cert-mark">
+          <div class="drug-card">
+            <div class="drug-img">
               <img
-                src="assets/WHO.png"
-                alt="WHO-GDP"
-                onerror="this.parentElement.innerHTML = '<div class=ph style=width:100%;height:100%>WHO-GDP LOGO</div>'"
+                src="assets/sleep-apnea/cpap-vt-30d.jpeg"
+                alt="CPAP VT-30D"
+                onerror="this.parentElement.innerHTML = '<div class=ph style=height:100%>IMAGE</div>'"
               />
             </div>
-            <span class="cert-label">WHO-GDP Compliant</span>
+            <div class="drug-body">
+              <h4>CPAP Devices</h4>
+              <span class="tag">Continuous Airway Pressure</span>
+              <p>Reliable continuous positive airway pressure therapy for sleep apnea.</p>
+            </div>
           </div>
-          <div class="cert-card">
-            <div class="cert-mark">
+          <div class="drug-card">
+            <div class="drug-img">
               <img
-                src="assets/ISO9001.jpg"
-                alt="ISO 9001:2015"
-                onerror="
-                  this.parentElement.innerHTML = '<div class=ph style=width:100%;height:100%>ISO 9001 LOGO</div>'
-                "
+                src="assets/sleep-apnea/nasal-mask.jpeg"
+                alt="Nasal Mask"
+                onerror="this.parentElement.innerHTML = '<div class=ph style=height:100%>IMAGE</div>'"
               />
             </div>
-            <span class="cert-label">9001:2015 Certified</span>
+            <div class="drug-body">
+              <h4>Masks &amp; Accessories</h4>
+              <span class="tag">Nasal &amp; Full-Face</span>
+              <p>Comfortable masks, tubing &amp; accessories for daily therapy use.</p>
+            </div>
           </div>
-          <div class="cert-card">
-            <div class="cert-mark">
+          <div class="drug-card">
+            <div class="drug-img">
               <img
-                src="assets/ISO14001.avif"
-                alt="ISO 14001:2015"
-                onerror="
-                  this.parentElement.innerHTML = '<div class=ph style=width:100%;height:100%>ISO 14001 LOGO</div>'
-                "
+                src="assets/sleep-apnea/deck-mount-oxygen-concentrator-5l.jpeg"
+                alt="Oxygen Concentrator"
+                onerror="this.parentElement.innerHTML = '<div class=ph style=height:100%>IMAGE</div>'"
               />
             </div>
-            <span class="cert-label">14001:2015 Certified</span>
+            <div class="drug-body">
+              <h4>Oxygen Concentrators</h4>
+              <span class="tag">Respiratory Support</span>
+              <p>High-purity oxygen concentrators for home &amp; clinical use.</p>
+            </div>
           </div>
-          <div class="cert-card">
-            <div class="cert-mark">
+          <div class="drug-card">
+            <div class="drug-img">
               <img
-                src="assets/ISO45001.webp"
-                alt="ISO 45001:2018"
-                onerror="
-                  this.parentElement.innerHTML = '<div class=ph style=width:100%;height:100%>ISO 45001 LOGO</div>'
-                "
+                src="assets/sleep-apnea/deck-mount-sleep-sense-hst.jpeg"
+                alt="Home Sleep Test Device"
+                onerror="this.parentElement.innerHTML = '<div class=ph style=height:100%>IMAGE</div>'"
               />
             </div>
-            <span class="cert-label">45001:2018 Certified</span>
-          </div>
-          <div class="cert-card">
-            <div class="cert-mark">
-              <img
-                src="assets/GST.png"
-                alt="GST"
-                onerror="this.parentElement.innerHTML = '<div class=ph style=width:100%;height:100%>GST LOGO</div>'"
-              />
+            <div class="drug-body">
+              <h4>Home Sleep Test Devices</h4>
+              <span class="tag">Diagnostic Screening</span>
+              <p>Portable diagnostic devices for at-home sleep apnea screening.</p>
             </div>
-            <span class="cert-label">GST Registered</span>
           </div>
-          <div class="cert-cta">Committed to Quality, Safety &amp; Compliance</div>
+          <a href="pages/category.html" class="drug-cta">
+            View All Sleep &amp; Respiratory Devices
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 12h14M13 6l6 6-6 6"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
         </div>
-      </div>
-    </section>
-
-    <!-- ============ WHY CHOOSE ============ -->
-    <section class="section bg-soft">
-      <div class="container">
-        <h2 class="section-title">WHY CHOOSE MEDIFY?</h2>
-        <img
-          src="assets/why-choose-benefits-strip.png"
-          alt="Why Choose MediFy - 9 Benefits Icons Strip"
-          style="width: 100%; height: auto; max-width: 1200px; margin: 0 auto; display: block"
-        />
       </div>
     </section>
 
@@ -2020,57 +2007,61 @@
           <div class="testi-card">
             <div class="quote-mark">&ldquo;</div>
             <p>
-              MediFy is your trusted partner for quality medicines and healthcare solutions. Our service and delivery
-              are highly reliable.
+              From breakthrough oncology drugs to endocrine therapies, MediFy has been consistent on quality and
+              cold-chain compliance. That reliability matters most for our patients.
             </p>
             <div class="testi-person">
               <img
                 src="assets/testi-1.jpg"
-                alt="Dr. Rakesh Sharma"
+                alt="Dr. Anjali Mehta"
                 onerror="
                   this.replaceWith(
                     Object.assign(document.createElement('div'), {
                       className: 'ph',
                       style: 'width:38px;height:38px;border-radius:50%',
-                      innerText: 'DR',
+                      innerText: 'AM',
                     })
                   )
                 "
               />
               <span>
-                <span class="name" style="display: block">Dr. Rakesh Sharma</span>
-                <span class="role">Oncologist, Delhi</span>
+                <span class="name" style="display: block">Dr. Anjali Mehta</span>
+                <span class="role">Endocrinologist, Mumbai</span>
               </span>
             </div>
           </div>
           <div class="testi-card">
             <div class="quote-mark">&ldquo;</div>
             <p>
-              Excellent product quality and timely supply. They understand our requirements and always deliver on time.
+              We source our diagnostic test kits and ECG equipment through MediFy — genuine products, prompt
+              delivery, and a team that actually understands lab requirements.
             </p>
             <div class="testi-person">
               <img
                 src="assets/testi-2.jpg"
-                alt="Mr. Vinay Gupta"
+                alt="Mr. Suresh Nair"
                 onerror="
                   this.replaceWith(
                     Object.assign(document.createElement('div'), {
                       className: 'ph',
                       style: 'width:38px;height:38px;border-radius:50%',
-                      innerText: 'VG',
+                      innerText: 'SN',
                     })
                   )
                 "
               />
               <span>
-                <span class="name" style="display: block">Mr. Vinay Gupta</span>
-                <span class="role">Distributor, Lucknow</span>
+                <span class="name" style="display: block">Mr. Suresh Nair</span>
+                <span class="role">Diagnostic Lab Owner, Kochi</span>
               </span>
             </div>
           </div>
           <div class="testi-card">
             <div class="quote-mark">&ldquo;</div>
-            <p>Best source for Sleep Therapy devices. Original products with great after-sales support.</p>
+            <p>
+              Their CPAP and BiPAP devices come with genuine warranties and dependable after-sales support — our
+              patients notice the difference in service.
+            </p>
             <div class="testi-person">
               <img
                 src="assets/testi-3.jpg"
@@ -2135,6 +2126,8 @@
               <li><a href="pages/category.html">OTC Medicines</a></li>
               <li><a href="pages/category.html">Sleep Therapy Devices</a></li>
               <li><a href="pages/category.html">Respiratory Devices</a></li>
+              <li><a href="pages/category.html">Endocrine Drugs</a></li>
+              <li><a href="pages/category.html">Clinical Diagnostic Test Kits</a></li>
             </ul>
           </div>
 
