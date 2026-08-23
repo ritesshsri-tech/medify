@@ -203,6 +203,7 @@
     <script type="module">
       import { fetchMedicines } from '../js/data.js';
       import { getCart, updateQty, removeFromCart, setRxUploaded, needsRxUpload, cartTotal } from '../js/cart.js';
+      import { addPrescription } from '../js/prescriptions.js';
       import { paise } from '../js/utils.js';
 
       let cart = [];
@@ -344,6 +345,8 @@
 
       window.submitRxUpload = function () {
         if (!rxTargetId || !rxSelectedFileName) return;
+        const med = cart.find((i) => i.id === rxTargetId);
+        addPrescription({ fileName: rxSelectedFileName, forMedicineId: rxTargetId, forMedicineName: med ? med.brandName : null });
         setRxUploaded(rxTargetId, true);
         window.closeRxModal();
         render();

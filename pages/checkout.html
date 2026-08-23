@@ -100,6 +100,57 @@
         background: #f1f5f9;
         color: #94a3b8;
       }
+      .addr-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        border: 1.5px solid #bfdbfe;
+        border-radius: 10px;
+        padding: 12px 14px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .addr-card:hover {
+        border-color: #93c5fd;
+      }
+      .addr-card.selected {
+        border-color: #2563eb;
+        background: #eff6ff;
+      }
+      .addr-radio {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        border: 2px solid #bfdbfe;
+        flex-shrink: 0;
+        margin-top: 1px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .addr-card.selected .addr-radio {
+        border-color: #2563eb;
+      }
+      .addr-radio-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: #2563eb;
+        display: none;
+      }
+      .addr-card.selected .addr-radio-dot {
+        display: block;
+      }
+      .default-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        background: #2563eb;
+        color: #fff;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
+      }
       .gw-spinner {
         width: 40px;
         height: 40px;
@@ -164,13 +215,25 @@
               <span class="step-badge">1</span>
               <h2 class="font-700 text-slate-900 text-sm uppercase tracking-wider">Delivery Address</h2>
             </div>
-            <form id="addressForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+            <!-- Saved addresses picker -->
+            <div id="savedAddrList" class="space-y-2 mb-3"></div>
+
+            <button type="button" id="addNewAddrBtn" onclick="window.showAddressForm()" class="text-xs font-semibold text-blue-600 hover:underline mb-3">
+              + Use a new address
+            </button>
+
+            <form id="addressForm" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input class="field-input sm:col-span-2" id="addrName" type="text" placeholder="Full Name" autocomplete="name" required />
               <input class="field-input sm:col-span-2" id="addrPhone" type="tel" placeholder="Mobile Number" autocomplete="tel" maxlength="10" required />
               <input class="field-input sm:col-span-2" id="addrLine1" type="text" placeholder="House No., Building, Street" autocomplete="address-line1" required />
               <input class="field-input" id="addrCity" type="text" placeholder="City" autocomplete="address-level2" required />
               <input class="field-input" id="addrState" type="text" placeholder="State" autocomplete="address-level1" required />
               <input class="field-input" id="addrPincode" type="text" placeholder="Pincode" autocomplete="postal-code" maxlength="6" required />
+              <label class="sm:col-span-2 flex items-center gap-2 text-xs text-slate-600">
+                <input type="checkbox" id="saveAddrCheckbox" checked class="w-3.5 h-3.5" />
+                Save this address for future orders
+              </label>
             </form>
           </section>
 
@@ -319,10 +382,12 @@
     <script type="module">
       import { getCart, cartTotal, needsRxUpload, clearCart } from '../js/cart.js';
       import { createOrder } from '../js/orders.js';
+      import { getAddresses, addAddress } from '../js/addresses.js';
       import { paise } from '../js/utils.js';
 
       let selectedPay = 'upi';
       let cart = [];
+      let selectedAddressId = null;
 
       function init() {
         cart = getCart();
@@ -336,7 +401,64 @@
         }
         document.getElementById('checkoutContent').classList.remove('hidden');
         renderSummary();
+        renderSavedAddresses();
         bindPayOptions();
+      }
+
+      // --- Saved addresses ---
+      function renderSavedAddresses() {
+        const addresses = getAddresses();
+        const list = document.getElementById('savedAddrList');
+
+        if (addresses.length === 0) {
+          list.innerHTML = '';
+          showAddressFormInline();
+          return;
+        }
+
+        if (!selectedAddressId) {
+          const def = addresses.find((a) => a.isDefault) || addresses[0];
+          selectedAddressId = def.id;
+        }
+
+        list.innerHTML = addresses
+          .map(
+            (a) => `
+<div class="addr-card ${a.id === selectedAddressId ? 'selected' : ''}" data-addr-id="${a.id}">
+  <span class="addr-radio"><span class="addr-radio-dot"></span></span>
+  <div class="text-sm min-w-0">
+    <span class="font-700 text-slate-900">${a.name}</span>
+    ${a.isDefault ? '<span class="default-badge ml-2">Default</span>' : ''}
+    <p class="text-slate-600 mt-0.5">${a.line1}, ${a.city}, ${a.state} ${a.pincode}</p>
+    <p class="text-slate-500 text-xs mt-0.5">${a.phone}</p>
+  </div>
+</div>`
+          )
+          .join('');
+
+        list.querySelectorAll('.addr-card').forEach((el) => {
+          el.addEventListener('click', () => {
+            selectedAddressId = el.dataset.addrId;
+            hideAddressForm();
+            renderSavedAddresses();
+          });
+        });
+      }
+
+      window.showAddressForm = function () {
+        selectedAddressId = null;
+        document.querySelectorAll('.addr-card').forEach((el) => el.classList.remove('selected'));
+        showAddressFormInline();
+      };
+
+      function showAddressFormInline() {
+        document.getElementById('addressForm').classList.remove('hidden');
+        document.getElementById('addNewAddrBtn').classList.add('hidden');
+      }
+
+      function hideAddressForm() {
+        document.getElementById('addressForm').classList.add('hidden');
+        document.getElementById('addNewAddrBtn').classList.remove('hidden');
       }
 
       function showGuard(msg, href, label) {
@@ -374,6 +496,25 @@
       let pendingAddress = null;
 
       window.placeOrder = function () {
+        // Using a previously saved address
+        if (selectedAddressId) {
+          const addr = getAddresses().find((a) => a.id === selectedAddressId);
+          if (addr) {
+            pendingAddress = {
+              name: addr.name,
+              phone: addr.phone,
+              line1: addr.line1,
+              city: addr.city,
+              state: addr.state,
+              pincode: addr.pincode,
+            };
+            document.getElementById('formError').classList.add('hidden');
+            openGateway();
+            return;
+          }
+        }
+
+        // Using the new-address form
         const fields = ['addrName', 'addrPhone', 'addrLine1', 'addrCity', 'addrState', 'addrPincode'];
         const values = {};
         let valid = true;
@@ -394,6 +535,10 @@
           state: values.addrState,
           pincode: values.addrPincode,
         };
+
+        if (document.getElementById('saveAddrCheckbox').checked) {
+          addAddress(pendingAddress);
+        }
 
         openGateway();
       };

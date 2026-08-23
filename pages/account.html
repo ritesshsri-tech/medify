@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Orders — MediFy</title>
+    <title>My Account — MediFy</title>
     <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="../assets/favicon.png" type="image/png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,6 +25,66 @@
         box-shadow:
           0 1px 4px rgba(37, 99, 235, 0.07),
           0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      .quick-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #475569;
+        text-decoration: none;
+        transition: all 0.15s;
+        margin-bottom: 2px;
+      }
+      .quick-link:hover,
+      .quick-link.active {
+        background: #eaf1fe;
+        color: #2563eb;
+        font-weight: 600;
+      }
+      .field-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid #bfdbfe;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        color: #0f172a;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        font-family: inherit;
+      }
+      .field-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+      .field-label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 5px;
+        display: block;
+      }
+      .addr-card {
+        border: 1.5px solid #bfdbfe;
+        border-radius: 10px;
+        padding: 14px;
+        position: relative;
+      }
+      .addr-card.default {
+        border-color: #2563eb;
+        background: #eff6ff;
+      }
+      .default-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        background: #2563eb;
+        color: #fff;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
       }
       .track-step {
         display: flex;
@@ -66,6 +126,12 @@
         color: #1d4ed8;
         font-weight: 600;
       }
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
     </style>
   </head>
   <body>
@@ -77,22 +143,132 @@
     </script>
     <div id="appHeader"></div>
 
-    <div class="max-w-3xl mx-auto px-4 py-6">
-      <h1 class="text-xl lg:text-2xl font-800 text-slate-900 mb-5">My Orders</h1>
+    <div class="max-w-5xl mx-auto px-4 py-6">
+      <div class="flex flex-col lg:flex-row gap-6 items-start">
+        <!-- Sidebar -->
+        <aside class="w-full lg:w-56 flex-shrink-0 lg:sticky top-24">
+          <div class="card p-4">
+            <div class="flex items-center gap-3 mb-4 pb-4 border-b border-blue-50">
+              <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <svg width="20" height="20" fill="#2563EB" viewBox="0 0 24 24">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <div class="min-w-0">
+                <p id="sideUserName" class="text-sm font-700 text-slate-900 truncate"></p>
+                <p id="sideUserPhone" class="text-xs text-slate-500 truncate"></p>
+              </div>
+            </div>
+            <nav id="tabNav">
+              <a href="#profile" class="quick-link active" data-tab="profile">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Profile
+              </a>
+              <a href="#addresses" class="quick-link" data-tab="addresses">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Addresses
+              </a>
+              <a href="#orders" class="quick-link" data-tab="orders">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M14 2v5h5"/></svg>
+                Orders
+              </a>
+              <a href="#prescriptions" class="quick-link" data-tab="prescriptions">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                Prescriptions
+              </a>
+              <a href="cart.html" class="quick-link">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                Cart
+              </a>
+              <hr class="my-2 border-blue-50" />
+              <button type="button" id="signOutBtn" class="quick-link w-full text-left text-red-600">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Sign Out
+              </button>
+            </nav>
+          </div>
+        </aside>
 
-      <div id="emptyState" class="hidden card text-center py-16">
-        <p class="text-slate-600 font-medium mb-4">You haven't placed any orders yet</p>
-        <a href="category.html" class="inline-block px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-colors">
-          Browse Medicines
-        </a>
+        <!-- Main content -->
+        <main class="flex-1 min-w-0 w-full">
+          <!-- PROFILE -->
+          <div id="tab-profile" class="tab-panel active">
+            <div class="card p-5">
+              <h1 class="text-lg font-800 text-slate-900 mb-4">Profile</h1>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md">
+                <div class="sm:col-span-2">
+                  <label class="field-label" for="profileName">Full Name</label>
+                  <input id="profileName" class="field-input" type="text" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="field-label" for="profilePhone">Mobile Number</label>
+                  <input id="profilePhone" class="field-input" type="tel" maxlength="10" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="field-label" for="profileEmail">Email</label>
+                  <input id="profileEmail" class="field-input" type="email" />
+                </div>
+              </div>
+              <button type="button" onclick="window.saveProfile()" class="mt-4 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-colors">
+                Save Changes
+              </button>
+              <p id="profileSaved" class="hidden text-xs text-green-700 mt-2">Profile updated</p>
+            </div>
+          </div>
+
+          <!-- ADDRESSES -->
+          <div id="tab-addresses" class="tab-panel">
+            <div class="card p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h1 class="text-lg font-800 text-slate-900">Saved Addresses</h1>
+                <button type="button" onclick="window.openAddressForm()" class="text-xs font-semibold text-blue-600 hover:underline">+ Add New</button>
+              </div>
+
+              <div id="addressForm" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5 p-4 bg-blue-50 rounded-xl">
+                <input id="newAddrName" class="field-input sm:col-span-2" type="text" placeholder="Full Name" />
+                <input id="newAddrPhone" class="field-input sm:col-span-2" type="tel" placeholder="Mobile Number" maxlength="10" />
+                <input id="newAddrLine1" class="field-input sm:col-span-2" type="text" placeholder="House No., Building, Street" />
+                <input id="newAddrCity" class="field-input" type="text" placeholder="City" />
+                <input id="newAddrState" class="field-input" type="text" placeholder="State" />
+                <input id="newAddrPincode" class="field-input" type="text" placeholder="Pincode" maxlength="6" />
+                <div class="sm:col-span-2 flex gap-2">
+                  <button type="button" onclick="window.saveNewAddress()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-colors">Save Address</button>
+                  <button type="button" onclick="window.closeAddressForm()" class="px-5 py-2 border border-blue-200 text-slate-600 text-sm font-semibold rounded-full transition-colors">Cancel</button>
+                </div>
+              </div>
+
+              <div id="addressList" class="space-y-3"></div>
+              <p id="addressEmpty" class="hidden text-sm text-slate-500 text-center py-8">No saved addresses yet</p>
+            </div>
+          </div>
+
+          <!-- ORDERS -->
+          <div id="tab-orders" class="tab-panel">
+            <h1 class="text-lg font-800 text-slate-900 mb-4">Order History</h1>
+            <div id="orderEmpty" class="hidden card text-center py-16">
+              <p class="text-slate-600 font-medium mb-4">You haven't placed any orders yet</p>
+              <a href="category.html" class="inline-block px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-colors">Browse Medicines</a>
+            </div>
+            <div id="orderList" class="space-y-4"></div>
+          </div>
+
+          <!-- PRESCRIPTIONS -->
+          <div id="tab-prescriptions" class="tab-panel">
+            <div class="card p-5">
+              <h1 class="text-lg font-800 text-slate-900 mb-4">Saved Prescriptions</h1>
+              <div id="rxList" class="space-y-2"></div>
+              <p id="rxEmpty" class="hidden text-sm text-slate-500 text-center py-8">No prescriptions uploaded yet</p>
+            </div>
+          </div>
+        </main>
       </div>
-
-      <div id="orderList" class="space-y-4"></div>
     </div>
 
     <script src="../js/header.js"></script>
     <script type="module">
       import { getOrders, trackingStages, currentStage } from '../js/orders.js';
+      import { getAddresses, addAddress, removeAddress, setDefaultAddress } from '../js/addresses.js';
+      import { getPrescriptions, removePrescription } from '../js/prescriptions.js';
       import { paise } from '../js/utils.js';
 
       const STAGE_LABELS = {
@@ -103,27 +279,157 @@
         delivered: 'Delivered',
       };
 
-      function init() {
-        const orders = getOrders();
-        if (orders.length === 0) {
-          document.getElementById('emptyState').classList.remove('hidden');
-          return;
-        }
-
-        const params = new URLSearchParams(window.location.search);
-        const highlightId = params.get('order');
-
-        document.getElementById('orderList').innerHTML = orders.map((o) => renderOrder(o, o.id === highlightId)).join('');
+      function getUser() {
+        return JSON.parse(localStorage.getItem('currentUser') || 'null') || {};
       }
 
-      function renderOrder(order, expanded) {
+      function init() {
+        renderSidebarUser();
+        renderProfileForm();
+        renderAddresses();
+        renderOrders();
+        renderPrescriptions();
+        bindTabs();
+
+        const hash = window.location.hash.replace('#', '');
+        if (['profile', 'addresses', 'orders', 'prescriptions'].includes(hash)) switchTab(hash);
+        else if (new URLSearchParams(window.location.search).get('order')) switchTab('orders');
+
+        document.getElementById('signOutBtn').addEventListener('click', () => {
+          localStorage.removeItem('currentUser');
+          window.location.replace('login.html');
+        });
+      }
+
+      function renderSidebarUser() {
+        const user = getUser();
+        document.getElementById('sideUserName').textContent = user.name || 'MediFy User';
+        document.getElementById('sideUserPhone').textContent = user.phone || '';
+      }
+
+      // --- Tabs ---
+      function bindTabs() {
+        document.querySelectorAll('#tabNav .quick-link[data-tab]').forEach((link) => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchTab(link.dataset.tab);
+          });
+        });
+      }
+
+      function switchTab(tab) {
+        document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+        document.querySelectorAll('#tabNav .quick-link[data-tab]').forEach((l) => l.classList.remove('active'));
+        document.getElementById(`tab-${tab}`).classList.add('active');
+        const link = document.querySelector(`#tabNav .quick-link[data-tab="${tab}"]`);
+        if (link) link.classList.add('active');
+        history.replaceState(null, '', `#${tab}`);
+      }
+
+      // --- Profile ---
+      function renderProfileForm() {
+        const user = getUser();
+        document.getElementById('profileName').value = user.name || '';
+        document.getElementById('profilePhone').value = user.phone || '';
+        document.getElementById('profileEmail').value = user.email || '';
+      }
+
+      window.saveProfile = function () {
+        const user = getUser();
+        user.name = document.getElementById('profileName').value.trim();
+        user.phone = document.getElementById('profilePhone').value.trim();
+        user.email = document.getElementById('profileEmail').value.trim();
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        renderSidebarUser();
+        if (window.refreshAppHeaderAuth) window.refreshAppHeaderAuth();
+        const msg = document.getElementById('profileSaved');
+        msg.classList.remove('hidden');
+        setTimeout(() => msg.classList.add('hidden'), 2000);
+      };
+
+      // --- Addresses ---
+      function renderAddresses() {
+        const addresses = getAddresses();
+        const list = document.getElementById('addressList');
+        document.getElementById('addressEmpty').classList.toggle('hidden', addresses.length > 0);
+        list.innerHTML = addresses
+          .map(
+            (a) => `
+<div class="addr-card ${a.isDefault ? 'default' : ''}">
+  <div class="flex items-start justify-between gap-2">
+    <div class="text-sm">
+      <span class="font-700 text-slate-900">${a.name}</span>
+      ${a.isDefault ? '<span class="default-badge ml-2">Default</span>' : ''}
+      <p class="text-slate-600 mt-1">${a.line1}, ${a.city}, ${a.state} ${a.pincode}</p>
+      <p class="text-slate-500 text-xs mt-0.5">${a.phone}</p>
+    </div>
+    <button type="button" onclick="window.deleteAddress('${a.id}')" aria-label="Remove address" class="text-slate-400 hover:text-red-500 p-1 flex-shrink-0">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+    </button>
+  </div>
+  ${!a.isDefault ? `<button type="button" onclick="window.makeDefault('${a.id}')" class="text-xs font-semibold text-blue-600 hover:underline mt-2">Set as Default</button>` : ''}
+</div>`
+          )
+          .join('');
+      }
+
+      window.openAddressForm = () => document.getElementById('addressForm').classList.remove('hidden');
+      window.closeAddressForm = () => document.getElementById('addressForm').classList.add('hidden');
+
+      window.saveNewAddress = function () {
+        const fields = ['newAddrName', 'newAddrPhone', 'newAddrLine1', 'newAddrCity', 'newAddrState', 'newAddrPincode'];
+        const values = {};
+        let valid = true;
+        fields.forEach((id) => {
+          const val = document.getElementById(id).value.trim();
+          values[id] = val;
+          if (!val) valid = false;
+        });
+        if (!valid) return;
+
+        addAddress({
+          name: values.newAddrName,
+          phone: values.newAddrPhone,
+          line1: values.newAddrLine1,
+          city: values.newAddrCity,
+          state: values.newAddrState,
+          pincode: values.newAddrPincode,
+        });
+        fields.forEach((id) => (document.getElementById(id).value = ''));
+        window.closeAddressForm();
+        renderAddresses();
+      };
+
+      window.deleteAddress = function (id) {
+        removeAddress(id);
+        renderAddresses();
+      };
+
+      window.makeDefault = function (id) {
+        setDefaultAddress(id);
+        renderAddresses();
+      };
+
+      // --- Orders ---
+      function renderOrders() {
+        const orders = getOrders();
+        document.getElementById('orderEmpty').classList.toggle('hidden', orders.length > 0);
+        const highlightId = new URLSearchParams(window.location.search).get('order');
+        document.getElementById('orderList').innerHTML = orders.map((o) => renderOrder(o)).join('');
+        if (highlightId) {
+          const el = document.getElementById(`order-${highlightId}`);
+          if (el) el.scrollIntoView({ block: 'start' });
+        }
+      }
+
+      function renderOrder(order) {
         const stage = currentStage(order);
         const stages = trackingStages();
         const stageIdx = stages.indexOf(stage);
         const placedDate = new Date(order.placedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 
         return `
-<div class="card p-5">
+<div class="card p-5" id="order-${order.id}">
   <div class="flex items-start justify-between gap-3 flex-wrap mb-1">
     <div>
       <p class="font-700 text-slate-900 text-sm">${order.id}</p>
@@ -133,12 +439,9 @@
   </div>
 
   <div class="flex flex-wrap gap-1 mt-3 mb-4">
-    ${order.items
-      .map((i) => `<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">${i.brandName} &times;${i.qty}</span>`)
-      .join('')}
+    ${order.items.map((i) => `<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">${i.brandName} &times;${i.qty}</span>`).join('')}
   </div>
 
-  <!-- Tracking -->
   <div class="flex items-start pt-2">
     ${stages
       .map((s, i) => {
@@ -164,6 +467,34 @@
   </div>
 </div>`;
       }
+
+      // --- Prescriptions ---
+      function renderPrescriptions() {
+        const list = getPrescriptions();
+        document.getElementById('rxEmpty').classList.toggle('hidden', list.length > 0);
+        document.getElementById('rxList').innerHTML = list
+          .map(
+            (rx) => `
+<div class="flex items-center justify-between gap-3 border border-blue-100 rounded-lg px-4 py-3">
+  <div class="flex items-center gap-3 min-w-0">
+    <svg width="18" height="18" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+    <div class="min-w-0">
+      <p class="text-sm font-medium text-slate-800 truncate">${rx.fileName}</p>
+      <p class="text-xs text-slate-500">${rx.forMedicineName ? `For ${rx.forMedicineName} &middot; ` : ''}${new Date(rx.uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+    </div>
+  </div>
+  <button type="button" onclick="window.deleteRx('${rx.id}')" aria-label="Remove prescription" class="text-slate-400 hover:text-red-500 p-1 flex-shrink-0">
+    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+  </button>
+</div>`
+          )
+          .join('');
+      }
+
+      window.deleteRx = function (id) {
+        removePrescription(id);
+        renderPrescriptions();
+      };
 
       init();
     </script>
