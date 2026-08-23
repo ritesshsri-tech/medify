@@ -151,6 +151,12 @@
         font-weight: 800;
         color: var(--navy);
       }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-shrink: 0;
+      }
       .logo-text .sub {
         font-size: 0.62rem;
         letter-spacing: 1px;
@@ -336,6 +342,108 @@
       .nav-btn-outline:hover {
         background: var(--color-primary-light);
         border-color: var(--color-primary);
+      }
+      .nav-cart-link {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        flex-shrink: 0;
+      }
+      .nav-cart-badge {
+        position: absolute;
+        top: -6px;
+        right: -8px;
+        background: #dc2626;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        border-radius: 999px;
+        min-width: 18px;
+        height: 18px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 0 4px;
+      }
+      .nav-cart-badge.show {
+        display: flex;
+      }
+      .nav-signin-btn {
+        padding: 8px 18px;
+        border: 1.5px solid var(--color-primary);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--color-primary);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        transition: background 0.2s;
+      }
+      .nav-signin-btn:hover {
+        background: var(--color-primary-light);
+      }
+      .nav-user-menu {
+        position: relative;
+      }
+      .nav-user-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border: 1.5px solid #bfdbfe;
+        border-radius: 999px;
+        background: #fff;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e3a8a;
+      }
+      .nav-user-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        background: #fff;
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(30, 58, 138, 0.12);
+        min-width: 160px;
+        overflow: hidden;
+        z-index: 300;
+      }
+      .nav-user-dropdown.show {
+        display: block;
+      }
+      .nav-user-dropdown a,
+      .nav-user-dropdown button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 10px 16px;
+        font-size: 13px;
+        color: #0f172a;
+        text-decoration: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .nav-user-dropdown a:hover,
+      .nav-user-dropdown button:hover {
+        background: #f5f8fe;
+      }
+      .nav-user-dropdown hr {
+        margin: 4px 0;
+        border: none;
+        border-top: 1px solid #e2e9f5;
+      }
+      .nav-user-dropdown .signout-btn {
+        color: #dc2626;
       }
       .nav-cta-block {
         display: flex;
@@ -1348,6 +1456,16 @@
             <a href="tel:+911800123456" class="order-phone">+91 1800-123-456</a>
           </div>
         </div>
+        <div class="header-actions">
+          <a href="pages/cart.html" class="nav-cart-link" aria-label="View cart">
+            <svg width="24" height="24" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+            <span id="homeCartBadge" class="nav-cart-badge"></span>
+          </a>
+          <div id="homeAuthSlot"></div>
+        </div>
       </div>
 
       <nav class="main-nav container">
@@ -1360,7 +1478,7 @@
           <li><a href="#contact">Contact Us</a></li>
         </ul>
         <div class="nav-cta-buttons">
-          <a href="#" class="nav-btn nav-btn-rx" rel="noopener noreferrer nofollow">
+          <a href="pages/cart.html" class="nav-btn nav-btn-rx">
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
               <polyline points="13 2 13 9 20 9" />
@@ -2425,6 +2543,68 @@
           }
         });
       }
+
+      // --- Header auth + cart badge (homepage uses its own header markup) ---
+      function getHomeCart() {
+        return JSON.parse(localStorage.getItem('cart') || '[]');
+      }
+      function getHomeUser() {
+        return JSON.parse(localStorage.getItem('currentUser') || 'null');
+      }
+      function homeCartCount() {
+        return getHomeCart().reduce((sum, item) => sum + (item.qty || 1), 0);
+      }
+
+      function renderHomeCartBadge() {
+        const badge = document.getElementById('homeCartBadge');
+        if (!badge) return;
+        const count = homeCartCount();
+        badge.textContent = count;
+        badge.classList.toggle('show', count > 0);
+      }
+
+      function renderHomeAuth() {
+        const slot = document.getElementById('homeAuthSlot');
+        if (!slot) return;
+        const user = getHomeUser();
+
+        if (user) {
+          slot.innerHTML = `
+            <div class="nav-user-menu">
+              <button type="button" class="nav-user-btn" id="homeUserBtn">
+                <svg width="16" height="16" fill="#2563EB" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                ${user.name || 'Account'}
+                <svg width="12" height="12" fill="none" stroke="#2563EB" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="nav-user-dropdown" id="homeUserDropdown">
+                <a href="pages/account.html">My Orders</a>
+                <hr />
+                <button type="button" id="homeSignOutBtn" class="signout-btn">Sign Out</button>
+              </div>
+            </div>`;
+
+          document.getElementById('homeUserBtn').addEventListener('click', function () {
+            document.getElementById('homeUserDropdown').classList.toggle('show');
+          });
+          document.getElementById('homeSignOutBtn').addEventListener('click', function () {
+            localStorage.removeItem('currentUser');
+            renderHomeAuth();
+          });
+        } else {
+          slot.innerHTML = `<a href="pages/login.html" class="nav-signin-btn">Sign In</a>`;
+        }
+      }
+
+      document.addEventListener('click', function (e) {
+        const menu = document.getElementById('homeUserDropdown');
+        const btn = document.getElementById('homeUserBtn');
+        if (menu && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove('show');
+        }
+      });
+
+      renderHomeCartBadge();
+      renderHomeAuth();
     </script>
   </body>
 </html>

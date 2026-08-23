@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account — MediFy</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="../assets/favicon.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 16px;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: #f5f8fe;
+        color: #0f172a;
+      }
+      .bg-decor {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .bg-decor span {
+        position: absolute;
+        width: 384px;
+        height: 384px;
+        border-radius: 50%;
+        opacity: 0.1;
+      }
+      .bg-decor span.top {
+        top: -128px;
+        right: -128px;
+        background: radial-gradient(circle, #2563eb, transparent);
+      }
+      .bg-decor span.bottom {
+        bottom: -128px;
+        left: -128px;
+        background: radial-gradient(circle, #3b82f6, transparent);
+      }
+      .signup-wrap {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+      }
+      .signup-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #dbeafe;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        padding: 40px 32px;
+      }
+      .signup-logo-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+      }
+      .signup-logo {
+        height: 52px;
+      }
+      .signup-heading {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 4px;
+        text-align: center;
+      }
+      .signup-subtext {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin: 0 0 24px;
+        text-align: center;
+      }
+      .field-label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 5px;
+        display: block;
+      }
+      .field-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid #bfdbfe;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        color: #0f172a;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        margin-bottom: 16px;
+        font-family: inherit;
+      }
+      .field-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+      .submit-btn {
+        width: 100%;
+        padding: 12px;
+        background: #2563eb;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        margin-top: 4px;
+      }
+      .submit-btn:hover {
+        background: #1d4ed8;
+      }
+      .field-error {
+        font-size: 0.72rem;
+        color: #dc2626;
+        margin: -12px 0 12px;
+        display: none;
+      }
+      .field-error.show {
+        display: block;
+      }
+      .switch-link {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 20px;
+      }
+      .switch-link a {
+        color: #2563eb;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .switch-link a:hover {
+        text-decoration: underline;
+      }
+      .demo-note {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 0.72rem;
+        color: #1e40af;
+        margin-bottom: 20px;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-decor">
+      <span class="top"></span>
+      <span class="bottom"></span>
+    </div>
+
+    <div class="signup-wrap">
+      <div class="signup-card">
+        <div class="signup-logo-row">
+          <img src="../assets/medify-logo.svg" alt="MediFy" class="signup-logo" />
+        </div>
+
+        <h1 class="signup-heading">Create Your Account</h1>
+        <p class="signup-subtext">Sign up to order medicines &amp; track deliveries</p>
+
+        <div class="demo-note">This is a demo sign-up. No verification is performed — your details are stored locally on this device only.</div>
+
+        <form id="signupForm" onsubmit="return false;">
+          <label class="field-label" for="fullName">Full Name</label>
+          <input class="field-input" id="fullName" type="text" placeholder="e.g. Rohan Sharma" autocomplete="name" required />
+          <p class="field-error" id="fullNameError">Please enter your name</p>
+
+          <label class="field-label" for="phone">Mobile Number</label>
+          <input class="field-input" id="phone" type="tel" placeholder="10-digit mobile number" autocomplete="tel" maxlength="10" required />
+          <p class="field-error" id="phoneError">Please enter a valid 10-digit mobile number</p>
+
+          <label class="field-label" for="email">Email (optional)</label>
+          <input class="field-input" id="email" type="email" placeholder="you@example.com" autocomplete="email" />
+
+          <button type="submit" class="submit-btn" onclick="submitSignup()">Create Account</button>
+        </form>
+
+        <p class="switch-link">Already have an account? <a href="login.html">Log in</a></p>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        if (localStorage.getItem('currentUser')) {
+          const dest = sessionStorage.getItem('loginRedirect') || '../index.html';
+          sessionStorage.removeItem('loginRedirect');
+          window.location.replace(dest);
+        }
+
+        window.submitSignup = function () {
+          const nameEl = document.getElementById('fullName');
+          const phoneEl = document.getElementById('phone');
+          const emailEl = document.getElementById('email');
+          const nameErr = document.getElementById('fullNameError');
+          const phoneErr = document.getElementById('phoneError');
+
+          const name = nameEl.value.trim();
+          const phone = phoneEl.value.trim();
+          const email = emailEl.value.trim();
+
+          let valid = true;
+          if (!name) {
+            nameErr.classList.add('show');
+            valid = false;
+          } else {
+            nameErr.classList.remove('show');
+          }
+          if (!/^\d{10}$/.test(phone)) {
+            phoneErr.classList.add('show');
+            valid = false;
+          } else {
+            phoneErr.classList.remove('show');
+          }
+          if (!valid) return;
+
+          localStorage.setItem(
+            'currentUser',
+            JSON.stringify({ name: name, phone: phone, email: email, role: 'user' })
+          );
+
+          const dest = sessionStorage.getItem('loginRedirect') || '../index.html';
+          sessionStorage.removeItem('loginRedirect');
+          window.location.replace(dest);
+        };
+      })();
+    </script>
+  </body>
+</html>

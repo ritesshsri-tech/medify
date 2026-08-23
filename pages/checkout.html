@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout — MediFy</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="../assets/favicon.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: #f5f8fe;
+        color: #0f172a;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        box-shadow:
+          0 1px 4px rgba(37, 99, 235, 0.07),
+          0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      .field-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid #bfdbfe;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        color: #0f172a;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        font-family: inherit;
+      }
+      .field-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+      .step-badge {
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1.5px solid #bfdbfe;
+        flex-shrink: 0;
+      }
+      .pay-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1.5px solid #bfdbfe;
+        border-radius: 10px;
+        padding: 12px 14px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .pay-option:hover {
+        border-color: #93c5fd;
+        background: #f8fafc;
+      }
+      .pay-option.selected {
+        border-color: #2563eb;
+        background: #eff6ff;
+      }
+      .pay-radio {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        border: 2px solid #bfdbfe;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pay-option.selected .pay-radio {
+        border-color: #2563eb;
+      }
+      .pay-radio-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: #2563eb;
+        display: none;
+      }
+      .pay-option.selected .pay-radio-dot {
+        display: block;
+      }
+      .field-input:disabled {
+        background: #f1f5f9;
+        color: #94a3b8;
+      }
+      .gw-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #dbeafe;
+        border-top-color: #2563eb;
+        border-radius: 999px;
+        animation: gw-spin 0.8s linear infinite;
+      }
+      @keyframes gw-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .gw-check {
+        width: 56px;
+        height: 56px;
+        border-radius: 999px;
+        background: #dcfce7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: gw-pop 0.35s ease;
+      }
+      @keyframes gw-pop {
+        0% {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      if (!localStorage.getItem('currentUser')) {
+        sessionStorage.setItem('loginRedirect', window.location.href);
+        window.location.replace('login.html');
+      }
+    </script>
+    <div id="appHeader"></div>
+
+    <div class="max-w-5xl mx-auto px-4 py-6">
+      <h1 class="text-xl lg:text-2xl font-800 text-slate-900 mb-5">Checkout</h1>
+
+      <!-- Empty / blocked guard -->
+      <div id="guardState" class="hidden card text-center py-16">
+        <p id="guardMsg" class="text-slate-600 font-medium mb-4"></p>
+        <a id="guardLink" href="cart.html" class="inline-block px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full transition-colors">
+          Back to Cart
+        </a>
+      </div>
+
+      <div id="checkoutContent" class="hidden flex flex-col lg:flex-row gap-6 items-start">
+        <!-- Left: address + payment -->
+        <div class="flex-1 min-w-0 w-full space-y-4">
+          <!-- Delivery address -->
+          <section class="card p-5">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="step-badge">1</span>
+              <h2 class="font-700 text-slate-900 text-sm uppercase tracking-wider">Delivery Address</h2>
+            </div>
+            <form id="addressForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input class="field-input sm:col-span-2" id="addrName" type="text" placeholder="Full Name" autocomplete="name" required />
+              <input class="field-input sm:col-span-2" id="addrPhone" type="tel" placeholder="Mobile Number" autocomplete="tel" maxlength="10" required />
+              <input class="field-input sm:col-span-2" id="addrLine1" type="text" placeholder="House No., Building, Street" autocomplete="address-line1" required />
+              <input class="field-input" id="addrCity" type="text" placeholder="City" autocomplete="address-level2" required />
+              <input class="field-input" id="addrState" type="text" placeholder="State" autocomplete="address-level1" required />
+              <input class="field-input" id="addrPincode" type="text" placeholder="Pincode" autocomplete="postal-code" maxlength="6" required />
+            </form>
+          </section>
+
+          <!-- Payment method -->
+          <section class="card p-5">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="step-badge">2</span>
+              <h2 class="font-700 text-slate-900 text-sm uppercase tracking-wider">Payment Method</h2>
+            </div>
+            <div id="payOptions" class="space-y-2">
+              <label class="pay-option selected" data-value="upi">
+                <input type="radio" name="pay" value="upi" class="hidden" checked />
+                <span class="pay-radio"><span class="pay-radio-dot"></span></span>
+                <span class="text-sm font-medium text-slate-800 flex-1">UPI</span>
+              </label>
+              <label class="pay-option" data-value="card">
+                <input type="radio" name="pay" value="card" class="hidden" />
+                <span class="pay-radio"><span class="pay-radio-dot"></span></span>
+                <span class="text-sm font-medium text-slate-800 flex-1">Credit / Debit Card</span>
+              </label>
+              <label class="pay-option" data-value="netbanking">
+                <input type="radio" name="pay" value="netbanking" class="hidden" />
+                <span class="pay-radio"><span class="pay-radio-dot"></span></span>
+                <span class="text-sm font-medium text-slate-800 flex-1">Net Banking</span>
+              </label>
+              <label class="pay-option" data-value="cod">
+                <input type="radio" name="pay" value="cod" class="hidden" />
+                <span class="pay-radio"><span class="pay-radio-dot"></span></span>
+                <span class="text-sm font-medium text-slate-800 flex-1">Cash on Delivery</span>
+              </label>
+            </div>
+            <p class="text-xs text-slate-400 mt-3">This is a demo checkout — no real payment is processed.</p>
+          </section>
+        </div>
+
+        <!-- Right: order summary -->
+        <aside class="w-full lg:w-80 flex-shrink-0 lg:sticky top-24">
+          <div class="card p-5">
+            <h2 class="text-sm font-700 text-slate-500 uppercase tracking-wider mb-4">Order Summary</h2>
+            <div id="summaryItems" class="space-y-2 mb-4 text-sm text-slate-700"></div>
+            <div class="border-t border-blue-100 pt-3 flex justify-between items-center mb-5">
+              <span class="font-700 text-slate-900">Total</span>
+              <span id="sumTotal" class="text-lg font-800 text-slate-900"></span>
+            </div>
+            <button
+              type="button"
+              onclick="window.placeOrder()"
+              class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full text-sm transition-colors"
+            >
+              Place Order
+            </button>
+            <p id="formError" class="hidden text-xs text-red-600 mt-2 text-center">Please fill all address fields</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Mock Payment Gateway modal -->
+    <div id="gatewayModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+      <div class="absolute inset-0 bg-black/60"></div>
+      <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+        <!-- Gateway header -->
+        <div class="bg-blue-600 px-5 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-2 text-white">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <rect x="3" y="11" width="18" height="10" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <span class="font-700 text-sm">MediFy Secure Payments</span>
+          </div>
+          <button type="button" id="gwCloseBtn" onclick="window.closeGateway()" aria-label="Close" class="text-white/80 hover:text-white p-1">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <p class="text-xs text-slate-500 mb-1 text-center">Amount Payable</p>
+          <p id="gwAmount" class="text-2xl font-800 text-slate-900 text-center mb-5"></p>
+
+          <!-- Step: form (per method) -->
+          <div id="gwFormStep">
+            <div id="gwUpiForm" class="hidden">
+              <label class="field-label text-xs font-600 text-slate-700 mb-1 block">Enter UPI ID</label>
+              <input id="gwUpiId" class="field-input mb-4" type="text" placeholder="yourname@upi" />
+            </div>
+            <div id="gwCardForm" class="hidden space-y-3 mb-1">
+              <div>
+                <label class="text-xs font-600 text-slate-700 mb-1 block">Card Number</label>
+                <input id="gwCardNumber" class="field-input" type="text" inputmode="numeric" maxlength="19" placeholder="1234 5678 9012 3456" />
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-600 text-slate-700 mb-1 block">Expiry</label>
+                  <input id="gwCardExpiry" class="field-input" type="text" maxlength="5" placeholder="MM/YY" />
+                </div>
+                <div>
+                  <label class="text-xs font-600 text-slate-700 mb-1 block">CVV</label>
+                  <input id="gwCardCvv" class="field-input" type="password" inputmode="numeric" maxlength="3" placeholder="123" />
+                </div>
+              </div>
+              <div class="h-1"></div>
+            </div>
+            <div id="gwNetbankingForm" class="hidden mb-1">
+              <label class="text-xs font-600 text-slate-700 mb-1 block">Select Bank</label>
+              <select id="gwBank" class="field-input" aria-label="Select Bank">
+                <option>State Bank of India</option>
+                <option>HDFC Bank</option>
+                <option>ICICI Bank</option>
+                <option>Axis Bank</option>
+                <option>Punjab National Bank</option>
+              </select>
+            </div>
+            <div id="gwCodForm" class="hidden mb-1 text-center text-sm text-slate-600 py-2">
+              Pay in cash when your order is delivered to your doorstep.
+            </div>
+            <p id="gwFormError" class="hidden text-xs text-red-600 mb-3 text-center">Please fill in valid payment details</p>
+            <button type="button" onclick="window.gatewaySubmit()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full text-sm transition-colors">
+              <span id="gwSubmitLabel">Pay Now</span>
+            </button>
+            <p class="text-[11px] text-slate-400 text-center mt-3">This is a simulated gateway for demo purposes. No real payment is made.</p>
+          </div>
+
+          <!-- Step: processing -->
+          <div id="gwProcessingStep" class="hidden flex-col items-center py-8">
+            <div class="gw-spinner mb-4"></div>
+            <p class="text-sm font-medium text-slate-700">Processing your payment&hellip;</p>
+            <p class="text-xs text-slate-400 mt-1">Please do not close this window</p>
+          </div>
+
+          <!-- Step: success -->
+          <div id="gwSuccessStep" class="hidden flex-col items-center py-6">
+            <div class="gw-check mb-4">
+              <svg width="26" height="26" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <p class="text-sm font-700 text-slate-900">Payment Successful</p>
+            <p class="text-xs text-slate-400 mt-1">Redirecting to your order&hellip;</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/header.js"></script>
+    <script type="module">
+      import { getCart, cartTotal, needsRxUpload, clearCart } from '../js/cart.js';
+      import { createOrder } from '../js/orders.js';
+      import { paise } from '../js/utils.js';
+
+      let selectedPay = 'upi';
+      let cart = [];
+
+      function init() {
+        cart = getCart();
+        if (cart.length === 0) {
+          showGuard('Your cart is empty. Add items before checking out.', 'cart.html', 'Browse Medicines');
+          return;
+        }
+        if (needsRxUpload()) {
+          showGuard('Please upload prescriptions for Rx items before checking out.', 'cart.html', 'Back to Cart');
+          return;
+        }
+        document.getElementById('checkoutContent').classList.remove('hidden');
+        renderSummary();
+        bindPayOptions();
+      }
+
+      function showGuard(msg, href, label) {
+        document.getElementById('guardState').classList.remove('hidden');
+        document.getElementById('guardMsg').textContent = msg;
+        const link = document.getElementById('guardLink');
+        link.href = href;
+        link.textContent = label;
+      }
+
+      function renderSummary() {
+        document.getElementById('summaryItems').innerHTML = cart
+          .map(
+            (i) => `
+<div class="flex justify-between gap-2">
+  <span class="truncate">${i.brandName} <span class="text-slate-400">&times;${i.qty}</span></span>
+  <span class="flex-shrink-0">${paise((i.price || 0) * i.qty)}</span>
+</div>`
+          )
+          .join('');
+        document.getElementById('sumTotal').textContent = paise(cartTotal());
+      }
+
+      function bindPayOptions() {
+        document.querySelectorAll('.pay-option').forEach((el) => {
+          el.addEventListener('click', () => {
+            document.querySelectorAll('.pay-option').forEach((o) => o.classList.remove('selected'));
+            el.classList.add('selected');
+            el.querySelector('input').checked = true;
+            selectedPay = el.dataset.value;
+          });
+        });
+      }
+
+      let pendingAddress = null;
+
+      window.placeOrder = function () {
+        const fields = ['addrName', 'addrPhone', 'addrLine1', 'addrCity', 'addrState', 'addrPincode'];
+        const values = {};
+        let valid = true;
+        fields.forEach((id) => {
+          const val = document.getElementById(id).value.trim();
+          values[id] = val;
+          if (!val) valid = false;
+        });
+
+        document.getElementById('formError').classList.toggle('hidden', valid);
+        if (!valid) return;
+
+        pendingAddress = {
+          name: values.addrName,
+          phone: values.addrPhone,
+          line1: values.addrLine1,
+          city: values.addrCity,
+          state: values.addrState,
+          pincode: values.addrPincode,
+        };
+
+        openGateway();
+      };
+
+      // --- Mock payment gateway ---
+      const GW_FORMS = { upi: 'gwUpiForm', card: 'gwCardForm', netbanking: 'gwNetbankingForm', cod: 'gwCodForm' };
+      const GW_SUBMIT_LABEL = { upi: 'Pay Now', card: 'Pay Now', netbanking: 'Proceed to Bank', cod: 'Confirm Order' };
+
+      function openGateway() {
+        document.getElementById('gwAmount').textContent = paise(cartTotal());
+        Object.values(GW_FORMS).forEach((id) => document.getElementById(id).classList.add('hidden'));
+        document.getElementById(GW_FORMS[selectedPay]).classList.remove('hidden');
+        document.getElementById('gwSubmitLabel').textContent = GW_SUBMIT_LABEL[selectedPay];
+        document.getElementById('gwFormError').classList.add('hidden');
+
+        showGatewayStep('gwFormStep');
+        const modal = document.getElementById('gatewayModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+
+      window.closeGateway = function () {
+        const modal = document.getElementById('gatewayModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      };
+
+      function showGatewayStep(stepId) {
+        ['gwFormStep', 'gwProcessingStep', 'gwSuccessStep'].forEach((id) => {
+          const el = document.getElementById(id);
+          el.classList.add('hidden');
+          el.classList.remove('flex');
+        });
+        const target = document.getElementById(stepId);
+        target.classList.remove('hidden');
+        if (stepId !== 'gwFormStep') target.classList.add('flex');
+      }
+
+      function validateGatewayForm() {
+        if (selectedPay === 'upi') {
+          return /^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(document.getElementById('gwUpiId').value.trim());
+        }
+        if (selectedPay === 'card') {
+          const num = document.getElementById('gwCardNumber').value.replace(/\s/g, '');
+          const expiry = document.getElementById('gwCardExpiry').value.trim();
+          const cvv = document.getElementById('gwCardCvv').value.trim();
+          return /^\d{12,19}$/.test(num) && /^\d{2}\/\d{2}$/.test(expiry) && /^\d{3}$/.test(cvv);
+        }
+        return true; // netbanking (bank pre-selected) and cod need no extra input
+      }
+
+      window.gatewaySubmit = function () {
+        const valid = validateGatewayForm();
+        document.getElementById('gwFormError').classList.toggle('hidden', valid);
+        if (!valid) return;
+
+        document.getElementById('gwCloseBtn').style.visibility = 'hidden';
+        showGatewayStep('gwProcessingStep');
+
+        setTimeout(() => {
+          showGatewayStep('gwSuccessStep');
+          setTimeout(finalizeOrder, 1200);
+        }, 1600);
+      };
+
+      function finalizeOrder() {
+        const order = createOrder({
+          items: cart,
+          address: pendingAddress,
+          paymentMethod: selectedPay,
+          total: cartTotal(),
+        });
+        clearCart();
+        window.location.href = `order-confirmation.html?id=${order.id}`;
+      }
+
+      init();
+    </script>
+  </body>
+</html>

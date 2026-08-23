@@ -13,9 +13,41 @@ export function addToCart(medicine) {
   if (existing) {
     existing.qty = (existing.qty || 1) + 1;
   } else {
-    cart.push({ id: medicine.id, brandName: medicine.brandName, price: medicine.sellingPricePaise, qty: 1 });
+    cart.push({
+      id: medicine.id,
+      brandName: medicine.brandName,
+      form: medicine.form,
+      strength: medicine.strength,
+      packSize: medicine.packSize,
+      price: medicine.sellingPricePaise,
+      mrp: medicine.mrpPaise,
+      image: Array.isArray(medicine.image) ? medicine.image[0] : medicine.image,
+      requiresPrescription: !!medicine.requiresPrescription,
+      rxUploaded: false,
+      qty: 1,
+    });
   }
   saveCart(cart);
+}
+
+export function setRxUploaded(id, uploaded) {
+  const cart = getCart();
+  const item = cart.find((i) => i.id === id);
+  if (!item) return;
+  item.rxUploaded = !!uploaded;
+  saveCart(cart);
+}
+
+export function needsRxUpload() {
+  return getCart().some((i) => i.requiresPrescription && !i.rxUploaded);
+}
+
+export function cartTotal() {
+  return getCart().reduce((sum, i) => sum + (i.price || 0) * (i.qty || 1), 0);
+}
+
+export function clearCart() {
+  saveCart([]);
 }
 
 export function updateQty(id, delta) {
