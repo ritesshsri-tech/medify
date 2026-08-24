@@ -154,18 +154,18 @@
 
         const addr = { name: 'Demo Patient', phone: '9876500001', line1: '221B Residency Road', city: 'Bengaluru', state: 'Karnataka', pincode: '560025' };
 
-        // --- Order 1: Rx pending approval (blocks dispatch) — tests Rx Approval queue ---
+        // --- Order 1: Rx pending approval, uploaded a new file — tests Rx Approval queue ---
         const order1 = createOrder({
-          items: [{ ...RX_MED, qty: 1, rxUploaded: true }],
+          items: [{ ...RX_MED, qty: 1, rxUploaded: true, rxResolution: 'uploaded' }],
           address: addr,
           paymentMethod: 'upi',
           total: RX_MED.price,
         });
-        log(`Order ${order1.id}: Rx item, pending approval (tests Prescription Approval + blocked Dispatch).`);
+        log(`Order ${order1.id}: Rx item, new upload, pending approval (tests Prescription Approval + blocked Dispatch).`);
 
         // --- Order 2: Rx approved, mid-dispatch — tests Dispatch Management ---
         const order2 = createOrder({
-          items: [{ ...RX_MED_2, qty: 2, rxUploaded: true }],
+          items: [{ ...RX_MED_2, qty: 2, rxUploaded: true, rxResolution: 'uploaded' }],
           address: addr,
           paymentMethod: 'card',
           total: RX_MED_2.price * 2,
@@ -176,13 +176,22 @@
 
         // --- Order 3: Rx rejected — tests rejection banner ---
         const order3 = createOrder({
-          items: [{ ...RX_MED, qty: 1, rxUploaded: true }],
+          items: [{ ...RX_MED, qty: 1, rxUploaded: true, rxResolution: 'uploaded' }],
           address: addr,
           paymentMethod: 'netbanking',
           total: RX_MED.price,
         });
         setRxStatus(order3.id, 'rejected', 'Admin', 'Prescription image unclear, please re-upload.');
         log(`Order ${order3.id}: Rx rejected with reason (tests rejection banner in My Orders).`);
+
+        // --- Order 3b: no Rx, doctor will call to confirm — tests the call-to-confirm path ---
+        const order3b = createOrder({
+          items: [{ ...RX_MED, qty: 1, rxUploaded: true, rxResolution: 'call-to-confirm' }],
+          address: addr,
+          paymentMethod: 'cod',
+          total: RX_MED.price,
+        });
+        log(`Order ${order3b.id}: No Rx, doctor will call to confirm (tests the call-to-confirm badge in Rx Approval).`);
 
         // --- Order 4: OTC only, no Rx involved, already delivered ---
         const order4 = createOrder({

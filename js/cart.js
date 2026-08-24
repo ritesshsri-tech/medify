@@ -24,17 +24,20 @@ export function addToCart(medicine) {
       image: Array.isArray(medicine.image) ? medicine.image[0] : medicine.image,
       requiresPrescription: !!medicine.requiresPrescription,
       rxUploaded: false,
+      rxResolution: null,
       qty: 1,
     });
   }
   saveCart(cart);
 }
 
-export function setRxUploaded(id, uploaded) {
+// resolution: 'uploaded' | 'reused' | 'call-to-confirm'
+export function setRxUploaded(id, uploaded, resolution) {
   const cart = getCart();
   const item = cart.find((i) => i.id === id);
   if (!item) return;
   item.rxUploaded = !!uploaded;
+  item.rxResolution = uploaded ? resolution || 'uploaded' : null;
   saveCart(cart);
 }
 

@@ -116,7 +116,7 @@
               <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
             </svg>
             <p class="text-sm text-amber-900">
-              One or more items in your cart require a prescription. Please upload a valid Rx for each marked item before checkout.
+              One or more items in your cart require a prescription. Upload a new Rx, reuse a saved one, or choose "No Rx" and our doctor will call to confirm before checkout.
             </p>
           </div>
 
@@ -154,7 +154,7 @@
               Proceed to Checkout
             </button>
             <p id="checkoutBlockedMsg" class="hidden text-xs text-amber-700 mt-2 text-center">
-              Upload prescription for Rx items to continue
+              Resolve prescription for Rx items to continue
             </p>
           </div>
         </aside>
@@ -164,9 +164,9 @@
     <!-- Rx upload modal -->
     <div id="rxModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true">
       <div class="absolute inset-0 bg-black/50" onclick="window.closeRxModal()"></div>
-      <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+      <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="font-bold text-slate-900 text-base">Upload Prescription</h2>
+          <h2 class="font-bold text-slate-900 text-base">Prescription Required</h2>
           <button type="button" onclick="window.closeRxModal()" aria-label="Close" class="text-slate-500 hover:text-slate-700 p-1">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -174,11 +174,20 @@
           </button>
         </div>
         <p id="rxModalMedName" class="text-sm text-slate-600 mb-4"></p>
+
+        <!-- Option 1: use an existing saved prescription -->
+        <div id="rxExistingBlock" class="hidden mb-5">
+          <p class="text-xs font-700 text-slate-500 uppercase tracking-wider mb-2">Use an existing prescription</p>
+          <div id="rxExistingList" class="space-y-2"></div>
+        </div>
+
+        <!-- Option 2: upload a new file -->
+        <p class="text-xs font-700 text-slate-500 uppercase tracking-wider mb-2">Upload a new prescription</p>
         <label
           id="rxDropZone"
-          class="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-blue-200 rounded-xl py-10 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
+          class="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-blue-200 rounded-xl py-8 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
         >
-          <svg width="28" height="28" fill="none" stroke="#2563EB" stroke-width="1.8" viewBox="0 0 24 24">
+          <svg width="26" height="26" fill="none" stroke="#2563EB" stroke-width="1.8" viewBox="0 0 24 24">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
           </svg>
           <span class="text-sm text-slate-600 font-medium">Click to upload or drag file here</span>
@@ -196,10 +205,25 @@
           id="rxSubmitBtn"
           onclick="window.submitRxUpload()"
           disabled
-          class="w-full mt-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-full text-sm transition-colors"
+          class="w-full mt-4 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-full text-sm transition-colors"
         >
           Confirm Upload
         </button>
+
+        <!-- Option 3: no Rx, doctor will call -->
+        <div class="mt-5 pt-4 border-t border-slate-100">
+          <p class="text-xs font-700 text-slate-500 uppercase tracking-wider mb-2">Don't have a prescription?</p>
+          <button
+            type="button"
+            onclick="window.submitNoRxCallback()"
+            class="w-full flex items-center justify-center gap-2 py-2.5 border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold rounded-full text-sm transition-colors"
+          >
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            No Rx — Our Doctor Will Call to Confirm
+          </button>
+        </div>
       </div>
     </div>
 
@@ -207,7 +231,7 @@
     <script type="module">
       import { fetchMedicines } from '../js/data.js';
       import { getCart, updateQty, removeFromCart, setRxUploaded, needsRxUpload, cartTotal } from '../js/cart.js';
-      import { addPrescription } from '../js/prescriptions.js';
+      import { addPrescription, getPrescriptions } from '../js/prescriptions.js';
       import { paise } from '../js/utils.js';
 
       let cart = [];
@@ -249,21 +273,26 @@
         renderSummary();
       }
 
+      const RX_RESOLUTION_LABEL = {
+        uploaded: 'Rx Uploaded',
+        reused: 'Rx Reused',
+        'call-to-confirm': 'Doctor Will Call',
+      };
+
       function renderItem(item) {
         const img = item.image || '../assets/Medicine1.webp';
         let rxBadge = '';
         if (item.requiresPrescription) {
           rxBadge = item.rxUploaded
-            ? `<span class="rx-ok-badge"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Rx Uploaded</span>`
+            ? `<span class="rx-ok-badge"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>${RX_RESOLUTION_LABEL[item.rxResolution] || 'Rx Uploaded'}</span>`
             : `<span class="rx-badge"><span style="font-weight:800;">Rx</span>&thinsp;Required</span>`;
         } else {
           rxBadge = `<span class="otc-badge"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>OTC</span>`;
         }
 
-        const uploadAction =
-          item.requiresPrescription && !item.rxUploaded
-            ? `<button type="button" onclick="window.openRxModal('${item.id}')" class="text-xs font-semibold text-blue-600 hover:underline">Upload Rx</button>`
-            : '';
+        const uploadAction = item.requiresPrescription
+          ? `<button type="button" onclick="window.openRxModal('${item.id}')" class="text-xs font-semibold text-blue-600 hover:underline">${item.rxUploaded ? 'Change' : 'Add Prescription'}</button>`
+          : '';
 
         return `
 <div class="card p-4 flex gap-4">
@@ -329,6 +358,27 @@
         document.getElementById('rxFilePreview').classList.add('hidden');
         document.getElementById('rxFileInput').value = '';
         document.getElementById('rxSubmitBtn').disabled = true;
+
+        const existing = getPrescriptions();
+        const existingBlock = document.getElementById('rxExistingBlock');
+        if (existing.length > 0) {
+          existingBlock.classList.remove('hidden');
+          document.getElementById('rxExistingList').innerHTML = existing
+            .map(
+              (rx) => `
+<button type="button" onclick="window.selectExistingRx('${rx.id}')" class="w-full flex items-center gap-2 text-left border border-blue-100 hover:border-blue-300 hover:bg-blue-50 rounded-lg px-3 py-2 transition-colors">
+  <svg width="15" height="15" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+  <span class="min-w-0 flex-1">
+    <span class="block text-xs font-medium text-slate-800 truncate">${rx.fileName}</span>
+    <span class="block text-[11px] text-slate-500 truncate">${rx.forMedicineName ? `Originally for ${rx.forMedicineName} &middot; ` : ''}${new Date(rx.uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+  </span>
+</button>`
+            )
+            .join('');
+        } else {
+          existingBlock.classList.add('hidden');
+        }
+
         document.getElementById('rxModal').classList.remove('hidden');
         document.getElementById('rxModal').classList.add('flex');
       };
@@ -351,7 +401,21 @@
         if (!rxTargetId || !rxSelectedFileName) return;
         const med = cart.find((i) => i.id === rxTargetId);
         addPrescription({ fileName: rxSelectedFileName, forMedicineId: rxTargetId, forMedicineName: med ? med.brandName : null });
-        setRxUploaded(rxTargetId, true);
+        setRxUploaded(rxTargetId, true, 'uploaded');
+        window.closeRxModal();
+        render();
+      };
+
+      window.selectExistingRx = function (rxId) {
+        if (!rxTargetId) return;
+        setRxUploaded(rxTargetId, true, 'reused');
+        window.closeRxModal();
+        render();
+      };
+
+      window.submitNoRxCallback = function () {
+        if (!rxTargetId) return;
+        setRxUploaded(rxTargetId, true, 'call-to-confirm');
         window.closeRxModal();
         render();
       };

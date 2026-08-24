@@ -428,9 +428,13 @@
 
       function renderRxBanner(order) {
         if (order.rxStatus === 'pending') {
+          const hasCallback = (order.items || []).some((i) => i.rxResolution === 'call-to-confirm');
+          const msg = hasCallback
+            ? "Our doctor will call you to confirm your prescription. Dispatch will begin once it's approved."
+            : "Your prescription is under review. Dispatch will begin once it's approved.";
           return `<div class="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4 text-xs text-amber-800">
             <svg width="14" height="14" fill="none" stroke="#B45309" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0 mt-0.5"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
-            Your prescription is under review. Dispatch will begin once it's approved.
+            ${msg}
           </div>`;
         }
         if (order.rxStatus === 'rejected') {

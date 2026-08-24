@@ -125,6 +125,12 @@ function rxStatusBadge(status) {
 }
 
 // ============ PRESCRIPTION APPROVAL ============
+const RX_RESOLUTION_BADGE = {
+  uploaded: '<span class="badge badge-blue">New Upload</span>',
+  reused: '<span class="badge badge-slate">Reused Rx</span>',
+  'call-to-confirm': '<span class="badge badge-amber">Call to Confirm</span>',
+};
+
 function renderRxQueue() {
   const orders = getOrders().filter((o) => o.rxStatus === 'pending');
   const prescriptions = getPrescriptions();
@@ -135,21 +141,29 @@ function renderRxQueue() {
       const rxItems = o.items.filter((i) => i.requiresPrescription);
       const matchedRx = rxItems
         .map((item) => {
-          const rx = prescriptions.find((p) => p.forMedicineId === item.id);
+          const rx = item.rxResolution !== 'call-to-confirm' ? prescriptions.find((p) => p.forMedicineId === item.id) : null;
           return { item, rx };
         })
-        .map(
-          ({ item, rx }) => `
+        .map(({ item, rx }) => {
+          const badge = RX_RESOLUTION_BADGE[item.rxResolution] || '';
+          const detail =
+            item.rxResolution === 'call-to-confirm'
+              ? 'Patient has no prescription — call to confirm before approving'
+              : rx
+                ? rx.fileName
+                : 'No prescription file found';
+          return `
 <div class="flex items-center justify-between gap-2 border border-slate-100 rounded-lg px-3 py-2 mt-2">
   <div class="flex items-center gap-2 min-w-0">
     <svg width="15" height="15" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
     <div class="min-w-0">
       <p class="text-xs font-medium text-slate-800 truncate">${item.brandName}</p>
-      <p class="text-[11px] text-slate-500 truncate">${rx ? rx.fileName : 'No prescription file found'}</p>
+      <p class="text-[11px] text-slate-500 truncate">${detail}</p>
     </div>
   </div>
-</div>`
-        )
+  ${badge}
+</div>`;
+        })
         .join('');
 
       return `
