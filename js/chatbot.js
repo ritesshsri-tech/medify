@@ -31,6 +31,17 @@
         { label: 'More options', goto: 'more' },
       ],
     },
+    'no-match': {
+      title: "I couldn't find an exact match",
+      body: "I'm a scripted help bot, so I work best with the topics below. Pick one, or talk to a real person for anything else.",
+      options: [
+        { label: 'Track my order', goto: 'orders' },
+        { label: 'Prescription (Rx) help', goto: 'rx' },
+        { label: 'Payments & pricing', goto: 'payments' },
+        { label: 'More options', goto: 'more' },
+        { label: 'Talk to a human', goto: 'contact' },
+      ],
+    },
     more: {
       title: 'More options',
       options: [
@@ -56,18 +67,21 @@
       body: 'You can track every order — including live delivery stage (Placed, Packed, Shipped, Out for Delivery, Delivered) — under My Orders in your account.',
       links: [{ label: 'Go to My Orders', href: link('pages/account.html#orders') }],
       back: 'orders',
+      keywords: ['track', 'order status', 'where is my order', 'delivery status', 'shipment', 'shipped', 'tracking'],
     },
     'orders-cancel': {
       title: 'Cancel an order',
       body: "Cancellations aren't self-service in this app yet. Open the order under My Orders and use \"Talk to a human\" below, or call/WhatsApp us with your Order ID and we'll cancel it for you.",
       links: [{ label: 'Go to My Orders', href: link('pages/account.html#orders') }],
       back: 'orders',
+      keywords: ['cancel', 'cancellation', 'cancel order', 'cancel my order'],
     },
     'orders-stuck': {
       title: 'Order stuck / not moving',
       body: "If an order contains a prescription medicine, it stays at \"Placed\" until our pharmacist approves the prescription — this is expected and shows as a banner on the order. Once approved, dispatch continues automatically. If it's been more than 24 hours since approval with no movement, contact support.",
       links: [{ label: 'Go to My Orders', href: link('pages/account.html#orders') }],
       back: 'orders',
+      keywords: ['stuck', 'not moving', 'delayed', 'delay', 'order pending', 'not shipped'],
     },
 
     rx: {
@@ -87,12 +101,14 @@
         { label: 'Go to Cart', href: link('pages/cart.html') },
       ],
       back: 'rx',
+      keywords: ['upload prescription', 'upload rx', 'how to upload', 'add prescription', 'submit prescription'],
     },
     'rx-none': {
       title: "I don't have a prescription yet",
       body: 'No problem — on the Cart page, choose "No Rx — Doctor Will Call" for prescription-required items. Our doctor will call to confirm before your order ships, so you can still place the order now.',
       links: [{ label: 'Go to Cart', href: link('pages/cart.html') }],
       back: 'rx',
+      keywords: ["don't have", 'no prescription', 'no rx', 'without prescription', 'dont have'],
     },
     'rx-rejected': {
       title: 'My prescription was rejected',
@@ -102,6 +118,7 @@
         { label: 'Go to Rx Upload', href: link('pages/rx-upload.html') },
       ],
       back: 'rx',
+      keywords: ['rejected', 'rx rejected', 'prescription rejected', 'declined'],
     },
 
     payments: {
@@ -118,18 +135,21 @@
       body: 'At checkout you can pay via UPI, Credit/Debit Card, Net Banking, or Cash on Delivery. This is a demo checkout, so no real payment is processed.',
       links: [],
       back: 'payments',
+      keywords: ['payment method', 'how to pay', 'upi', 'card', 'net banking', 'pay'],
     },
     'payments-cod': {
       title: 'Cash on Delivery',
       body: 'Yes — select "Cash on Delivery" as the payment method at checkout, and pay in cash when your order is delivered to your doorstep.',
       links: [],
       back: 'payments',
+      keywords: ['cash on delivery', 'cod', 'pay cash'],
     },
     'payments-price': {
       title: 'Why is the price different from MRP?',
       body: 'The price you pay (selling price) is usually lower than the printed MRP — the discount is shown on every medicine card and at checkout under "Items MRP" vs "Discount".',
       links: [],
       back: 'payments',
+      keywords: ['price', 'mrp', 'discount', 'cost', 'expensive', 'cheap'],
     },
 
     returns: {
@@ -145,6 +165,7 @@
       body: 'For safety reasons, medicines generally cannot be returned once dispatched, unless the item received is damaged, expired, or incorrect. Contact support with your Order ID and photos of the issue, and our team will help.',
       links: [],
       back: 'returns',
+      keywords: ['return', 'refund', 'exchange', 'damaged', 'wrong item', 'expired'],
     },
 
     account: {
@@ -161,18 +182,21 @@
       body: 'Click "Sign In" at the top right of the homepage and choose your account. If this is your first time, use Sign Up from the same screen.',
       links: [],
       back: 'account',
+      keywords: ['sign in', 'login', 'log in', 'signin'],
     },
     'account-profile': {
       title: 'Update my profile',
       body: 'Go to My Profile from the account menu (top right) to update your name, phone number, or email.',
       links: [{ label: 'Go to My Profile', href: link('pages/account.html#profile') }],
       back: 'account',
+      keywords: ['profile', 'update profile', 'edit profile', 'change name', 'change email'],
     },
     'account-address': {
       title: 'Manage saved addresses',
       body: 'You can add, edit, or set a default delivery address under My Account → Addresses, or directly during checkout.',
       links: [{ label: 'Go to Addresses', href: link('pages/account.html#addresses') }],
       back: 'account',
+      keywords: ['address', 'delivery address', 'saved address', 'change address'],
     },
 
     medtourism: {
@@ -180,6 +204,7 @@
       body: 'For international patients seeking treatment in India, fill out the Medical Tourism enquiry form from the homepage banner. Our care team will review it and contact you — you can track the status of your enquiry under My Orders.',
       links: [{ label: 'Go to My Orders', href: link('pages/account.html#orders') }],
       back: 'more',
+      keywords: ['medical tourism', 'treatment', 'international patient', 'travel for treatment'],
     },
 
     contact: {
@@ -190,6 +215,7 @@
         { label: 'WhatsApp Us', href: 'https://wa.me/919999156233', external: true },
       ],
       back: 'more',
+      keywords: ['human', 'agent', 'support', 'call', 'whatsapp', 'contact', 'talk to someone', 'representative'],
     },
   };
 
@@ -213,6 +239,33 @@
   }
   function getVisitorPhone() {
     return localStorage.getItem('chatbotVisitorPhone') || '';
+  }
+
+  // --- Free-text matching ------------------------------------------------
+  // No AI/API — just keyword overlap scoring against each leaf node's
+  // `keywords` list (and its title as a fallback signal).
+  function matchQuery(text) {
+    const q = text.toLowerCase().trim();
+    if (!q) return null;
+
+    let best = null;
+    let bestScore = 0;
+
+    Object.keys(TREE).forEach((nodeId) => {
+      const node = TREE[nodeId];
+      if (!node.keywords) return;
+      let score = 0;
+      node.keywords.forEach((kw) => {
+        if (q.includes(kw)) score += kw.length;
+      });
+      if (node.title && q.includes(node.title.toLowerCase())) score += node.title.length;
+      if (score > bestScore) {
+        bestScore = score;
+        best = nodeId;
+      }
+    });
+
+    return bestScore > 0 ? best : null;
   }
 
   // --- Intake (name -> phone -> menu) -----------------------------------------
@@ -261,11 +314,13 @@
         const val = input.value.trim();
         if (val) localStorage.setItem('chatbotVisitorPhone', val);
         setIntakeDone();
+        setQueryBarVisible(true);
         renderNode(ROOT);
       };
       document.getElementById('chatbotIntakeSend').addEventListener('click', finish);
       document.getElementById('chatbotIntakeSkip').addEventListener('click', () => {
         setIntakeDone();
+        setQueryBarVisible(true);
         renderNode(ROOT);
       });
       input.addEventListener('keydown', (e) => {
@@ -326,10 +381,17 @@
     });
   }
 
+  function setQueryBarVisible(visible) {
+    const bar = document.getElementById('chatbotQueryBar');
+    if (bar) bar.classList.toggle('hidden', !visible);
+  }
+
   function openChat() {
     if (!intakeDone()) {
+      setQueryBarVisible(false);
       renderIntakeStep('name');
     } else {
+      setQueryBarVisible(true);
       renderNode(ROOT);
     }
   }
@@ -364,14 +426,14 @@
         gap: 10px;
       }
       .chatbot-label {
-        background: #0f172a;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
         color: #fff;
         font-size: 12px;
         font-weight: 700;
         padding: 8px 14px;
         border-radius: 999px;
         white-space: nowrap;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+        box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
         animation: chatbot-bounce 2.2s ease-in-out infinite;
       }
       .chatbot-label.chatbot-label-hidden {
@@ -536,6 +598,34 @@
         transition: all 0.15s;
       }
       .chatbot-skip-btn:hover { background: #f1f5f9; }
+      .chatbot-query-bar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        padding: 10px 12px;
+        border-top: 1px solid #e2e8f0;
+        background: #fff;
+        flex-shrink: 0;
+      }
+      .chatbot-query-bar.hidden { display: none; }
+      .chatbot-query-input {
+        margin-bottom: 0;
+      }
+      .chatbot-query-send-btn {
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: #dc2626;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+      }
+      .chatbot-query-send-btn:hover { background: #b91c1c; }
       @media (max-width: 480px) {
         .chatbot-fab-wrap { right: 16px; bottom: 20px; }
         .chatbot-window { right: 16px; bottom: 84px; }
@@ -567,12 +657,35 @@
           </button>
         </div>
         <div id="chatbotBody" class="chatbot-body"></div>
+        <div id="chatbotQueryBar" class="chatbot-query-bar hidden">
+          <input type="text" id="chatbotQueryInput" class="chatbot-text-input chatbot-query-input" placeholder="Type your question…" aria-label="Type your question" />
+          <button type="button" id="chatbotQuerySend" class="chatbot-query-send-btn" aria-label="Send question">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+          </button>
+        </div>
       </div>
     `;
     document.body.appendChild(wrap);
 
     document.getElementById('chatbotFab').addEventListener('click', () => toggleWindow());
     document.getElementById('chatbotCloseBtn').addEventListener('click', () => toggleWindow(false));
+
+    const queryInput = document.getElementById('chatbotQueryInput');
+    const querySend = document.getElementById('chatbotQuerySend');
+    const submitQuery = () => {
+      const text = queryInput.value.trim();
+      if (!text) return;
+      const matched = matchQuery(text);
+      queryInput.value = '';
+      renderNode(matched || 'no-match');
+      document.getElementById('chatbotBody').scrollTop = 0;
+    };
+    querySend.addEventListener('click', submitQuery);
+    queryInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') submitQuery();
+    });
 
     if (isOpen()) {
       toggleWindow(true);
