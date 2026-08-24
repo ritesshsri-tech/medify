@@ -76,6 +76,47 @@
       .qty-btn:hover {
         background: #eff6ff;
       }
+      .rx-action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid #bfdbfe;
+        background: #fff;
+        color: #2563eb;
+        cursor: pointer;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .rx-action-btn:hover {
+        background: #eff6ff;
+        border-color: #93c5fd;
+      }
+      .rx-action-btn.rx-action-callback {
+        border-color: #fde68a;
+        background: #fffbeb;
+        color: #92400e;
+      }
+      .rx-action-btn.rx-action-callback:hover {
+        background: #fef3c7;
+        border-color: #fcd34d;
+      }
+      .rx-saved-picker {
+        position: absolute;
+        z-index: 20;
+        margin-top: 4px;
+        background: #fff;
+        border: 1px solid #bfdbfe;
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(30, 58, 138, 0.12);
+        padding: 8px;
+        width: 260px;
+        max-height: 220px;
+        overflow-y: auto;
+      }
     </style>
   </head>
   <body>
@@ -161,12 +202,12 @@
       </div>
     </div>
 
-    <!-- Rx upload modal -->
+    <!-- Rx upload modal (file upload only — saved-Rx and no-Rx are inline on the cart row) -->
     <div id="rxModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true">
       <div class="absolute inset-0 bg-black/50" onclick="window.closeRxModal()"></div>
-      <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 max-h-[90vh] overflow-y-auto">
+      <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="font-bold text-slate-900 text-base">Prescription Required</h2>
+          <h2 class="font-bold text-slate-900 text-base">Upload Prescription</h2>
           <button type="button" onclick="window.closeRxModal()" aria-label="Close" class="text-slate-500 hover:text-slate-700 p-1">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -174,20 +215,11 @@
           </button>
         </div>
         <p id="rxModalMedName" class="text-sm text-slate-600 mb-4"></p>
-
-        <!-- Option 1: use an existing saved prescription -->
-        <div id="rxExistingBlock" class="hidden mb-5">
-          <p class="text-xs font-700 text-slate-500 uppercase tracking-wider mb-2">Use an existing prescription</p>
-          <div id="rxExistingList" class="space-y-2"></div>
-        </div>
-
-        <!-- Option 2: upload a new file -->
-        <p class="text-xs font-700 text-slate-500 uppercase tracking-wider mb-2">Upload a new prescription</p>
         <label
           id="rxDropZone"
-          class="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-blue-200 rounded-xl py-8 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
+          class="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-blue-200 rounded-xl py-10 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
         >
-          <svg width="26" height="26" fill="none" stroke="#2563EB" stroke-width="1.8" viewBox="0 0 24 24">
+          <svg width="28" height="28" fill="none" stroke="#2563EB" stroke-width="1.8" viewBox="0 0 24 24">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
           </svg>
           <span class="text-sm text-slate-600 font-medium">Click to upload or drag file here</span>
@@ -205,25 +237,10 @@
           id="rxSubmitBtn"
           onclick="window.submitRxUpload()"
           disabled
-          class="w-full mt-4 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-full text-sm transition-colors"
+          class="w-full mt-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-full text-sm transition-colors"
         >
           Confirm Upload
         </button>
-
-        <!-- Option 3: no Rx, doctor will call -->
-        <div class="mt-5 pt-4 border-t border-slate-100">
-          <p class="text-xs font-700 text-slate-500 uppercase tracking-wider mb-2">Don't have a prescription?</p>
-          <button
-            type="button"
-            onclick="window.submitNoRxCallback()"
-            class="w-full flex items-center justify-center gap-2 py-2.5 border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold rounded-full text-sm transition-colors"
-          >
-            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
-            No Rx — Our Doctor Will Call to Confirm
-          </button>
-        </div>
       </div>
     </div>
 
@@ -290,9 +307,31 @@
           rxBadge = `<span class="otc-badge"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>OTC</span>`;
         }
 
-        const uploadAction = item.requiresPrescription
-          ? `<button type="button" onclick="window.openRxModal('${item.id}')" class="text-xs font-semibold text-blue-600 hover:underline">${item.rxUploaded ? 'Change' : 'Add Prescription'}</button>`
-          : '';
+        let rxActions = '';
+        if (item.requiresPrescription) {
+          const savedCount = getPrescriptions().length;
+          const changeLabel = item.rxUploaded ? 'Change' : null;
+          rxActions = `
+    <div class="flex items-center gap-1.5 mt-2 flex-wrap relative">
+      <button type="button" onclick="window.openRxModal('${item.id}')" class="rx-action-btn">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        ${changeLabel ? 'Change Upload' : 'Upload Rx'}
+      </button>
+      ${
+        savedCount > 0
+          ? `<button type="button" onclick="window.toggleSavedPicker('${item.id}', event)" class="rx-action-btn">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        Use Saved Rx
+      </button>`
+          : ''
+      }
+      <button type="button" onclick="window.submitNoRxCallback('${item.id}')" class="rx-action-btn rx-action-callback">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        No Rx — Doctor Will Call
+      </button>
+      <div id="savedPicker-${item.id}" class="rx-saved-picker hidden"></div>
+    </div>`;
+        }
 
         return `
 <div class="card p-4 flex gap-4">
@@ -311,8 +350,8 @@
     </div>
     <div class="flex items-center gap-2 mt-2 flex-wrap">
       ${rxBadge}
-      ${uploadAction}
     </div>
+    ${rxActions}
     <div class="flex items-center justify-between mt-3">
       <div class="flex items-center border border-blue-200 rounded-full overflow-hidden">
         <button type="button" onclick="window.changeQty('${item.id}', -1)" class="qty-btn">−</button>
@@ -349,36 +388,16 @@
         window.location.href = 'checkout.html';
       };
 
-      // --- Rx upload modal ---
+      // --- Rx upload modal (file upload only) ---
       window.openRxModal = function (id) {
         rxTargetId = id;
         rxSelectedFileName = null;
+        closeSavedPickers();
         const med = cart.find((i) => i.id === id);
         document.getElementById('rxModalMedName').textContent = med ? `For: ${med.brandName}` : '';
         document.getElementById('rxFilePreview').classList.add('hidden');
         document.getElementById('rxFileInput').value = '';
         document.getElementById('rxSubmitBtn').disabled = true;
-
-        const existing = getPrescriptions();
-        const existingBlock = document.getElementById('rxExistingBlock');
-        if (existing.length > 0) {
-          existingBlock.classList.remove('hidden');
-          document.getElementById('rxExistingList').innerHTML = existing
-            .map(
-              (rx) => `
-<button type="button" onclick="window.selectExistingRx('${rx.id}')" class="w-full flex items-center gap-2 text-left border border-blue-100 hover:border-blue-300 hover:bg-blue-50 rounded-lg px-3 py-2 transition-colors">
-  <svg width="15" height="15" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-  <span class="min-w-0 flex-1">
-    <span class="block text-xs font-medium text-slate-800 truncate">${rx.fileName}</span>
-    <span class="block text-[11px] text-slate-500 truncate">${rx.forMedicineName ? `Originally for ${rx.forMedicineName} &middot; ` : ''}${new Date(rx.uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-  </span>
-</button>`
-            )
-            .join('');
-        } else {
-          existingBlock.classList.add('hidden');
-        }
-
         document.getElementById('rxModal').classList.remove('hidden');
         document.getElementById('rxModal').classList.add('flex');
       };
@@ -406,17 +425,42 @@
         render();
       };
 
-      window.selectExistingRx = function (rxId) {
-        if (!rxTargetId) return;
-        setRxUploaded(rxTargetId, true, 'reused');
-        window.closeRxModal();
+      // --- Inline saved-Rx picker (no modal) ---
+      function closeSavedPickers() {
+        document.querySelectorAll('.rx-saved-picker').forEach((el) => el.classList.add('hidden'));
+      }
+
+      window.toggleSavedPicker = function (id, evt) {
+        evt.stopPropagation();
+        const picker = document.getElementById(`savedPicker-${id}`);
+        const wasOpen = !picker.classList.contains('hidden');
+        closeSavedPickers();
+        if (wasOpen) return;
+
+        picker.innerHTML = getPrescriptions()
+          .map(
+            (rx) => `
+<button type="button" onclick="window.useSavedRx('${id}', '${rx.id}')" class="w-full flex items-center gap-2 text-left rounded-lg px-2 py-2 hover:bg-blue-50 transition-colors">
+  <svg width="14" height="14" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+  <span class="min-w-0 flex-1">
+    <span class="block text-xs font-medium text-slate-800 truncate">${rx.fileName}</span>
+    <span class="block text-[11px] text-slate-500 truncate">${rx.forMedicineName ? `Originally for ${rx.forMedicineName} &middot; ` : ''}${new Date(rx.uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+  </span>
+</button>`
+          )
+          .join('');
+        picker.classList.remove('hidden');
+      };
+
+      document.addEventListener('click', closeSavedPickers);
+
+      window.useSavedRx = function (id, rxId) {
+        setRxUploaded(id, true, 'reused');
         render();
       };
 
-      window.submitNoRxCallback = function () {
-        if (!rxTargetId) return;
-        setRxUploaded(rxTargetId, true, 'call-to-confirm');
-        window.closeRxModal();
+      window.submitNoRxCallback = function (id) {
+        setRxUploaded(id, true, 'call-to-confirm');
         render();
       };
 
