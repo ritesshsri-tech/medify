@@ -457,14 +457,14 @@
         gap: 10px;
       }
       .chatbot-label {
-        background: linear-gradient(135deg, #ef4444, #dc2626);
+        background: linear-gradient(135deg, #a855f7, #ec4899);
         color: #fff;
         font-size: 12px;
         font-weight: 700;
         padding: 8px 14px;
         border-radius: 999px;
         white-space: nowrap;
-        box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+        box-shadow: 0 4px 14px rgba(219, 39, 119, 0.4);
         animation: chatbot-bounce 2.2s ease-in-out infinite;
       }
       .chatbot-label.chatbot-label-hidden {
@@ -480,21 +480,29 @@
         width: 54px;
         height: 54px;
         border-radius: 50%;
-        background: #2563eb;
+        background: linear-gradient(135deg, #a855f7, #ec4899);
         border: none;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45);
+        box-shadow: 0 4px 16px rgba(219, 39, 119, 0.45);
         transition: transform 0.15s;
         animation: chatbot-pulse-ring 2.2s ease-in-out infinite;
       }
       .chatbot-fab:hover { transform: scale(1.08); }
       @keyframes chatbot-pulse-ring {
-        0% { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45), 0 0 0 0 rgba(37, 99, 235, 0.45); }
-        70% { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45), 0 0 0 12px rgba(37, 99, 235, 0); }
-        100% { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45), 0 0 0 0 rgba(37, 99, 235, 0); }
+        0% { box-shadow: 0 4px 16px rgba(219, 39, 119, 0.45), 0 0 0 0 rgba(219, 39, 119, 0.45); }
+        70% { box-shadow: 0 4px 16px rgba(219, 39, 119, 0.45), 0 0 0 12px rgba(219, 39, 119, 0); }
+        100% { box-shadow: 0 4px 16px rgba(219, 39, 119, 0.45), 0 0 0 0 rgba(219, 39, 119, 0); }
+      }
+      .chatbot-fab-icon {
+        animation: chatbot-fab-sparkle 1.8s ease-in-out infinite;
+        transform-origin: center;
+      }
+      @keyframes chatbot-fab-sparkle {
+        0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        50% { transform: scale(1.2) rotate(15deg); opacity: 0.8; }
       }
       .chatbot-window {
         position: fixed;
@@ -519,7 +527,7 @@
         right: 24px;
       }
       .chatbot-header {
-        background: #2563eb;
+        background: linear-gradient(135deg, #a855f7, #ec4899);
         color: #fff;
         padding: 14px 16px;
         display: flex;
@@ -705,8 +713,9 @@
           : `<div class="chatbot-fab-wrap">
         <span id="chatbotLabel" class="chatbot-label">🤖 AI Support</span>
         <button type="button" id="chatbotFab" class="chatbot-fab" aria-label="Open help chat" title="AI Support / Help">
-          <svg width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+          <svg class="chatbot-fab-icon" width="24" height="24" viewBox="0 0 24 24" fill="#fff">
+            <path d="M12 2l1.8 5.6L19.4 9.4 13.8 11.2 12 17l-1.8-5.8L4.6 9.4l5.6-1.8L12 2z"/>
+            <path d="M19 14l.9 2.8L22.7 17.7 19.9 18.6 19 21.4 18.1 18.6 15.3 17.7 18.1 16.8 19 14z"/>
           </svg>
         </button>
       </div>`
