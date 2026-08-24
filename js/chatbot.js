@@ -482,6 +482,11 @@
         font-family: 'Inter', system-ui, sans-serif;
       }
       .chatbot-window.hidden { display: none; }
+      .chatbot-window-docked {
+        top: 132px;
+        bottom: auto;
+        right: 24px;
+      }
       .chatbot-header {
         background: #2563eb;
         color: #fff;
@@ -634,17 +639,26 @@
     `;
     document.head.appendChild(style);
 
+    // If the page provides its own trigger (e.g. a nav bar button with
+    // id="navChatbotBtn"), dock the widget there instead of rendering the
+    // fixed floating bubble.
+    const navTrigger = document.getElementById('navChatbotBtn');
+
     const wrap = document.createElement('div');
     wrap.innerHTML = `
-      <div class="chatbot-fab-wrap">
+      ${
+        navTrigger
+          ? ''
+          : `<div class="chatbot-fab-wrap">
         <span id="chatbotLabel" class="chatbot-label">🤖 AI Support</span>
         <button type="button" id="chatbotFab" class="chatbot-fab" aria-label="Open help chat" title="AI Support / Help">
           <svg width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
             <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
           </svg>
         </button>
-      </div>
-      <div id="chatbotWindow" class="chatbot-window hidden" role="dialog" aria-modal="false" aria-label="Help chat">
+      </div>`
+      }
+      <div id="chatbotWindow" class="chatbot-window ${navTrigger ? 'chatbot-window-docked' : ''} hidden" role="dialog" aria-modal="false" aria-label="Help chat">
         <div class="chatbot-header">
           <div>
             <div class="chatbot-header-title">MediFy AI Support</div>
@@ -669,7 +683,11 @@
     `;
     document.body.appendChild(wrap);
 
-    document.getElementById('chatbotFab').addEventListener('click', () => toggleWindow());
+    if (navTrigger) {
+      navTrigger.addEventListener('click', () => toggleWindow());
+    } else {
+      document.getElementById('chatbotFab').addEventListener('click', () => toggleWindow());
+    }
     document.getElementById('chatbotCloseBtn').addEventListener('click', () => toggleWindow(false));
 
     const queryInput = document.getElementById('chatbotQueryInput');
