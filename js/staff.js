@@ -6,14 +6,32 @@ const ROLE_PERMISSIONS = {
   delivery: ['dispatch'],
 };
 
-const SEED_ADMIN = {
-  id: 'staff00000001',
-  name: 'Admin',
-  email: 'admin@medify.local',
-  password: 'admin123',
-  role: 'admin',
-  createdAt: new Date(0).toISOString(),
-};
+const SEED_STAFF = [
+  {
+    id: 'staff00000001',
+    name: 'Admin',
+    email: 'admin@medify.local',
+    password: 'admin123',
+    role: 'admin',
+    createdAt: new Date(0).toISOString(),
+  },
+  {
+    id: 'staff00000002',
+    name: 'Pharmacist',
+    email: 'pharmacist@medify.local',
+    password: 'pharma123',
+    role: 'pharmacist',
+    createdAt: new Date(0).toISOString(),
+  },
+  {
+    id: 'staff00000003',
+    name: 'Dispatch',
+    email: 'dispatch@medify.local',
+    password: 'dispatch123',
+    role: 'delivery',
+    createdAt: new Date(0).toISOString(),
+  },
+];
 
 export function roles() {
   return ROLES;
@@ -30,7 +48,7 @@ export function can(user, permission) {
 export function getStaff() {
   const raw = localStorage.getItem('staff');
   if (!raw) {
-    const seeded = [SEED_ADMIN];
+    const seeded = SEED_STAFF.slice();
     localStorage.setItem('staff', JSON.stringify(seeded));
     return seeded;
   }

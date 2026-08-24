@@ -30,9 +30,13 @@
   </head>
   <body>
     <script>
-      if (!localStorage.getItem('currentUser')) {
+      if (localStorage.getItem('siteUnlocked') !== '1') {
         sessionStorage.setItem('loginRedirect', window.location.href);
         window.location.replace('login.html');
+      } else if (!localStorage.getItem('currentUser')) {
+        sessionStorage.setItem('loginRedirect', window.location.href);
+        sessionStorage.setItem('openSignIn', '1');
+        window.location.replace('../index.html');
       }
     </script>
     <div id="appHeader"></div>

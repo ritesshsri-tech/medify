@@ -66,12 +66,6 @@
         padding: 40px 32px;
         text-align: center;
       }
-      .login-logo-row {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 32px;
-      }
       .login-heading {
         font-size: 1.125rem;
         font-weight: 600;
@@ -138,9 +132,6 @@
         border-color: #2563eb;
         background: #eff6ff;
       }
-      .login-logo {
-        height: 60px;
-      }
       .pin-digit.error {
         border-color: #dc2626;
         background: #fef2f2;
@@ -164,68 +155,6 @@
           transform: translateX(4px);
         }
       }
-      .switch-link {
-        text-align: center;
-        font-size: 0.8rem;
-        color: #64748b;
-        margin-top: 20px;
-      }
-      .switch-link a {
-        color: #2563eb;
-        font-weight: 600;
-        text-decoration: none;
-      }
-      .switch-link a:hover {
-        text-decoration: underline;
-      }
-      .quick-login-block {
-        margin-top: 28px;
-        padding-top: 24px;
-        border-top: 1px solid #e2e9f5;
-      }
-      .quick-login-label {
-        font-size: 0.7rem;
-        font-weight: 700;
-        color: #94a3b8;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        margin-bottom: 12px;
-      }
-      .quick-login-row {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      .quick-login-btn {
-        flex: 1;
-        min-width: 100px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        padding: 10px 8px;
-        border: 1.5px solid #dbeafe;
-        border-radius: 10px;
-        background: #f5f8fe;
-        color: #1e3a8a;
-        font-size: 0.75rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s;
-      }
-      .quick-login-btn:hover {
-        border-color: #93c5fd;
-        background: #eff6ff;
-      }
-      .quick-login-btn.admin-btn {
-        border-color: #fde68a;
-        background: #fffbeb;
-        color: #92400e;
-      }
-      .quick-login-btn.admin-btn:hover {
-        border-color: #fcd34d;
-        background: #fef3c7;
-      }
     </style>
   </head>
   <body>
@@ -238,11 +167,6 @@
     <div class="login-wrap">
       <!-- Card -->
       <div class="login-card">
-        <!-- Logo -->
-        <div class="login-logo-row">
-          <img src="../assets/medify-logo.svg" alt="MediFy" class="login-logo" />
-        </div>
-
         <!-- Heading -->
         <h1 class="login-heading">Enter your PIN</h1>
         <p class="login-subtext">4-digit access PIN required to continue</p>
@@ -257,6 +181,7 @@
             maxlength="1"
             pattern="[0-9]"
             autocomplete="off"
+            aria-label="PIN digit 1"
           />
           <input
             class="pin-digit"
@@ -266,6 +191,7 @@
             maxlength="1"
             pattern="[0-9]"
             autocomplete="off"
+            aria-label="PIN digit 2"
           />
           <input
             class="pin-digit"
@@ -275,6 +201,7 @@
             maxlength="1"
             pattern="[0-9]"
             autocomplete="off"
+            aria-label="PIN digit 3"
           />
           <input
             class="pin-digit"
@@ -284,6 +211,7 @@
             maxlength="1"
             pattern="[0-9]"
             autocomplete="off"
+            aria-label="PIN digit 4"
           />
         </div>
 
@@ -291,73 +219,14 @@
         <p id="pinError" class="pin-error"></p>
 
         <!-- Submit -->
-        <button id="submitBtn" onclick="submitPin()" class="submit-btn">Continue</button>
-
-        <p class="switch-link">
-          New here? <a href="signup.html">Create an account</a>
-        </p>
-
-        <div class="quick-login-block">
-          <p class="quick-login-label">Quick Login</p>
-          <div class="quick-login-row">
-            <button type="button" class="quick-login-btn" id="quickPatient1">
-              <span>👤</span>
-              Patient 1
-            </button>
-            <button type="button" class="quick-login-btn" id="quickPatient2">
-              <span>👤</span>
-              Patient 2
-            </button>
-            <button type="button" class="quick-login-btn admin-btn" id="quickAdmin">
-              <span>🛡️</span>
-              Admin
-            </button>
-          </div>
-        </div>
+        <button type="button" id="submitBtn" onclick="submitPin()" class="submit-btn">Continue</button>
       </div>
     </div>
 
-    <script type="module">
-      import { getStaff, setCurrentStaff } from '../js/staff.js';
-
-      function goToDestination(fallback) {
-        const dest = sessionStorage.getItem('loginRedirect') || fallback;
-        sessionStorage.removeItem('loginRedirect');
-        window.location.replace(dest);
-      }
-
-      document.getElementById('quickPatient1').addEventListener('click', function () {
-        localStorage.setItem(
-          'currentUser',
-          JSON.stringify({ name: 'Patient One', phone: '9876500001', email: 'patient1@example.com', role: 'user' })
-        );
-        goToDestination('../index.html');
-      });
-
-      document.getElementById('quickPatient2').addEventListener('click', function () {
-        localStorage.setItem(
-          'currentUser',
-          JSON.stringify({ name: 'Patient Two', phone: '9876500002', email: 'patient2@example.com', role: 'user' })
-        );
-        goToDestination('../index.html');
-      });
-
-      document.getElementById('quickAdmin').addEventListener('click', function () {
-        const staff = getStaff();
-        const admin = staff.find(function (s) {
-          return s.role === 'admin';
-        });
-        if (admin) {
-          setCurrentStaff({ id: admin.id, name: admin.name, email: admin.email, role: admin.role });
-          window.location.replace('admin.html');
-        }
-      });
-    </script>
-
     <script>
       (function () {
-        // Redirect if already authenticated
-        if (localStorage.getItem('currentUser')) {
+        // Redirect if already unlocked
+        if (localStorage.getItem('siteUnlocked') === '1') {
           const dest = sessionStorage.getItem('loginRedirect') || '../index.html';
           sessionStorage.removeItem('loginRedirect');
           window.location.replace(dest);
@@ -448,7 +317,7 @@
           if (pin.length < 4) return;
 
           if (VALID_PINS.includes(pin)) {
-            localStorage.setItem('currentUser', JSON.stringify({ name: 'MediFy User', role: 'user' }));
+            localStorage.setItem('siteUnlocked', '1');
             const dest = sessionStorage.getItem('loginRedirect') || '../index.html';
             sessionStorage.removeItem('loginRedirect');
             window.location.replace(dest);

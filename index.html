@@ -445,6 +445,97 @@
       .nav-user-dropdown .signout-btn {
         color: #dc2626;
       }
+      .signin-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 500;
+        padding: 16px;
+        align-items: center;
+        justify-content: center;
+      }
+      .signin-modal-overlay.flex {
+        display: flex;
+      }
+      .signin-modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .signin-modal-card {
+        position: relative;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 360px;
+        padding: 28px 24px;
+      }
+      .signin-modal-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #94a3b8;
+        padding: 4px;
+      }
+      .signin-modal-title {
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0 0 4px;
+      }
+      .signin-modal-subtext {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin: 0 0 20px;
+      }
+      .signin-modal-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin: 0 0 8px;
+      }
+      .signin-persona-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+      .signin-persona-row:last-child {
+        margin-bottom: 0;
+      }
+      .signin-persona-btn {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 12px 8px;
+        border: 1.5px solid #dbeafe;
+        border-radius: 10px;
+        background: #f5f8fe;
+        color: #1e3a8a;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .signin-persona-btn:hover {
+        border-color: #93c5fd;
+        background: #eff6ff;
+      }
+      .signin-persona-btn.signin-persona-staff {
+        border-color: #fde68a;
+        background: #fffbeb;
+        color: #92400e;
+      }
+      .signin-persona-btn.signin-persona-staff:hover {
+        border-color: #fcd34d;
+        background: #fef3c7;
+      }
       .nav-cta-block {
         display: flex;
         align-items: center;
@@ -1428,7 +1519,7 @@
   </head>
   <body>
     <script>
-      if (!localStorage.getItem('currentUser')) {
+      if (localStorage.getItem('siteUnlocked') !== '1') {
         sessionStorage.setItem('loginRedirect', window.location.href);
         window.location.replace('pages/login.html');
       }
@@ -2314,6 +2405,49 @@
       </div>
     </footer>
 
+    <!-- Sign In persona modal -->
+    <div id="signInModal" class="signin-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="signInModalTitle">
+      <div class="signin-modal-backdrop" onclick="window.closeSignInModal()"></div>
+      <div class="signin-modal-card">
+        <button type="button" onclick="window.closeSignInModal()" aria-label="Close" class="signin-modal-close">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+
+        <h2 id="signInModalTitle" class="signin-modal-title">Sign In</h2>
+        <p class="signin-modal-subtext">Choose an account to continue</p>
+
+        <p class="signin-modal-label">Customer</p>
+        <div class="signin-persona-row">
+          <button type="button" onclick="window.signInAsCustomer(1)" class="signin-persona-btn">
+            <span>👤</span>
+            Customer 1
+          </button>
+          <button type="button" onclick="window.signInAsCustomer(2)" class="signin-persona-btn">
+            <span>👤</span>
+            Customer 2
+          </button>
+        </div>
+
+        <p class="signin-modal-label">Staff</p>
+        <div class="signin-persona-row">
+          <button type="button" onclick="window.signInAsStaff('admin')" class="signin-persona-btn signin-persona-staff">
+            <span>🛡️</span>
+            Admin
+          </button>
+          <button type="button" onclick="window.signInAsStaff('pharmacist')" class="signin-persona-btn signin-persona-staff">
+            <span>💊</span>
+            Pharmacist
+          </button>
+          <button type="button" onclick="window.signInAsStaff('delivery')" class="signin-persona-btn signin-persona-staff">
+            <span>🚚</span>
+            Dispatch
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Get a Call Modal (shared organism, ported from Legacy pages/medicine-detail.html) -->
     <div
       id="callModal"
@@ -2520,6 +2654,7 @@
 
     <script type="module">
       import * as CallModalOrganism from './components/organisms/CallModal.js';
+      import { getStaff, setCurrentStaff } from './js/staff.js';
 
       window.openCallModal = () => CallModalOrganism.openCallModal(null);
       window.closeCallModal = CallModalOrganism.closeCallModal;
@@ -2591,7 +2726,8 @@
             renderHomeAuth();
           });
         } else {
-          slot.innerHTML = `<a href="pages/login.html" class="nav-signin-btn">Sign In</a>`;
+          slot.innerHTML = `<button type="button" class="nav-signin-btn" id="homeSignInBtn">Sign In</button>`;
+          document.getElementById('homeSignInBtn').addEventListener('click', openSignInModal);
         }
       }
 
@@ -2602,6 +2738,47 @@
           menu.classList.remove('show');
         }
       });
+
+      // --- Sign In persona modal ---
+      function openSignInModal() {
+        document.getElementById('signInModal').classList.remove('hidden');
+        document.getElementById('signInModal').classList.add('flex');
+      }
+      window.closeSignInModal = function () {
+        document.getElementById('signInModal').classList.add('hidden');
+        document.getElementById('signInModal').classList.remove('flex');
+      };
+
+      function goAfterSignIn(fallback) {
+        const dest = sessionStorage.getItem('loginRedirect') || fallback;
+        sessionStorage.removeItem('loginRedirect');
+        sessionStorage.removeItem('openSignIn');
+        window.location.href = dest;
+      }
+
+      window.signInAsCustomer = function (which) {
+        const identities = {
+          1: { name: 'Patient One', phone: '9876500001', email: 'patient1@example.com', role: 'user' },
+          2: { name: 'Patient Two', phone: '9876500002', email: 'patient2@example.com', role: 'user' },
+        };
+        localStorage.setItem('currentUser', JSON.stringify(identities[which]));
+        goAfterSignIn('index.html');
+      };
+
+      window.signInAsStaff = function (role) {
+        const staff = getStaff();
+        const match = staff.find(function (s) {
+          return s.role === role;
+        });
+        if (!match) return;
+        setCurrentStaff({ id: match.id, name: match.name, email: match.email, role: match.role });
+        window.location.href = 'pages/admin.html';
+      };
+
+      // Auto-open the modal if an inner page redirected here needing sign-in
+      if (sessionStorage.getItem('openSignIn') === '1') {
+        openSignInModal();
+      }
 
       renderHomeCartBadge();
       renderHomeAuth();

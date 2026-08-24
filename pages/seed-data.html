@@ -55,13 +55,12 @@
         <div class="mt-8 pt-6 border-t border-slate-100 text-sm space-y-2">
           <p class="font-700 text-slate-700">Quick links after seeding:</p>
           <ul class="list-disc list-inside text-slate-600 space-y-1">
-            <li><a href="../index.html" class="text-blue-600 hover:underline">Homepage</a> (patient: Demo Patient)</li>
-            <li><a href="account.html" class="text-blue-600 hover:underline">My Account</a> — orders, addresses, prescriptions</li>
-            <li><a href="admin-login.html" class="text-blue-600 hover:underline">Admin Login</a> — admin@medify.local / admin123</li>
-            <li><a href="admin.html" class="text-blue-600 hover:underline">Admin Panel</a> (if already logged in)</li>
+            <li><a href="../index.html" class="text-blue-600 hover:underline">Homepage</a> &mdash; click Sign In (top right) to pick a persona: Customer 1/2, Admin, Pharmacist, or Dispatch</li>
+            <li><a href="account.html" class="text-blue-600 hover:underline">My Account</a> — orders, addresses, prescriptions (once signed in as a Customer)</li>
           </ul>
-          <p class="text-xs text-slate-400 mt-3">Additional staff logins seeded: pharmacist@medify.local / pharma123 &middot; delivery@medify.local / deliver123</p>
-          <p class="text-xs text-slate-400 mt-1">Note: orders, addresses and prescriptions are shared storage &mdash; the Patient 1 / Patient 2 quick-login buttons on the login page will see this same seeded data, not separate accounts.</p>
+          <p class="text-xs text-slate-400 mt-3">Staff logins behind the persona picker: admin@medify.local / admin123 &middot; pharmacist@medify.local / pharma123 &middot; dispatch@medify.local / dispatch123</p>
+          <p class="text-xs text-slate-400 mt-1">Note: orders, addresses and prescriptions are shared storage &mdash; the Customer 1 / Customer 2 personas will see this same seeded data, not separate accounts.</p>
+          <p class="text-xs text-slate-400 mt-1">The 4-digit PIN gate (pages/login.html) is a separate MVP access boundary, unrelated to persona login.</p>
         </div>
       </div>
     </div>
@@ -70,7 +69,7 @@
       import { createOrder, setOrderStage, setRxStatus } from '../js/orders.js';
       import { addAddress } from '../js/addresses.js';
       import { addPrescription } from '../js/prescriptions.js';
-      import { addStaff, getStaff } from '../js/staff.js';
+      import { getStaff } from '../js/staff.js';
       import { addMedicine, editMedicine } from '../js/medicineOverrides.js';
 
       const RX_MED = {
@@ -224,11 +223,10 @@
         });
         log('Added 1 medicine via Catalog and edited 1 existing medicine (Aspirin 500).');
 
-        // --- Staff accounts (admin already seeded by staff.js on first read) ---
-        getStaff(); // ensure default admin exists
-        addStaff({ name: 'Priya Sharma', email: 'pharmacist@medify.local', password: 'pharma123', role: 'pharmacist' });
-        addStaff({ name: 'Ravi Kumar', email: 'delivery@medify.local', password: 'deliver123', role: 'delivery' });
-        log('Added Pharmacist and Delivery staff logins.');
+        // --- Staff accounts: Admin, Pharmacist, Dispatch are already seeded
+        // by default in js/staff.js — just make sure they exist.
+        getStaff();
+        log('Confirmed default staff accounts exist (Admin, Pharmacist, Dispatch).');
 
         // --- A cart item ready to test the Rx-upload-before-checkout gate ---
         localStorage.setItem(
