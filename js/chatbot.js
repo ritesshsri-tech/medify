@@ -23,15 +23,22 @@
 
   const TREE = {
     root: {
-      title: "Hi! How can we help?",
+      title: 'How may I help you?',
       options: [
         { label: 'Track my order', goto: 'orders' },
         { label: 'Prescription (Rx) help', goto: 'rx' },
         { label: 'Payments & pricing', goto: 'payments' },
+        { label: 'More options', goto: 'more' },
+      ],
+    },
+    more: {
+      title: 'More options',
+      options: [
         { label: 'Returns & cancellations', goto: 'returns' },
         { label: 'Account & login', goto: 'account' },
         { label: 'Medical Tourism', goto: 'medtourism' },
         { label: 'Talk to a human', goto: 'contact' },
+        { label: '⬅ Back', goto: ROOT },
       ],
     },
 
@@ -114,13 +121,13 @@
     },
     'payments-cod': {
       title: 'Cash on Delivery',
-      body: "Yes — select \"Cash on Delivery\" as the payment method at checkout, and pay in cash when your order is delivered to your doorstep.",
+      body: 'Yes — select "Cash on Delivery" as the payment method at checkout, and pay in cash when your order is delivered to your doorstep.',
       links: [],
       back: 'payments',
     },
     'payments-price': {
       title: 'Why is the price different from MRP?',
-      body: "The price you pay (selling price) is usually lower than the printed MRP — the discount is shown on every medicine card and at checkout under \"Items MRP\" vs \"Discount\".",
+      body: 'The price you pay (selling price) is usually lower than the printed MRP — the discount is shown on every medicine card and at checkout under "Items MRP" vs "Discount".',
       links: [],
       back: 'payments',
     },
@@ -130,7 +137,7 @@
       options: [
         { label: 'Can I return a medicine?', goto: 'returns-policy' },
         { label: 'How do I cancel an order?', goto: 'orders-cancel' },
-        { label: '⬅ Back to main menu', goto: ROOT },
+        { label: '⬅ Back', goto: 'more' },
       ],
     },
     'returns-policy': {
@@ -146,7 +153,7 @@
         { label: 'How do I sign in?', goto: 'account-signin' },
         { label: 'Update my profile', goto: 'account-profile' },
         { label: 'Manage saved addresses', goto: 'account-address' },
-        { label: '⬅ Back to main menu', goto: ROOT },
+        { label: '⬅ Back', goto: 'more' },
       ],
     },
     'account-signin': {
@@ -170,25 +177,24 @@
 
     medtourism: {
       title: 'Medical Tourism',
-      body: "For international patients seeking treatment in India, fill out the Medical Tourism enquiry form from the homepage banner. Our care team will review it and contact you — you can track the status of your enquiry under My Orders.",
+      body: 'For international patients seeking treatment in India, fill out the Medical Tourism enquiry form from the homepage banner. Our care team will review it and contact you — you can track the status of your enquiry under My Orders.',
       links: [{ label: 'Go to My Orders', href: link('pages/account.html#orders') }],
-      back: ROOT,
+      back: 'more',
     },
 
     contact: {
       title: 'Talk to a human',
-      body: "Our support team is available on call or WhatsApp: \n📞 +91 1800-123-456 \n💬 WhatsApp: +91 99991 56233",
+      body: 'Our support team is available on call or WhatsApp: \n📞 +91 1800-123-456 \n💬 WhatsApp: +91 99991 56233',
       links: [
         { label: 'Call Us', href: 'tel:+911800123456' },
         { label: 'WhatsApp Us', href: 'https://wa.me/919999156233', external: true },
       ],
-      back: ROOT,
+      back: 'more',
     },
   };
 
-  // --- State ---------------------------------------------------------------
+  // --- State -----------------------------------------------------------------
   let currentNodeId = ROOT;
-  let history = [];
 
   function isOpen() {
     return localStorage.getItem('chatbotOpen') === '1';
@@ -196,8 +202,81 @@
   function setOpen(open) {
     localStorage.setItem('chatbotOpen', open ? '1' : '0');
   }
+  function intakeDone() {
+    return localStorage.getItem('chatbotIntakeDone') === '1';
+  }
+  function setIntakeDone() {
+    localStorage.setItem('chatbotIntakeDone', '1');
+  }
+  function getVisitorName() {
+    return localStorage.getItem('chatbotVisitorName') || '';
+  }
+  function getVisitorPhone() {
+    return localStorage.getItem('chatbotVisitorPhone') || '';
+  }
 
-  // --- Rendering -------------------------------------------------------------
+  // --- Intake (name -> phone -> menu) -----------------------------------------
+  function renderIntakeStep(step) {
+    const body = document.getElementById('chatbotBody');
+    if (!body) return;
+
+    if (step === 'name') {
+      body.innerHTML = `
+        <p class="chatbot-node-title">Hi! I'm the MediFy Help Bot 👋</p>
+        <p class="chatbot-node-body">Before we start, what's your name?</p>
+        <input type="text" id="chatbotIntakeInput" class="chatbot-text-input" placeholder="Your name" autocomplete="name" />
+        <div class="chatbot-intake-row">
+          <button type="button" id="chatbotIntakeSend" class="chatbot-send-btn">Send</button>
+          <button type="button" id="chatbotIntakeSkip" class="chatbot-skip-btn">Skip</button>
+        </div>
+      `;
+      const input = document.getElementById('chatbotIntakeInput');
+      const submit = () => {
+        const val = input.value.trim();
+        if (val) localStorage.setItem('chatbotVisitorName', val);
+        renderIntakeStep('phone');
+      };
+      document.getElementById('chatbotIntakeSend').addEventListener('click', submit);
+      document.getElementById('chatbotIntakeSkip').addEventListener('click', () => renderIntakeStep('phone'));
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') submit();
+      });
+      input.focus();
+      return;
+    }
+
+    if (step === 'phone') {
+      const name = getVisitorName();
+      body.innerHTML = `
+        <p class="chatbot-node-title">${name ? `Thanks, ${name}!` : 'Got it!'}</p>
+        <p class="chatbot-node-body">And your phone number, in case we need to follow up?</p>
+        <input type="tel" id="chatbotIntakeInput" class="chatbot-text-input" placeholder="Your phone number" autocomplete="tel" />
+        <div class="chatbot-intake-row">
+          <button type="button" id="chatbotIntakeSend" class="chatbot-send-btn">Send</button>
+          <button type="button" id="chatbotIntakeSkip" class="chatbot-skip-btn">Skip</button>
+        </div>
+      `;
+      const input = document.getElementById('chatbotIntakeInput');
+      const finish = () => {
+        const val = input.value.trim();
+        if (val) localStorage.setItem('chatbotVisitorPhone', val);
+        setIntakeDone();
+        renderNode(ROOT);
+      };
+      document.getElementById('chatbotIntakeSend').addEventListener('click', finish);
+      document.getElementById('chatbotIntakeSkip').addEventListener('click', () => {
+        setIntakeDone();
+        renderNode(ROOT);
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') finish();
+      });
+      input.focus();
+      return;
+    }
+  }
+
+  // --- Rendering ---------------------------------------------------------------
   function renderNode(nodeId) {
     const node = TREE[nodeId];
     if (!node) return;
@@ -206,7 +285,13 @@
     const body = document.getElementById('chatbotBody');
     if (!body) return;
 
-    let html = `<p class="chatbot-node-title">${node.title}</p>`;
+    const name = getVisitorName();
+    let html = '';
+    if (nodeId === ROOT && name) {
+      html += `<p class="chatbot-node-title">${node.title.replace('How may I help you?', `Hi ${name}, how may I help you?`)}</p>`;
+    } else {
+      html += `<p class="chatbot-node-title">${node.title}</p>`;
+    }
 
     if (node.body) {
       html += `<p class="chatbot-node-body">${node.body.replace(/\n/g, '<br>')}</p>`;
@@ -235,13 +320,18 @@
 
     body.querySelectorAll('[data-goto]').forEach((btn) => {
       btn.addEventListener('click', () => {
-        if (btn.dataset.goto !== ROOT || nodeId !== ROOT) {
-          history.push(nodeId);
-        }
         renderNode(btn.dataset.goto);
         body.scrollTop = 0;
       });
     });
+  }
+
+  function openChat() {
+    if (!intakeDone()) {
+      renderIntakeStep('name');
+    } else {
+      renderNode(ROOT);
+    }
   }
 
   function toggleWindow(forceOpen) {
@@ -249,19 +339,51 @@
     const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : win.classList.contains('hidden');
     win.classList.toggle('hidden', !shouldOpen);
     setOpen(shouldOpen);
-    if (shouldOpen && currentNodeId === ROOT) {
-      renderNode(ROOT);
+    hideLabel();
+    if (shouldOpen) {
+      openChat();
     }
+  }
+
+  // --- Animated "AI Support" label -------------------------------------------
+  function hideLabel() {
+    const label = document.getElementById('chatbotLabel');
+    if (label) label.classList.add('chatbot-label-hidden');
   }
 
   function mount() {
     const style = document.createElement('style');
     style.textContent = `
-      .chatbot-fab {
+      .chatbot-fab-wrap {
         position: fixed;
         bottom: 28px;
         right: 96px;
         z-index: 350;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .chatbot-label {
+        background: #0f172a;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 8px 14px;
+        border-radius: 999px;
+        white-space: nowrap;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+        animation: chatbot-bounce 2.2s ease-in-out infinite;
+      }
+      .chatbot-label.chatbot-label-hidden {
+        display: none;
+      }
+      @keyframes chatbot-bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-4px); }
+      }
+      .chatbot-fab {
+        position: relative;
+        flex-shrink: 0;
         width: 54px;
         height: 54px;
         border-radius: 50%;
@@ -273,8 +395,14 @@
         justify-content: center;
         box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45);
         transition: transform 0.15s;
+        animation: chatbot-pulse-ring 2.2s ease-in-out infinite;
       }
       .chatbot-fab:hover { transform: scale(1.08); }
+      @keyframes chatbot-pulse-ring {
+        0% { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45), 0 0 0 0 rgba(37, 99, 235, 0.45); }
+        70% { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45), 0 0 0 12px rgba(37, 99, 235, 0); }
+        100% { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45), 0 0 0 0 rgba(37, 99, 235, 0); }
+      }
       .chatbot-window {
         position: fixed;
         bottom: 92px;
@@ -367,24 +495,69 @@
         transition: background 0.15s;
       }
       .chatbot-link-btn:hover { background: #1d4ed8; }
+      .chatbot-text-input {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1.5px solid #bfdbfe;
+        border-radius: 10px;
+        font-size: 12.5px;
+        font-family: inherit;
+        outline: none;
+        margin-bottom: 8px;
+        box-sizing: border-box;
+      }
+      .chatbot-text-input:focus { border-color: #2563eb; }
+      .chatbot-intake-row {
+        display: flex;
+        gap: 8px;
+      }
+      .chatbot-send-btn {
+        flex: 1;
+        padding: 9px 12px;
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .chatbot-send-btn:hover { background: #1d4ed8; }
+      .chatbot-skip-btn {
+        padding: 9px 12px;
+        background: #fff;
+        color: #64748b;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .chatbot-skip-btn:hover { background: #f1f5f9; }
       @media (max-width: 480px) {
-        .chatbot-fab { right: 20px; bottom: 20px; }
+        .chatbot-fab-wrap { right: 16px; bottom: 20px; }
         .chatbot-window { right: 16px; bottom: 84px; }
+        .chatbot-label { display: none; }
       }
     `;
     document.head.appendChild(style);
 
     const wrap = document.createElement('div');
     wrap.innerHTML = `
-      <button type="button" id="chatbotFab" class="chatbot-fab" aria-label="Open help chat" title="Need help?">
-        <svg width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-        </svg>
-      </button>
+      <div class="chatbot-fab-wrap">
+        <span id="chatbotLabel" class="chatbot-label">🤖 AI Support</span>
+        <button type="button" id="chatbotFab" class="chatbot-fab" aria-label="Open help chat" title="AI Support / Help">
+          <svg width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+          </svg>
+        </button>
+      </div>
       <div id="chatbotWindow" class="chatbot-window hidden" role="dialog" aria-modal="false" aria-label="Help chat">
         <div class="chatbot-header">
           <div>
-            <div class="chatbot-header-title">MediFy Help</div>
+            <div class="chatbot-header-title">MediFy AI Support</div>
             <div class="chatbot-header-sub">Quick answers, no waiting</div>
           </div>
           <button type="button" id="chatbotCloseBtn" class="chatbot-close-btn" aria-label="Close chat">
@@ -403,6 +576,9 @@
 
     if (isOpen()) {
       toggleWindow(true);
+    } else {
+      // Auto-hide the animated label after a while so it doesn't nag forever.
+      setTimeout(hideLabel, 15000);
     }
   }
 
