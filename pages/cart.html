@@ -80,9 +80,9 @@
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        padding: 4px 10px;
+        padding: 6px 12px;
         border-radius: 999px;
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 600;
         border: 1px solid #bfdbfe;
         background: #fff;
@@ -104,18 +104,14 @@
         background: #fef3c7;
         border-color: #fcd34d;
       }
-      .rx-saved-picker {
-        position: absolute;
-        z-index: 20;
-        margin-top: 4px;
-        background: #fff;
+      .rx-file-chip {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         border: 1px solid #bfdbfe;
+        background: #fff;
         border-radius: 10px;
-        box-shadow: 0 8px 24px rgba(30, 58, 138, 0.12);
-        padding: 8px;
-        width: 260px;
-        max-height: 220px;
-        overflow-y: auto;
+        padding: 8px 10px;
       }
     </style>
   </head>
@@ -151,21 +147,45 @@
       <div id="cartContent" class="hidden flex flex-col lg:flex-row gap-6 items-start">
         <!-- Items list -->
         <div class="flex-1 min-w-0 w-full space-y-3">
-          <!-- Rx notice banner -->
-          <div id="rxNotice" class="hidden card p-4 border-amber-200 bg-amber-50 flex items-start gap-3">
-            <svg class="flex-shrink-0 mt-0.5" width="18" height="18" fill="none" stroke="#B45309" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-            </svg>
-            <p class="text-sm text-amber-900">
-              One or more items in your cart require a prescription. Upload a new Rx, reuse a saved one, or choose "No Rx" and our doctor will call to confirm before checkout.
-            </p>
-          </div>
-
           <div id="cartItems" class="space-y-3"></div>
         </div>
 
         <!-- Summary sidebar -->
-        <aside class="w-full lg:w-80 flex-shrink-0 lg:sticky top-24">
+        <aside class="w-full lg:w-80 flex-shrink-0 lg:sticky top-24 space-y-4">
+          <!-- Common Rx panel (applies to all Rx-required items in the cart) -->
+          <div id="rxPanel" class="hidden card p-4 border-amber-200 bg-amber-50">
+            <div class="flex items-start gap-3 mb-3">
+              <svg class="flex-shrink-0 mt-0.5" width="18" height="18" fill="none" stroke="#B45309" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              </svg>
+              <div class="min-w-0">
+                <p class="text-sm font-700 text-amber-900">Prescription for this order</p>
+                <p id="rxPanelSub" class="text-xs text-amber-800 mt-0.5">One prescription can cover all Rx items in your cart. You can also upload more than one.</p>
+              </div>
+            </div>
+
+            <div id="rxCallbackNote" class="hidden text-sm text-amber-900 bg-amber-100 border border-amber-200 rounded-lg px-3 py-2 mb-3">
+              Our doctor will call to confirm before your order ships.
+            </div>
+
+            <div id="rxFileList" class="space-y-2 mb-3"></div>
+
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button type="button" onclick="window.openRxModal()" class="rx-action-btn">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload Rx
+              </button>
+              <button type="button" onclick="window.openSavedRxModal()" class="rx-action-btn">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                Use Existing
+              </button>
+              <button type="button" onclick="window.submitNoRxCallback()" class="rx-action-btn rx-action-callback">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                No Rx — Doctor Will Call
+              </button>
+            </div>
+          </div>
+
           <div class="card p-5">
             <h2 class="text-sm font-700 text-slate-500 uppercase tracking-wider mb-4">Order Summary</h2>
             <div class="space-y-2 text-sm mb-4">
@@ -203,7 +223,7 @@
     </div>
 
     <!-- Rx upload modal (file upload only — saved-Rx and no-Rx are inline on the cart row) -->
-    <div id="rxModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div id="rxModal" class="fixed inset-0 z-[300] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
       <div class="absolute inset-0 bg-black/50" onclick="window.closeRxModal()"></div>
       <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
         <div class="flex items-center justify-between mb-4">
@@ -214,7 +234,7 @@
             </svg>
           </button>
         </div>
-        <p id="rxModalMedName" class="text-sm text-slate-600 mb-4"></p>
+        <p class="text-sm text-slate-600 mb-4">This prescription will be attached to your order and can cover any Rx items in your cart.</p>
         <label
           id="rxDropZone"
           class="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-blue-200 rounded-xl py-10 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
@@ -244,6 +264,24 @@
       </div>
     </div>
 
+    <!-- Use Existing Prescription modal -->
+    <div id="savedRxModal" class="fixed inset-0 z-[300] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+      <div class="absolute inset-0 bg-black/50" onclick="window.closeSavedRxModal()"></div>
+      <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-bold text-slate-900 text-base">Use Existing Prescription</h2>
+          <button type="button" onclick="window.closeSavedRxModal()" aria-label="Close" class="text-slate-500 hover:text-slate-700 p-1">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <p class="text-sm text-slate-600 mb-4">Select a previously uploaded prescription to use for this order.</p>
+        <div id="savedRxList" class="space-y-2 max-h-72 overflow-y-auto"></div>
+        <p id="savedRxEmpty" class="hidden text-sm text-slate-500 text-center py-6">No saved prescriptions yet</p>
+      </div>
+    </div>
+
     <script src="../js/header.js"></script>
     <script type="module">
       import { fetchMedicines } from '../js/data.js';
@@ -253,8 +291,15 @@
 
       let cart = [];
       let allMedicines = [];
-      let rxTargetId = null;
       let rxSelectedFileName = null;
+
+      // Pool of Rx files attached to this cart order (patient may attach more than one).
+      function getRxFiles() {
+        return JSON.parse(sessionStorage.getItem('cartRxFiles') || '[]');
+      }
+      function saveRxFiles(files) {
+        sessionStorage.setItem('cartRxFiles', JSON.stringify(files));
+      }
 
       async function init() {
         try {
@@ -263,6 +308,10 @@
           allMedicines = [];
         }
         render();
+      }
+
+      function applyResolutionToAllRxItems(resolution) {
+        cart.filter((i) => i.requiresPrescription).forEach((i) => setRxUploaded(i.id, true, resolution));
       }
 
       function render() {
@@ -280,14 +329,43 @@
 
         document.getElementById('cartItems').innerHTML = cart.map(renderItem).join('');
 
+        const rxItems = cart.filter((i) => i.requiresPrescription);
+        const hasRxItems = rxItems.length > 0;
+        document.getElementById('rxPanel').classList.toggle('hidden', !hasRxItems);
+        if (hasRxItems) renderRxPanel(rxItems);
+
         const blocked = needsRxUpload();
-        document.getElementById('rxNotice').classList.toggle('hidden', !blocked);
         document.getElementById('checkoutBlockedMsg').classList.toggle('hidden', !blocked);
         document.getElementById('checkoutBtn').disabled = blocked;
         document.getElementById('checkoutBtn').classList.toggle('opacity-40', blocked);
         document.getElementById('checkoutBtn').classList.toggle('cursor-not-allowed', blocked);
 
         renderSummary();
+      }
+
+      function renderRxPanel(rxItems) {
+        const resolution = rxItems[0].rxResolution;
+        const resolved = rxItems.every((i) => i.rxUploaded);
+        const files = getRxFiles();
+
+        document.getElementById('rxPanelSub').textContent = resolved
+          ? `Applies to ${rxItems.length} Rx item${rxItems.length > 1 ? 's' : ''} in your cart.`
+          : `${rxItems.length} Rx item${rxItems.length > 1 ? 's' : ''} in your cart need a prescription. One prescription can cover all of them — you can also attach more than one.`;
+
+        document.getElementById('rxCallbackNote').classList.toggle('hidden', resolution !== 'call-to-confirm');
+
+        document.getElementById('rxFileList').innerHTML = files
+          .map(
+            (f, idx) => `
+<div class="rx-file-chip">
+  <svg width="15" height="15" fill="none" stroke="#16A34A" stroke-width="2.5" viewBox="0 0 24 24" class="flex-shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
+  <span class="text-sm text-slate-700 truncate flex-1">${f}</span>
+  <button type="button" onclick="window.removeRxFile(${idx})" aria-label="Remove file" class="text-slate-400 hover:text-red-500 p-1 flex-shrink-0">
+    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>`
+          )
+          .join('');
       }
 
       const RX_RESOLUTION_LABEL = {
@@ -305,32 +383,6 @@
             : `<span class="rx-badge"><span style="font-weight:800;">Rx</span>&thinsp;Required</span>`;
         } else {
           rxBadge = `<span class="otc-badge"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>OTC</span>`;
-        }
-
-        let rxActions = '';
-        if (item.requiresPrescription) {
-          const savedCount = getPrescriptions().length;
-          const changeLabel = item.rxUploaded ? 'Change' : null;
-          rxActions = `
-    <div class="flex items-center gap-1.5 mt-2 flex-wrap relative">
-      <button type="button" onclick="window.openRxModal('${item.id}')" class="rx-action-btn">
-        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        ${changeLabel ? 'Change Upload' : 'Upload Rx'}
-      </button>
-      ${
-        savedCount > 0
-          ? `<button type="button" onclick="window.toggleSavedPicker('${item.id}', event)" class="rx-action-btn">
-        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-        Use Saved Rx
-      </button>`
-          : ''
-      }
-      <button type="button" onclick="window.submitNoRxCallback('${item.id}')" class="rx-action-btn rx-action-callback">
-        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        No Rx — Doctor Will Call
-      </button>
-      <div id="savedPicker-${item.id}" class="rx-saved-picker hidden"></div>
-    </div>`;
         }
 
         return `
@@ -351,7 +403,6 @@
     <div class="flex items-center gap-2 mt-2 flex-wrap">
       ${rxBadge}
     </div>
-    ${rxActions}
     <div class="flex items-center justify-between mt-3">
       <div class="flex items-center border border-blue-200 rounded-full overflow-hidden">
         <button type="button" onclick="window.changeQty('${item.id}', -1)" class="qty-btn">−</button>
@@ -388,13 +439,9 @@
         window.location.href = 'checkout.html';
       };
 
-      // --- Rx upload modal (file upload only) ---
-      window.openRxModal = function (id) {
-        rxTargetId = id;
+      // --- Rx upload modal (file upload only; applies to the whole order) ---
+      window.openRxModal = function () {
         rxSelectedFileName = null;
-        closeSavedPickers();
-        const med = cart.find((i) => i.id === id);
-        document.getElementById('rxModalMedName').textContent = med ? `For: ${med.brandName}` : '';
         document.getElementById('rxFilePreview').classList.add('hidden');
         document.getElementById('rxFileInput').value = '';
         document.getElementById('rxSubmitBtn').disabled = true;
@@ -417,50 +464,69 @@
       };
 
       window.submitRxUpload = function () {
-        if (!rxTargetId || !rxSelectedFileName) return;
-        const med = cart.find((i) => i.id === rxTargetId);
-        addPrescription({ fileName: rxSelectedFileName, forMedicineId: rxTargetId, forMedicineName: med ? med.brandName : null });
-        setRxUploaded(rxTargetId, true, 'uploaded');
+        if (!rxSelectedFileName) return;
+        addPrescription({ fileName: rxSelectedFileName, forMedicineId: null, forMedicineName: null });
+        const files = getRxFiles();
+        files.push(rxSelectedFileName);
+        saveRxFiles(files);
+        applyResolutionToAllRxItems('uploaded');
         window.closeRxModal();
         render();
       };
 
-      // --- Inline saved-Rx picker (no modal) ---
-      function closeSavedPickers() {
-        document.querySelectorAll('.rx-saved-picker').forEach((el) => el.classList.add('hidden'));
-      }
+      window.removeRxFile = function (idx) {
+        const files = getRxFiles();
+        files.splice(idx, 1);
+        saveRxFiles(files);
+        if (files.length === 0) {
+          cart.filter((i) => i.requiresPrescription).forEach((i) => setRxUploaded(i.id, false, null));
+        }
+        render();
+      };
 
-      window.toggleSavedPicker = function (id, evt) {
-        evt.stopPropagation();
-        const picker = document.getElementById(`savedPicker-${id}`);
-        const wasOpen = !picker.classList.contains('hidden');
-        closeSavedPickers();
-        if (wasOpen) return;
+      // --- Use Existing Prescription modal ---
+      window.openSavedRxModal = function () {
+        const list = document.getElementById('savedRxList');
+        const prescriptions = getPrescriptions();
+        document.getElementById('savedRxEmpty').classList.toggle('hidden', prescriptions.length > 0);
 
-        picker.innerHTML = getPrescriptions()
+        list.innerHTML = prescriptions
           .map(
             (rx) => `
-<button type="button" onclick="window.useSavedRx('${id}', '${rx.id}')" class="w-full flex items-center gap-2 text-left rounded-lg px-2 py-2 hover:bg-blue-50 transition-colors">
-  <svg width="14" height="14" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+<button type="button" onclick="window.useSavedRx('${rx.id}')" class="w-full flex items-center gap-2 text-left rounded-lg px-3 py-2.5 border border-blue-100 hover:bg-blue-50 hover:border-blue-200 transition-colors">
+  <svg width="16" height="16" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
   <span class="min-w-0 flex-1">
-    <span class="block text-xs font-medium text-slate-800 truncate">${rx.fileName}</span>
-    <span class="block text-[11px] text-slate-500 truncate">${rx.forMedicineName ? `Originally for ${rx.forMedicineName} &middot; ` : ''}${new Date(rx.uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+    <span class="block text-sm font-medium text-slate-800 truncate">${rx.fileName}</span>
+    <span class="block text-xs text-slate-500 truncate">${new Date(rx.uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
   </span>
 </button>`
           )
           .join('');
-        picker.classList.remove('hidden');
+
+        document.getElementById('savedRxModal').classList.remove('hidden');
+        document.getElementById('savedRxModal').classList.add('flex');
       };
 
-      document.addEventListener('click', closeSavedPickers);
+      window.closeSavedRxModal = function () {
+        document.getElementById('savedRxModal').classList.add('hidden');
+        document.getElementById('savedRxModal').classList.remove('flex');
+      };
 
-      window.useSavedRx = function (id, rxId) {
-        setRxUploaded(id, true, 'reused');
+      window.useSavedRx = function (rxId) {
+        const rx = getPrescriptions().find((r) => r.id === rxId);
+        if (rx) {
+          const files = getRxFiles();
+          if (!files.includes(rx.fileName)) files.push(rx.fileName);
+          saveRxFiles(files);
+        }
+        applyResolutionToAllRxItems('reused');
+        window.closeSavedRxModal();
         render();
       };
 
-      window.submitNoRxCallback = function (id) {
-        setRxUploaded(id, true, 'call-to-confirm');
+      window.submitNoRxCallback = function () {
+        saveRxFiles([]);
+        applyResolutionToAllRxItems('call-to-confirm');
         render();
       };
 

@@ -856,7 +856,7 @@
     <!-- Salt Modal -->
     <div
       id="saltModal"
-      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+      class="fixed inset-0 z-[300] hidden items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="saltModalTitle"
@@ -946,7 +946,7 @@
     <!-- Manufacturer Modal -->
     <div
       id="mfrModal"
-      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+      class="fixed inset-0 z-[300] hidden items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="mfrModalTitle"
@@ -1338,7 +1338,7 @@
 
       // --- Query modal ---
       window.sendQuery = function () {
-        QueryModalOrganism.openQueryModal(medicine, { qty: currentQty });
+        QueryModalOrganism.openQueryModal(medicine, { qty: currentQty, allMedicines });
       };
       window.closeQueryModal = QueryModalOrganism.closeQueryModal;
       window.submitQuery = QueryModalOrganism.submitQuery;
@@ -1364,7 +1364,7 @@
     <!-- Send Query Modal -->
     <div
       id="queryModal"
-      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+      class="fixed inset-0 z-[300] hidden items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="queryModalTitle"
@@ -1392,24 +1392,30 @@
 
         <div id="queryModalForm" class="overflow-y-auto p-5 space-y-4">
           <div>
-            <label for="qfMedicine" class="block text-xs font-semibold text-slate-500 mb-1">Medicine</label>
-            <input
-              id="qfMedicine"
-              type="text"
-              readonly
-              aria-label="Medicine name"
-              class="w-full px-3 py-2 text-sm bg-blue-50 border border-blue-100 rounded-lg text-slate-700 cursor-default"
-            />
-          </div>
-          <div>
-            <label for="qfQty" class="block text-xs font-semibold text-slate-500 mb-1">Quantity Required</label>
-            <input
-              id="qfQty"
-              type="number"
-              min="1"
-              aria-label="Quantity"
-              class="w-28 px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-            />
+            <label class="block text-xs font-semibold text-slate-500 mb-1">Medicines</label>
+            <div id="qfMedicineList" class="space-y-2"></div>
+            <div class="relative mt-2">
+              <button
+                type="button"
+                id="qfAddMedicineBtn"
+                class="text-xs font-semibold text-blue-600 hover:underline"
+              >
+                + Add another medicine
+              </button>
+              <div
+                id="qfAddMedicinePicker"
+                class="hidden absolute z-10 mt-1 w-72 max-w-[80vw] bg-white border border-blue-100 rounded-xl shadow-lg p-2"
+              >
+                <input
+                  id="qfAddMedicineSearch"
+                  type="text"
+                  placeholder="Search medicines…"
+                  aria-label="Search medicines to add"
+                  class="w-full px-3 py-2 text-sm border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 mb-2"
+                />
+                <div id="qfAddMedicineOptions" class="max-h-48 overflow-y-auto"></div>
+              </div>
+            </div>
           </div>
           <div>
             <label for="qfName" class="block text-xs font-semibold text-slate-500 mb-1">
@@ -1557,7 +1563,7 @@
     <!-- Get a Call Modal -->
     <div
       id="callModal"
-      class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+      class="fixed inset-0 z-[300] hidden items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="callModalTitle"
@@ -1743,7 +1749,7 @@
     <!-- Detail page image gallery lightbox -->
     <div
       id="detailGallery"
-      class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/88"
+      class="fixed inset-0 z-[300] hidden items-center justify-center p-4 bg-black/88"
       onclick="window.closeDetailGallery()"
     >
       <div

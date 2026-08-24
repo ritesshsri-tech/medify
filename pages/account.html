@@ -273,6 +273,7 @@
       import { getOrders, trackingStages, currentStage } from '../js/orders.js';
       import { getAddresses, addAddress, removeAddress, setDefaultAddress } from '../js/addresses.js';
       import { getPrescriptions, removePrescription } from '../js/prescriptions.js';
+      import { getEnquiriesForUser } from '../js/medicalTourism.js';
       import { paise } from '../js/utils.js';
 
       const STAGE_LABELS = {
@@ -415,11 +416,46 @@
       };
 
       // --- Orders ---
+      const MT_STATUS_BADGE = {
+        new: '<span class="text-xs font-700 bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-full">Under Review</span>',
+        contacted: '<span class="text-xs font-700 bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full">Contacted</span>',
+        closed: '<span class="text-xs font-700 bg-slate-100 text-slate-600 border border-slate-200 px-2.5 py-1 rounded-full">Closed</span>',
+      };
+
+      function renderMtEnquiry(mt) {
+        const submittedDate = new Date(mt.submittedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        return `
+<div class="card p-5" id="order-${mt.id}">
+  <div class="flex items-start justify-between gap-3 flex-wrap mb-1">
+    <div>
+      <p class="font-700 text-slate-900 text-sm">${mt.id} <span class="text-xs font-600 text-blue-600 bg-blue-50 border border-blue-100 rounded-full px-2 py-0.5 ml-1">Medical Tourism</span></p>
+      <p class="text-xs text-slate-500">Submitted on ${submittedDate}</p>
+    </div>
+    ${MT_STATUS_BADGE[mt.status] || ''}
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 mt-3 text-sm text-slate-700">
+    <p><span class="text-slate-500">Treatment:</span> ${mt.treatment}</p>
+    <p><span class="text-slate-500">Country:</span> ${mt.country}</p>
+    ${mt.preferredDates ? `<p><span class="text-slate-500">Preferred Dates:</span> ${mt.preferredDates}</p>` : ''}
+    <p><span class="text-slate-500">Contact:</span> ${mt.phone}</p>
+  </div>
+  ${mt.message ? `<p class="text-sm text-slate-600 mt-2">${mt.message}</p>` : ''}
+</div>`;
+      }
+
       function renderOrders() {
         const orders = getOrders();
-        document.getElementById('orderEmpty').classList.toggle('hidden', orders.length > 0);
+        const user = getUser();
+        const enquiries = user.phone ? getEnquiriesForUser(user.phone) : [];
+        document.getElementById('orderEmpty').classList.toggle('hidden', orders.length > 0 || enquiries.length > 0);
         const highlightId = new URLSearchParams(window.location.search).get('order');
-        document.getElementById('orderList').innerHTML = orders.map((o) => renderOrder(o)).join('');
+
+        const combined = orders
+          .map((o) => ({ type: 'order', at: o.placedAt, html: renderOrder(o) }))
+          .concat(enquiries.map((e) => ({ type: 'mt', at: e.submittedAt, html: renderMtEnquiry(e) })))
+          .sort((a, b) => new Date(b.at) - new Date(a.at));
+
+        document.getElementById('orderList').innerHTML = combined.map((c) => c.html).join('');
         if (highlightId) {
           const el = document.getElementById(`order-${highlightId}`);
           if (el) el.scrollIntoView({ block: 'start' });

@@ -197,6 +197,10 @@
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 Staff Management
               </a>
+              <a class="quick-link" data-tab="medical-tourism" data-perm="medical-tourism">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                Medical Tourism
+              </a>
             </nav>
           </div>
         </aside>
@@ -371,6 +375,33 @@
                   <tbody id="staffTableBody"></tbody>
                 </table>
               </div>
+            </div>
+          </div>
+
+          <!-- MEDICAL TOURISM -->
+          <div id="tab-medical-tourism" class="tab-panel">
+            <div class="card p-5">
+              <h1 class="text-lg font-800 text-slate-900 mb-1">Medical Tourism Enquiries</h1>
+              <p class="text-xs text-slate-500 mb-4">Enquiries submitted from the Medical Tourism banner on the homepage.</p>
+              <div class="overflow-x-auto">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Enquiry ID</th>
+                      <th>Name</th>
+                      <th>Contact</th>
+                      <th>Country</th>
+                      <th>Treatment</th>
+                      <th>Preferred Dates</th>
+                      <th>Submitted</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mtTableBody"></tbody>
+                </table>
+              </div>
+              <p id="mtEmpty" class="hidden text-sm text-slate-500 text-center py-8">No medical tourism enquiries yet</p>
             </div>
           </div>
         </main>

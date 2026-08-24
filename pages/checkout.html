@@ -224,7 +224,7 @@
             <div id="savedAddrList" class="space-y-2 mb-3"></div>
 
             <button type="button" id="addNewAddrBtn" onclick="window.showAddressForm()" class="text-xs font-semibold text-blue-600 hover:underline mb-3">
-              + Use a new address
+              + Add new Address
             </button>
 
             <form id="addressForm" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -234,10 +234,18 @@
               <input class="field-input" id="addrCity" type="text" placeholder="City" autocomplete="address-level2" required />
               <input class="field-input" id="addrState" type="text" placeholder="State" autocomplete="address-level1" required />
               <input class="field-input" id="addrPincode" type="text" placeholder="Pincode" autocomplete="postal-code" maxlength="6" required />
-              <label class="sm:col-span-2 flex items-center gap-2 text-xs text-slate-600">
+              <label id="saveAddrLabel" class="sm:col-span-2 flex items-center gap-2 text-xs text-slate-600">
                 <input type="checkbox" id="saveAddrCheckbox" checked class="w-3.5 h-3.5" />
                 Save this address for future orders
               </label>
+              <div class="sm:col-span-2 flex gap-2">
+                <button type="button" onclick="window.submitAddressForm()" id="addrFormSubmitBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-full transition-colors">
+                  Save Address
+                </button>
+                <button type="button" onclick="window.cancelAddressForm()" class="px-4 py-2 border border-blue-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold rounded-full transition-colors">
+                  Cancel
+                </button>
+              </div>
             </form>
           </section>
 
@@ -269,7 +277,6 @@
                 <span class="text-sm font-medium text-slate-800 flex-1">Cash on Delivery</span>
               </label>
             </div>
-            <p class="text-xs text-slate-400 mt-3">This is a demo checkout — no real payment is processed.</p>
           </section>
         </div>
 
@@ -296,7 +303,7 @@
     </div>
 
     <!-- Mock Payment Gateway modal -->
-    <div id="gatewayModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div id="gatewayModal" class="fixed inset-0 z-[300] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
       <div class="absolute inset-0 bg-black/60"></div>
       <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
         <!-- Gateway header -->
@@ -386,7 +393,7 @@
     <script type="module">
       import { getCart, cartTotal, needsRxUpload, clearCart } from '../js/cart.js';
       import { createOrder } from '../js/orders.js';
-      import { getAddresses, addAddress } from '../js/addresses.js';
+      import { getAddresses, addAddress, updateAddress } from '../js/addresses.js';
       import { paise } from '../js/utils.js';
 
       let selectedPay = 'upi';
@@ -430,30 +437,65 @@
             (a) => `
 <div class="addr-card ${a.id === selectedAddressId ? 'selected' : ''}" data-addr-id="${a.id}">
   <span class="addr-radio"><span class="addr-radio-dot"></span></span>
-  <div class="text-sm min-w-0">
+  <div class="text-sm min-w-0 flex-1">
     <span class="font-700 text-slate-900">${a.name}</span>
     ${a.isDefault ? '<span class="default-badge ml-2">Default</span>' : ''}
     <p class="text-slate-600 mt-0.5">${a.line1}, ${a.city}, ${a.state} ${a.pincode}</p>
     <p class="text-slate-500 text-xs mt-0.5">${a.phone}</p>
   </div>
+  <button type="button" class="text-xs font-semibold text-blue-600 hover:underline flex-shrink-0" data-edit-addr-id="${a.id}">Edit</button>
 </div>`
           )
           .join('');
 
         list.querySelectorAll('.addr-card').forEach((el) => {
-          el.addEventListener('click', () => {
+          el.addEventListener('click', (e) => {
+            if (e.target.closest('[data-edit-addr-id]')) return;
             selectedAddressId = el.dataset.addrId;
             hideAddressForm();
             renderSavedAddresses();
           });
         });
+
+        list.querySelectorAll('[data-edit-addr-id]').forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const addr = getAddresses().find((a) => a.id === btn.dataset.editAddrId);
+            if (addr) editAddressInline(addr);
+          });
+        });
       }
+
+      let editingAddressId = null;
 
       window.showAddressForm = function () {
         selectedAddressId = null;
+        editingAddressId = null;
         document.querySelectorAll('.addr-card').forEach((el) => el.classList.remove('selected'));
+        clearAddressFormFields();
+        document.getElementById('saveAddrLabel').classList.remove('hidden');
         showAddressFormInline();
       };
+
+      function editAddressInline(addr) {
+        editingAddressId = addr.id;
+        selectedAddressId = addr.id;
+        document.getElementById('addrName').value = addr.name || '';
+        document.getElementById('addrPhone').value = addr.phone || '';
+        document.getElementById('addrLine1').value = addr.line1 || '';
+        document.getElementById('addrCity').value = addr.city || '';
+        document.getElementById('addrState').value = addr.state || '';
+        document.getElementById('addrPincode').value = addr.pincode || '';
+        document.getElementById('saveAddrLabel').classList.add('hidden');
+        showAddressFormInline();
+      }
+
+      function clearAddressFormFields() {
+        ['addrName', 'addrPhone', 'addrLine1', 'addrCity', 'addrState', 'addrPincode'].forEach((id) => {
+          document.getElementById(id).value = '';
+        });
+        document.getElementById('saveAddrCheckbox').checked = true;
+      }
 
       function showAddressFormInline() {
         document.getElementById('addressForm').classList.remove('hidden');
@@ -463,7 +505,50 @@
       function hideAddressForm() {
         document.getElementById('addressForm').classList.add('hidden');
         document.getElementById('addNewAddrBtn').classList.remove('hidden');
+        editingAddressId = null;
       }
+
+      window.cancelAddressForm = function () {
+        if (editingAddressId) {
+          selectedAddressId = editingAddressId;
+        }
+        hideAddressForm();
+        renderSavedAddresses();
+      };
+
+      window.submitAddressForm = function () {
+        const fields = ['addrName', 'addrPhone', 'addrLine1', 'addrCity', 'addrState', 'addrPincode'];
+        const values = {};
+        let valid = true;
+        fields.forEach((id) => {
+          const val = document.getElementById(id).value.trim();
+          values[id] = val;
+          if (!val) valid = false;
+        });
+        document.getElementById('formError').classList.toggle('hidden', valid);
+        if (!valid) return;
+
+        const payload = {
+          name: values.addrName,
+          phone: values.addrPhone,
+          line1: values.addrLine1,
+          city: values.addrCity,
+          state: values.addrState,
+          pincode: values.addrPincode,
+        };
+
+        if (editingAddressId) {
+          updateAddress(editingAddressId, payload);
+          selectedAddressId = editingAddressId;
+        } else {
+          const saved = document.getElementById('saveAddrCheckbox').checked ? addAddress(payload) : null;
+          selectedAddressId = saved ? saved.id : null;
+          if (!saved) pendingNewAddress = payload;
+        }
+
+        hideAddressForm();
+        renderSavedAddresses();
+      };
 
       function showGuard(msg, href, label) {
         document.getElementById('guardState').classList.remove('hidden');
@@ -498,9 +583,16 @@
       }
 
       let pendingAddress = null;
+      let pendingNewAddress = null;
 
       window.placeOrder = function () {
-        // Using a previously saved address
+        const formVisible = !document.getElementById('addressForm').classList.contains('hidden');
+        if (formVisible) {
+          document.getElementById('formError').classList.remove('hidden');
+          return;
+        }
+
+        // Using a previously saved (or just-saved) address
         if (selectedAddressId) {
           const addr = getAddresses().find((a) => a.id === selectedAddressId);
           if (addr) {
@@ -518,33 +610,15 @@
           }
         }
 
-        // Using the new-address form
-        const fields = ['addrName', 'addrPhone', 'addrLine1', 'addrCity', 'addrState', 'addrPincode'];
-        const values = {};
-        let valid = true;
-        fields.forEach((id) => {
-          const val = document.getElementById(id).value.trim();
-          values[id] = val;
-          if (!val) valid = false;
-        });
-
-        document.getElementById('formError').classList.toggle('hidden', valid);
-        if (!valid) return;
-
-        pendingAddress = {
-          name: values.addrName,
-          phone: values.addrPhone,
-          line1: values.addrLine1,
-          city: values.addrCity,
-          state: values.addrState,
-          pincode: values.addrPincode,
-        };
-
-        if (document.getElementById('saveAddrCheckbox').checked) {
-          addAddress(pendingAddress);
+        // Using an address entered but not saved to the address book
+        if (pendingNewAddress) {
+          pendingAddress = pendingNewAddress;
+          document.getElementById('formError').classList.add('hidden');
+          openGateway();
+          return;
         }
 
-        openGateway();
+        document.getElementById('formError').classList.remove('hidden');
       };
 
       // --- Mock payment gateway ---
@@ -609,13 +683,16 @@
       };
 
       function finalizeOrder() {
+        const rxFiles = JSON.parse(sessionStorage.getItem('cartRxFiles') || '[]');
         const order = createOrder({
           items: cart,
           address: pendingAddress,
           paymentMethod: selectedPay,
           total: cartTotal(),
+          rxFiles,
         });
         clearCart();
+        sessionStorage.removeItem('cartRxFiles');
         window.location.href = `order-confirmation.html?id=${order.id}`;
       }
 

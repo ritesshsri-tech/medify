@@ -61,7 +61,8 @@
             <svg width="12" height="12" fill="none" stroke="#2563EB" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div id="headerUserDropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #BFDBFE;border-radius:12px;box-shadow:0 8px 24px rgba(30,58,138,0.12);min-width:160px;overflow:hidden;z-index:300;">
-            <a href="../pages/account.html" style="display:block;padding:10px 16px;font-size:13px;color:#0F172A;text-decoration:none;hover:background:#F5F8FE;">My Orders</a>
+            <a href="../pages/account.html#profile" style="display:block;padding:10px 16px;font-size:13px;color:#0F172A;text-decoration:none;hover:background:#F5F8FE;">My Profile</a>
+            <a href="../pages/account.html#orders" style="display:block;padding:10px 16px;font-size:13px;color:#0F172A;text-decoration:none;hover:background:#F5F8FE;">My Orders</a>
             ${user.role === 'admin' || user.role === 'pharmacist' ? '<a href="../pages/admin.html" style="display:block;padding:10px 16px;font-size:13px;color:#0F172A;text-decoration:none;">Admin Panel</a>' : ''}
             <hr style="margin:4px 0;border:none;border-top:1px solid #E2E9F5;">
             <button onclick="window._headerSignOut && window._headerSignOut()" style="width:100%;text-align:left;padding:10px 16px;font-size:13px;color:#DC2626;background:none;border:none;cursor:pointer;">Sign Out</button>

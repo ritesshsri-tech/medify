@@ -17,7 +17,7 @@ function generateOrderId(existingOrders) {
   return id;
 }
 
-export function createOrder({ items, address, paymentMethod, total }) {
+export function createOrder({ items, address, paymentMethod, total, rxFiles }) {
   const orders = getOrders();
   const hasRxItem = items.some((i) => i.requiresPrescription);
   const order = {
@@ -30,6 +30,7 @@ export function createOrder({ items, address, paymentMethod, total }) {
     stage: 'placed',
     stageUpdatedAt: new Date().toISOString(),
     rxStatus: hasRxItem ? 'pending' : null,
+    rxFiles: hasRxItem ? rxFiles || [] : [],
     rxReviewedBy: null,
     rxReviewedAt: null,
     rxRejectReason: null,

@@ -1,8 +1,8 @@
 import { getOrders, trackingStages, setOrderStage, canDispatch, setRxStatus } from './orders.js';
-import { getPrescriptions } from './prescriptions.js';
 import { getCurrentStaff, clearCurrentStaff, can, addStaff, getStaff, removeStaff } from './staff.js';
 import { fetchMedicines } from './data.js';
 import { addMedicine, editMedicine, deleteMedicine, getAdded } from './medicineOverrides.js';
+import { getEnquiries, setEnquiryStatus } from './medicalTourism.js';
 import { paise } from './utils.js';
 
 const STAGE_LABELS = {
@@ -38,6 +38,7 @@ function init() {
   renderRxQueue();
   loadCatalog();
   renderStaffTable();
+  renderMtTable();
 
   document.getElementById('catalogSearch').addEventListener('input', (e) => {
     catalogSearchTerm = e.target.value.trim().toLowerCase();
@@ -133,38 +134,31 @@ const RX_RESOLUTION_BADGE = {
 
 function renderRxQueue() {
   const orders = getOrders().filter((o) => o.rxStatus === 'pending');
-  const prescriptions = getPrescriptions();
   document.getElementById('rxQueueEmpty').classList.toggle('hidden', orders.length > 0);
 
   document.getElementById('rxQueue').innerHTML = orders
     .map((o) => {
       const rxItems = o.items.filter((i) => i.requiresPrescription);
-      const matchedRx = rxItems
-        .map((item) => {
-          const rx = item.rxResolution !== 'call-to-confirm' ? prescriptions.find((p) => p.forMedicineId === item.id) : null;
-          return { item, rx };
-        })
-        .map(({ item, rx }) => {
-          const badge = RX_RESOLUTION_BADGE[item.rxResolution] || '';
-          const detail =
-            item.rxResolution === 'call-to-confirm'
-              ? 'Patient has no prescription — call to confirm before approving'
-              : rx
-                ? rx.fileName
-                : 'No prescription file found';
-          return `
-<div class="flex items-center justify-between gap-2 border border-slate-100 rounded-lg px-3 py-2 mt-2">
-  <div class="flex items-center gap-2 min-w-0">
-    <svg width="15" height="15" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-    <div class="min-w-0">
-      <p class="text-xs font-medium text-slate-800 truncate">${item.brandName}</p>
-      <p class="text-[11px] text-slate-500 truncate">${detail}</p>
-    </div>
-  </div>
-  ${badge}
-</div>`;
-        })
-        .join('');
+      const resolution = rxItems[0] ? rxItems[0].rxResolution : null;
+      const badge = RX_RESOLUTION_BADGE[resolution] || '';
+      const files = o.rxFiles || [];
+
+      const filesBlock =
+        resolution === 'call-to-confirm'
+          ? `<p class="text-xs text-amber-700 mt-2">Patient has no prescription — call to confirm before approving.</p>`
+          : files.length
+            ? files
+                .map(
+                  (f) => `
+<div class="flex items-center gap-2 border border-slate-100 rounded-lg px-3 py-2 mt-2">
+  <svg width="15" height="15" fill="none" stroke="#2563EB" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+  <p class="text-xs font-medium text-slate-800 truncate">${f}</p>
+</div>`
+                )
+                .join('')
+            : `<p class="text-xs text-slate-500 mt-2">No prescription file found</p>`;
+
+      const rxItemNames = rxItems.map((i) => i.brandName).join(', ');
 
       return `
 <div class="border border-slate-200 rounded-xl p-4">
@@ -175,7 +169,8 @@ function renderRxQueue() {
     </div>
     <span class="badge badge-amber">Pending Review</span>
   </div>
-  ${matchedRx}
+  <p class="text-xs text-slate-600 mt-2">Rx items: <span class="font-medium text-slate-800">${rxItemNames}</span> ${badge}</p>
+  ${filesBlock}
   <div class="flex items-center gap-2 mt-4">
     <button type="button" class="btn-sm btn-approve" data-approve="${o.id}">Approve</button>
     <button type="button" class="btn-sm btn-reject" data-reject="${o.id}">Reject</button>
@@ -350,5 +345,44 @@ window.saveStaff = function () {
   window.closeStaffForm();
   renderStaffTable();
 };
+
+// ============ MEDICAL TOURISM ============
+const MT_STATUS_LABELS = { new: 'Under Review', contacted: 'Contacted', closed: 'Closed' };
+const MT_STATUS_BADGE = { new: 'badge-amber', contacted: 'badge-blue', closed: 'badge-slate' };
+
+function renderMtTable() {
+  const enquiries = getEnquiries();
+  document.getElementById('mtEmpty').classList.toggle('hidden', enquiries.length > 0);
+
+  document.getElementById('mtTableBody').innerHTML = enquiries
+    .map(
+      (e) => `
+<tr>
+  <td class="font-600 text-slate-900">${e.id}</td>
+  <td>${e.name}</td>
+  <td class="text-xs text-slate-600">${e.phone}<br>${e.email}</td>
+  <td>${e.country}</td>
+  <td>${e.treatment}</td>
+  <td>${e.preferredDates || '—'}</td>
+  <td class="text-xs text-slate-500">${new Date(e.submittedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+  <td><span class="badge ${MT_STATUS_BADGE[e.status] || 'badge-slate'}">${MT_STATUS_LABELS[e.status] || e.status}</span></td>
+  <td>
+    <select class="field-input" style="padding:4px 8px;font-size:12px;" data-mt-status="${e.id}">
+      <option value="new" ${e.status === 'new' ? 'selected' : ''}>Under Review</option>
+      <option value="contacted" ${e.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+      <option value="closed" ${e.status === 'closed' ? 'selected' : ''}>Closed</option>
+    </select>
+  </td>
+</tr>`
+    )
+    .join('');
+
+  document.querySelectorAll('[data-mt-status]').forEach((sel) => {
+    sel.addEventListener('change', () => {
+      setEnquiryStatus(sel.dataset.mtStatus, sel.value);
+      renderMtTable();
+    });
+  });
+}
 
 init();

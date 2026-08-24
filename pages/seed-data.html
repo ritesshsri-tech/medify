@@ -160,6 +160,7 @@
           address: addr,
           paymentMethod: 'upi',
           total: RX_MED.price,
+          rxFiles: ['veenat-rx-scan.jpg'],
         });
         log(`Order ${order1.id}: Rx item, new upload, pending approval (tests Prescription Approval + blocked Dispatch).`);
 
@@ -169,6 +170,7 @@
           address: addr,
           paymentMethod: 'card',
           total: RX_MED_2.price * 2,
+          rxFiles: ['amoxicillin-rx-scan.pdf'],
         });
         setRxStatus(order2.id, 'approved', 'Admin');
         setOrderStage(order2.id, 'shipped', 'Admin');
@@ -180,6 +182,7 @@
           address: addr,
           paymentMethod: 'netbanking',
           total: RX_MED.price,
+          rxFiles: ['veenat-rx-scan.jpg'],
         });
         setRxStatus(order3.id, 'rejected', 'Admin', 'Prescription image unclear, please re-upload.');
         log(`Order ${order3.id}: Rx rejected with reason (tests rejection banner in My Orders).`);

@@ -1,7 +1,7 @@
 const ROLES = ['admin', 'pharmacist', 'delivery'];
 
 const ROLE_PERMISSIONS = {
-  admin: ['dispatch', 'rx-approval', 'catalog', 'staff'],
+  admin: ['dispatch', 'rx-approval', 'catalog', 'staff', 'medical-tourism'],
   pharmacist: ['rx-approval', 'catalog'],
   delivery: ['dispatch'],
 };
