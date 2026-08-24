@@ -332,11 +332,42 @@
   }
 
   // --- Rendering ---------------------------------------------------------------
-  function renderNode(nodeId) {
+  let typingTimer = null;
+
+  function showTyping() {
+    const body = document.getElementById('chatbotBody');
+    if (!body) return;
+    body.innerHTML = `
+      <div class="chatbot-typing">
+        <span class="chatbot-typing-dot"></span>
+        <span class="chatbot-typing-dot"></span>
+        <span class="chatbot-typing-dot"></span>
+      </div>`;
+    body.scrollTop = body.scrollHeight;
+  }
+
+  // Renders a node after a brief "typing…" pause so replies feel live.
+  // immediate=true skips the pause (used for the very first screen on open).
+  function renderNode(nodeId, immediate) {
     const node = TREE[nodeId];
     if (!node) return;
     currentNodeId = nodeId;
 
+    clearTimeout(typingTimer);
+
+    const paint = () => paintNode(nodeId, node);
+
+    if (immediate) {
+      paint();
+      return;
+    }
+
+    showTyping();
+    const delay = 450 + Math.random() * 500;
+    typingTimer = setTimeout(paint, delay);
+  }
+
+  function paintNode(nodeId, node) {
     const body = document.getElementById('chatbotBody');
     if (!body) return;
 
@@ -372,11 +403,11 @@
     }
 
     body.innerHTML = html;
+    body.scrollTop = 0;
 
     body.querySelectorAll('[data-goto]').forEach((btn) => {
       btn.addEventListener('click', () => {
         renderNode(btn.dataset.goto);
-        body.scrollTop = 0;
       });
     });
   }
@@ -392,7 +423,7 @@
       renderIntakeStep('name');
     } else {
       setQueryBarVisible(true);
-      renderNode(ROOT);
+      renderNode(ROOT, true);
     }
   }
 
@@ -524,6 +555,28 @@
         line-height: 1.5;
         color: #334155;
         margin: 0 0 12px;
+      }
+      .chatbot-typing {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 999px;
+        padding: 10px 14px;
+      }
+      .chatbot-typing-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #94a3b8;
+        animation: chatbot-typing-bounce 1.2s ease-in-out infinite;
+      }
+      .chatbot-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+      .chatbot-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+      @keyframes chatbot-typing-bounce {
+        0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+        30% { transform: translateY(-4px); opacity: 1; }
       }
       .chatbot-option-list {
         display: flex;
