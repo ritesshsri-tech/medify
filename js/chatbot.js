@@ -705,6 +705,12 @@
     // fixed floating bubble.
     const navTrigger = document.getElementById('navChatbotBtn');
 
+    // Reserve space at the bottom of the page so the floating bubble never
+    // sits on top of the last row of real content (e.g. product grids).
+    if (!navTrigger) {
+      document.body.style.paddingBottom = 'max(env(safe-area-inset-bottom, 0px), 96px)';
+    }
+
     const wrap = document.createElement('div');
     wrap.innerHTML = `
       ${
