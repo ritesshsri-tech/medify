@@ -3,6 +3,7 @@ import { getCurrentStaff, clearCurrentStaff, can, addStaff, getStaff, removeStaf
 import { fetchMedicines } from './data.js';
 import { addMedicine, editMedicine, deleteMedicine, getAdded } from './medicineOverrides.js';
 import { getEnquiries, setEnquiryStatus } from './medicalTourism.js';
+import { SAMPLE_CATEGORIES, seedCategories, deleteCategories, categoryHasData } from './sampleData.js';
 import { paise } from './utils.js';
 
 const STAGE_LABELS = {
@@ -39,6 +40,7 @@ function init() {
   loadCatalog();
   renderStaffTable();
   renderMtTable();
+  renderSampleDataTab();
 
   document.getElementById('catalogSearch').addEventListener('input', (e) => {
     catalogSearchTerm = e.target.value.trim().toLowerCase();
@@ -384,5 +386,66 @@ function renderMtTable() {
     });
   });
 }
+
+// ============ SAMPLE DATA ============
+function renderSampleDataTab() {
+  const container = document.getElementById('sampleDataCategories');
+  if (!container) return;
+
+  container.innerHTML = SAMPLE_CATEGORIES.map(
+    (c) => `
+<label class="flex items-start gap-3 border border-slate-200 rounded-xl px-4 py-3 cursor-pointer hover:border-blue-200 transition-colors">
+  <input type="checkbox" data-sample-cat="${c.key}" class="mt-0.5 w-4 h-4 accent-blue-600" />
+  <span class="min-w-0 flex-1">
+    <span class="flex items-center gap-2">
+      <span class="text-sm font-700 text-slate-900">${c.label}</span>
+      ${categoryHasData(c.key) ? '<span class="badge badge-blue">Has Data</span>' : '<span class="badge badge-slate">Empty</span>'}
+    </span>
+    <span class="block text-xs text-slate-500 mt-0.5">${c.description}</span>
+  </span>
+</label>`
+  ).join('');
+
+  document.getElementById('sampleDataStatus').classList.add('hidden');
+}
+
+function selectedSampleCategories() {
+  return Array.from(document.querySelectorAll('[data-sample-cat]:checked')).map((el) => el.dataset.sampleCat);
+}
+
+function showSampleDataStatus(msg) {
+  const el = document.getElementById('sampleDataStatus');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+document.getElementById('sampleDataSeedBtn').addEventListener('click', () => {
+  const selected = selectedSampleCategories();
+  if (selected.length === 0) {
+    showSampleDataStatus('Select at least one category to seed.');
+    return;
+  }
+  const seeded = seedCategories(selected);
+  renderSampleDataTab();
+  renderDispatch();
+  renderRxQueue();
+  renderStaffTable();
+  showSampleDataStatus(`Seeded: ${seeded.join(', ')}.`);
+});
+
+document.getElementById('sampleDataDeleteBtn').addEventListener('click', () => {
+  const selected = selectedSampleCategories();
+  if (selected.length === 0) {
+    showSampleDataStatus('Select at least one category to delete.');
+    return;
+  }
+  if (!window.confirm(`Delete sample data for: ${selected.join(', ')}? This cannot be undone.`)) return;
+  const deleted = deleteCategories(selected);
+  renderSampleDataTab();
+  renderDispatch();
+  renderRxQueue();
+  renderStaffTable();
+  showSampleDataStatus(`Deleted: ${deleted.join(', ')}.`);
+});
 
 init();

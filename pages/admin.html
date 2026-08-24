@@ -201,6 +201,10 @@
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 Medical Tourism
               </a>
+              <a class="quick-link" data-tab="sample-data" data-perm="sample-data">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                Sample Data
+              </a>
             </nav>
           </div>
         </aside>
@@ -402,6 +406,26 @@
                 </table>
               </div>
               <p id="mtEmpty" class="hidden text-sm text-slate-500 text-center py-8">No medical tourism enquiries yet</p>
+            </div>
+          </div>
+
+          <!-- SAMPLE DATA -->
+          <div id="tab-sample-data" class="tab-panel">
+            <div class="card p-5">
+              <h1 class="text-lg font-800 text-slate-900 mb-1">Sample Data</h1>
+              <p class="text-xs text-slate-500 mb-5">
+                This is a no-backend demo — all data lives in this browser's storage only. Use this to seed or clear
+                demo content per category, so you don't need the old dev-only seed page and don't have to reset
+                everything at once.
+              </p>
+
+              <div id="sampleDataCategories" class="space-y-2 mb-5"></div>
+
+              <div class="flex gap-2 flex-wrap">
+                <button type="button" id="sampleDataSeedBtn" class="btn-sm btn-edit">Seed Selected</button>
+                <button type="button" id="sampleDataDeleteBtn" class="btn-sm btn-delete">Delete Selected</button>
+              </div>
+              <p id="sampleDataStatus" class="hidden text-xs text-green-700 mt-3"></p>
             </div>
           </div>
         </main>
