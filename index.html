@@ -980,21 +980,24 @@
         left: 16px;
         transform: translateY(-50%);
         z-index: 40;
-        width: 140px;
+        width: 220px;
       }
-      /* Left rail is fixed at x=16..206, so it only shows once the centred
-         1200px container starts past it (viewport >= ~1644px). Below that
-         it would overlap page content, so it stays hidden. */
-      @media (min-width: 1644px) {
+      /* The rail is fixed at x=16..236. Rather than waiting for a very wide
+         viewport, the page content is shifted right by the rail's width so
+         the two never overlap and the rail can stay a useful size. */
+      @media (min-width: 1200px) {
         .ad-banner-left {
           display: block;
+        }
+        body {
+          padding-left: 260px;
         }
       }
       .ad-banner-left-frame {
         position: relative;
-        width: 190px;
-        /* 190 / 445 ~= the 819x1920 source ratio, so cover fills it uncropped */
-        height: 445px;
+        width: 220px;
+        /* 220 / 515 ~= the 819x1920 source ratio, so cover fills it uncropped */
+        height: 515px;
         border-radius: 12px;
         overflow: hidden;
         box-shadow: var(--shadow);
@@ -1023,8 +1026,10 @@
         position: relative;
         width: 100%;
         /* Cap the width (not the height) so the 2/1 ratio is always honoured
-           and object-fit: cover fills the frame without cropping the art. */
-        max-width: 900px;
+           and object-fit: cover fills the frame without cropping the art.
+           520px wide keeps the banner ~260px tall so the product categories
+           stay visible without scrolling. */
+        max-width: 520px;
         margin: 0 auto;
         aspect-ratio: 2 / 1;
         border-radius: var(--radius);
