@@ -4,7 +4,7 @@ import { fetchMedicines } from './data.js';
 import { addMedicine, editMedicine, deleteMedicine, getAdded } from './medicineOverrides.js';
 import { getEnquiries, setEnquiryStatus } from './medicalTourism.js';
 import { SAMPLE_CATEGORIES, seedCategories, deleteCategories, categoryHasData } from './sampleData.js';
-import { AD_SLOTS, MAX_IMAGE_BYTES, getBannersForSlot, addBanner, setBannerActive, removeBanner } from './adBanners.js';
+import { AD_SLOTS, MAX_IMAGE_BYTES, getBannersForSlot, addBanner, setBannerActive, removeBanner, compressImage } from './adBanners.js';
 import { paise } from './utils.js';
 
 const STAGE_LABELS = {
@@ -523,19 +523,27 @@ function bindAdBannerUpload() {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      addBanner({ slot, imageDataUrl: reader.result, linkUrl, altText });
-      document.getElementById('adBannerLink').value = '';
-      document.getElementById('adBannerAlt').value = '';
-      fileInput.value = '';
-      renderAdBanners();
-    };
-    reader.onerror = () => {
-      errEl.textContent = 'Could not read that image file. Please try another.';
-      errEl.classList.remove('hidden');
-    };
-    reader.readAsDataURL(file);
+    uploadBtn.disabled = true;
+    const prevLabel = uploadBtn.textContent;
+    uploadBtn.textContent = 'Uploading…';
+
+    compressImage(file, slot)
+      .then((imageDataUrl) => {
+        addBanner({ slot, imageDataUrl, linkUrl, altText });
+        document.getElementById('adBannerLink').value = '';
+        document.getElementById('adBannerAlt').value = '';
+        fileInput.value = '';
+        renderAdBanners();
+      })
+      .catch((err) => {
+        // Covers both unreadable images and localStorage quota exhaustion.
+        errEl.textContent = err.message || 'Could not save that banner.';
+        errEl.classList.remove('hidden');
+      })
+      .finally(() => {
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = prevLabel;
+      });
   });
 }
 
