@@ -283,10 +283,6 @@
         gap: 10px;
         white-space: nowrap;
       }
-      .nav-call-block {
-        display: none;
-        text-decoration: none;
-      }
       .call-block .icon-circle {
         width: 38px;
         height: 38px;
@@ -750,35 +746,6 @@
           text-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
         }
       }
-      .header-order-info {
-        display: none;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        flex-wrap: wrap;
-        flex: 1;
-      }
-      .order-label {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: var(--color-primary);
-        letter-spacing: 0.3px;
-      }
-      .order-phone {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: var(--color-primary);
-        text-decoration: none;
-        transition: all 0.3s ease;
-        padding: 4px 8px;
-        border-radius: 4px;
-      }
-      .order-phone:hover {
-        color: #fff;
-        background: var(--color-primary);
-        transform: scale(1.05);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-      }
       /* ---------- Stats strip (mobile-first: 3-col grid, no dividers) ---------- */
       .stats-strip {
         background: transparent;
@@ -1015,7 +982,7 @@
         z-index: 40;
         width: 140px;
       }
-      @media (min-width: 1280px) {
+      @media (min-width: 1560px) {
         .ad-banner-left {
           display: block;
         }
@@ -1494,12 +1461,6 @@
         .nav-cta-buttons {
           display: flex;
         }
-        .header-order-info {
-          display: flex;
-        }
-        .nav-call-block {
-          display: flex;
-        }
         .cat-grid {
           grid-template-columns: repeat(3, 1fr);
         }
@@ -1620,18 +1581,14 @@
           <li><a href="#brands">Brands</a></li>
           <li><a href="#contact">Contact Us</a></li>
         </ul>
-        <a href="tel:+911800123456" class="call-block nav-call-block" aria-label="Call us at +91 1800-123-456">
-          <span class="icon-circle">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-            </svg>
-          </span>
-          <span>
-            <span class="call-label">Order medicine on call</span>
-            <span class="call-number">+91 1800-123-456</span>
-          </span>
-        </a>
         <div class="nav-cta-buttons">
+          <button type="button" id="navChatbotBtn" class="nav-btn nav-btn-ai nav-btn-pulse">
+            <svg class="nav-btn-ai-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l1.8 5.6L19.4 9.4 13.8 11.2 12 17l-1.8-5.8L4.6 9.4l5.6-1.8L12 2z"/>
+              <path d="M19 14l.9 2.8L22.7 17.7 19.9 18.6 19 21.4 18.1 18.6 15.3 17.7 18.1 16.8 19 14z"/>
+            </svg>
+            AI Support
+          </button>
           <a
             href="https://wa.me/919999156233"
             class="nav-btn nav-btn-whatsapp"
@@ -1646,13 +1603,6 @@
             Talk to Us
           </a>
           <a href="pages/category.html" class="nav-btn nav-btn-outline">Browse Products</a>
-          <button type="button" id="navChatbotBtn" class="nav-btn nav-btn-ai nav-btn-pulse">
-            <svg class="nav-btn-ai-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l1.8 5.6L19.4 9.4 13.8 11.2 12 17l-1.8-5.8L4.6 9.4l5.6-1.8L12 2z"/>
-              <path d="M19 14l.9 2.8L22.7 17.7 19.9 18.6 19 21.4 18.1 18.6 15.3 17.7 18.1 16.8 19 14z"/>
-            </svg>
-            AI Support
-          </button>
         </div>
         <button
           class="nav-toggle"
