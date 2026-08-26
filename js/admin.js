@@ -4,6 +4,7 @@ import { fetchMedicines } from './data.js';
 import { addMedicine, editMedicine, deleteMedicine, getAdded } from './medicineOverrides.js';
 import { getEnquiries, setEnquiryStatus } from './medicalTourism.js';
 import { SAMPLE_CATEGORIES, seedCategories, deleteCategories, categoryHasData } from './sampleData.js';
+import { AD_SLOTS, MAX_IMAGE_BYTES, getBannersForSlot, addBanner, setBannerActive, removeBanner } from './adBanners.js';
 import { paise } from './utils.js';
 
 const STAGE_LABELS = {
@@ -41,6 +42,8 @@ function init() {
   renderStaffTable();
   renderMtTable();
   renderSampleDataTab();
+  renderAdBanners();
+  bindAdBannerUpload();
 
   document.getElementById('catalogSearch').addEventListener('input', (e) => {
     catalogSearchTerm = e.target.value.trim().toLowerCase();
@@ -447,5 +450,93 @@ document.getElementById('sampleDataDeleteBtn').addEventListener('click', () => {
   renderStaffTable();
   showSampleDataStatus(`Deleted: ${deleted.join(', ')}.`);
 });
+
+// ============ AD BANNERS ============
+const AD_SLOT_LABELS = { left: 'Left', middle: 'Middle' };
+
+function renderAdBanners() {
+  AD_SLOTS.forEach((slot) => {
+    const banners = getBannersForSlot(slot);
+    const suffix = slot === 'left' ? 'Left' : 'Middle';
+    const list = document.getElementById(`adBannerList${suffix}`);
+    const empty = document.getElementById(`adBannerEmpty${suffix}`);
+    if (!list || !empty) return;
+
+    empty.classList.toggle('hidden', banners.length > 0);
+
+    list.innerHTML = banners
+      .map(
+        (b) => `
+<div class="flex items-center gap-3 border border-slate-200 rounded-xl p-3">
+  <img src="${b.imageDataUrl}" alt="${b.altText}" class="w-16 h-16 object-cover rounded-lg border border-slate-100 flex-shrink-0" />
+  <div class="min-w-0 flex-1">
+    <p class="text-sm font-600 text-slate-800 truncate">${b.altText || '(no alt text)'}</p>
+    <p class="text-xs text-slate-500 truncate">${b.linkUrl || 'No link'}</p>
+    <p class="text-xs text-slate-400">${new Date(b.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+  </div>
+  <label class="flex items-center gap-1.5 text-xs font-600 text-slate-600 flex-shrink-0">
+    <input type="checkbox" data-ad-active="${b.id}" ${b.active ? 'checked' : ''} class="w-3.5 h-3.5" />
+    Active
+  </label>
+  <button type="button" data-ad-delete="${b.id}" class="btn-sm btn-delete flex-shrink-0">Delete</button>
+</div>`
+      )
+      .join('');
+
+    list.querySelectorAll('[data-ad-active]').forEach((cb) => {
+      cb.addEventListener('change', () => {
+        setBannerActive(cb.dataset.adActive, cb.checked);
+        renderAdBanners();
+      });
+    });
+    list.querySelectorAll('[data-ad-delete]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (!window.confirm('Delete this banner?')) return;
+        removeBanner(btn.dataset.adDelete);
+        renderAdBanners();
+      });
+    });
+  });
+}
+
+function bindAdBannerUpload() {
+  const uploadBtn = document.getElementById('adBannerUploadBtn');
+  if (!uploadBtn) return;
+
+  uploadBtn.addEventListener('click', () => {
+    const slot = document.getElementById('adBannerSlot').value;
+    const linkUrl = document.getElementById('adBannerLink').value.trim();
+    const altText = document.getElementById('adBannerAlt').value.trim();
+    const fileInput = document.getElementById('adBannerFile');
+    const file = fileInput.files && fileInput.files[0];
+    const errEl = document.getElementById('adBannerError');
+    errEl.classList.add('hidden');
+
+    if (!file) {
+      errEl.textContent = 'Please choose an image to upload.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      errEl.textContent = `Image is too large (${Math.round(file.size / 1024)}KB). Please use an image under ${Math.round(MAX_IMAGE_BYTES / 1024)}KB.`;
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      addBanner({ slot, imageDataUrl: reader.result, linkUrl, altText });
+      document.getElementById('adBannerLink').value = '';
+      document.getElementById('adBannerAlt').value = '';
+      fileInput.value = '';
+      renderAdBanners();
+    };
+    reader.onerror = () => {
+      errEl.textContent = 'Could not read that image file. Please try another.';
+      errEl.classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 init();

@@ -205,6 +205,10 @@
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
                 Sample Data
               </a>
+              <a class="quick-link" data-tab="ad-banners" data-perm="ad-banners">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
+                Ad Banners
+              </a>
             </nav>
           </div>
         </aside>
@@ -426,6 +430,58 @@
                 <button type="button" id="sampleDataDeleteBtn" class="btn-sm btn-delete">Delete Selected</button>
               </div>
               <p id="sampleDataStatus" class="hidden text-xs text-green-700 mt-3"></p>
+            </div>
+          </div>
+
+          <!-- AD BANNERS -->
+          <div id="tab-ad-banners" class="tab-panel">
+            <div class="card p-5 mb-5">
+              <h1 class="text-lg font-800 text-slate-900 mb-1">Advertisement Banners</h1>
+              <p class="text-xs text-slate-500">
+                Manage the homepage ad banners: a sticky vertical banner on the left edge, and a horizontal banner
+                below the search bar. Each slot can hold multiple banners that rotate automatically — only active
+                banners are shown on the site. Images are stored in this browser only (max 700KB each).
+              </p>
+            </div>
+
+            <div class="card p-5 mb-5">
+              <h2 class="text-sm font-700 text-slate-700 mb-3">Upload New Banner</h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label class="field-label">Slot</label>
+                  <select id="adBannerSlot" class="field-input">
+                    <option value="left">Left (sticky vertical)</option>
+                    <option value="middle">Middle (homepage horizontal)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="field-label">Link URL (optional)</label>
+                  <input id="adBannerLink" class="field-input" type="text" placeholder="https:// or pages/category.html" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="field-label">Alt Text</label>
+                  <input id="adBannerAlt" class="field-input" type="text" placeholder="Describe the banner for accessibility" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="field-label">Banner Image</label>
+                  <input id="adBannerFile" class="field-input" type="file" accept="image/*" />
+                  <p class="text-xs text-slate-400 mt-1">Left slot works best as a tall image (e.g. 160&times;600). Middle slot works best as a wide image (e.g. 1200&times;250).</p>
+                </div>
+              </div>
+              <button type="button" id="adBannerUploadBtn" class="btn-sm btn-edit">Upload Banner</button>
+              <p id="adBannerError" class="hidden text-xs text-red-600 mt-2"></p>
+            </div>
+
+            <div class="card p-5 mb-5">
+              <h2 class="text-sm font-700 text-slate-700 mb-3">Left Slot Banners</h2>
+              <div id="adBannerListLeft" class="space-y-2"></div>
+              <p id="adBannerEmptyLeft" class="hidden text-sm text-slate-500 text-center py-6">No left-slot banners yet</p>
+            </div>
+
+            <div class="card p-5">
+              <h2 class="text-sm font-700 text-slate-700 mb-3">Middle Slot Banners</h2>
+              <div id="adBannerListMiddle" class="space-y-2"></div>
+              <p id="adBannerEmptyMiddle" class="hidden text-sm text-slate-500 text-center py-6">No middle-slot banners yet</p>
             </div>
           </div>
         </main>
