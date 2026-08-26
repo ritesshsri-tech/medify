@@ -137,7 +137,9 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        flex: 1;
+        /* Equal flex with .header-actions keeps the search box centred. */
+        flex: 1 1 0;
+        min-width: 0;
       }
       .logo-block img {
         height: 52px;
@@ -154,8 +156,10 @@
       .header-actions {
         display: flex;
         align-items: center;
+        justify-content: flex-end;
         gap: 14px;
-        flex-shrink: 0;
+        flex: 1 1 0;
+        min-width: 0;
       }
       .logo-text .sub {
         font-size: 0.62rem;
@@ -235,8 +239,9 @@
       /* ---------- Compact search bar embedded in the header row ---------- */
       .header-search-block {
         display: none;
+        width: 100%;
         max-width: 480px;
-        flex: 1;
+        flex: 0 1 480px;
         margin: 0 24px;
       }
       .header-search-block select {
@@ -976,9 +981,9 @@
       .ad-banner-left {
         display: none;
         position: fixed;
-        top: 50%;
+        /* Vertically centred, but never allowed above the header. */
+        top: max(160px, 50% - 258px);
         left: 16px;
-        transform: translateY(-50%);
         z-index: 40;
         width: 220px;
       }
@@ -991,6 +996,22 @@
         }
         body {
           padding-left: 260px;
+        }
+        /* The header spans the full viewport width - only the page content
+           below it is inset to clear the fixed rail. The rail is vertically
+           centred, so it never reaches up into the header. */
+        .site-header {
+          margin-left: -260px;
+          padding-left: 260px;
+        }
+        /* Let the header's own rows use the full width rather than the
+           1200px page container, so the logo and account actions sit near
+           the viewport edges. */
+        .site-header > .header-row,
+        .site-header > nav.main-nav {
+          max-width: none;
+          padding-left: 32px;
+          padding-right: 32px;
         }
       }
       .ad-banner-left-frame {
@@ -1013,6 +1034,12 @@
         opacity: 0;
         transition: opacity 0.6s ease;
       }
+      /* The middle slot is a 4/1 strip. Until artwork is exported at that
+         ratio, contain shows the whole image rather than cropping its top
+         and bottom. Art exported at 4/1 will fill the frame exactly. */
+      .ad-banner-middle-frame .ad-banner-slide {
+        object-fit: contain;
+      }
       .ad-banner-slide.active {
         opacity: 1;
       }
@@ -1024,18 +1051,22 @@
       }
       .ad-banner-middle-frame {
         position: relative;
+        /* Spans the full content width (max 1168px). A 4/1 ratio keeps the
+           banner ~292px tall so the product categories stay above the fold.
+           Export banner art at 4:1 (e.g. 2336x584) to fill this uncropped. */
         width: 100%;
-        /* Cap the width (not the height) so the 2/1 ratio is always honoured
-           and object-fit: cover fills the frame without cropping the art.
-           520px wide keeps the banner ~260px tall so the product categories
-           stay visible without scrolling. */
-        max-width: 520px;
         margin: 0 auto;
-        aspect-ratio: 2 / 1;
+        aspect-ratio: 4 / 1;
         border-radius: var(--radius);
         overflow: hidden;
         box-shadow: var(--shadow);
         background: #eef2ff;
+      }
+      @media (max-width: 640px) {
+        /* A 4/1 strip is too thin on phones - allow a taller crop. */
+        .ad-banner-middle-frame {
+          aspect-ratio: 2 / 1;
+        }
       }
 
       /* ---------- Breakthrough drugs (mobile-first: 2-col grid) ---------- */
@@ -1551,21 +1582,21 @@
               )
             "
           />
-          <form role="search" class="search-block header-search-block index-search-form">
-            <select aria-label="Delivery location">
-              <option>Delivery to</option>
-              <option>Chennai, 600017</option>
-            </select>
-            <input class="index-search-input" type="text" placeholder="Search Medicines…" />
-            <button type="submit">
-              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-              <span class="header-search-btn-label">Search</span>
-            </button>
-          </form>
         </div>
+        <form role="search" class="search-block header-search-block index-search-form">
+          <select aria-label="Delivery location">
+            <option>Delivery to</option>
+            <option>Chennai, 600017</option>
+          </select>
+          <input class="index-search-input" type="text" placeholder="Search Medicines…" />
+          <button type="submit">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <span class="header-search-btn-label">Search</span>
+          </button>
+        </form>
         <div class="header-actions">
           <a href="pages/cart.html" class="nav-cart-link" aria-label="View cart">
             <svg width="24" height="24" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
