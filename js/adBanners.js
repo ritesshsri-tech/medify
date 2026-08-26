@@ -1,5 +1,5 @@
 export const AD_SLOTS = ['left', 'middle'];
-export const MAX_IMAGE_BYTES = 700 * 1024; // ~700KB, keeps localStorage lean
+export const MAX_IMAGE_BYTES = 2 * 1024 * 1024; // 2MB per banner image
 
 export function getBanners() {
   return JSON.parse(localStorage.getItem('adBanners') || '[]');

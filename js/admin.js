@@ -518,7 +518,7 @@ function bindAdBannerUpload() {
       return;
     }
     if (file.size > MAX_IMAGE_BYTES) {
-      errEl.textContent = `Image is too large (${Math.round(file.size / 1024)}KB). Please use an image under ${Math.round(MAX_IMAGE_BYTES / 1024)}KB.`;
+      errEl.textContent = `Image is too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Please use an image under ${(MAX_IMAGE_BYTES / (1024 * 1024)).toFixed(0)}MB.`;
       errEl.classList.remove('hidden');
       return;
     }
