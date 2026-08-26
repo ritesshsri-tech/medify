@@ -982,15 +982,19 @@
         z-index: 40;
         width: 140px;
       }
-      @media (min-width: 1560px) {
+      /* Left rail is fixed at x=16..206, so it only shows once the centred
+         1200px container starts past it (viewport >= ~1644px). Below that
+         it would overlap page content, so it stays hidden. */
+      @media (min-width: 1644px) {
         .ad-banner-left {
           display: block;
         }
       }
       .ad-banner-left-frame {
         position: relative;
-        width: 140px;
-        height: 500px;
+        width: 190px;
+        /* 190 / 445 ~= the 819x1920 source ratio, so cover fills it uncropped */
+        height: 445px;
         border-radius: 12px;
         overflow: hidden;
         box-shadow: var(--shadow);
@@ -1001,7 +1005,7 @@
         inset: 0;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         object-position: center;
         opacity: 0;
         transition: opacity 0.6s ease;
@@ -1010,7 +1014,7 @@
         opacity: 1;
       }
       .ad-banner-middle {
-        margin: 24px 0;
+        margin: 24px auto;
       }
       .ad-banner-middle-top {
         margin-top: 20px;
@@ -1018,18 +1022,15 @@
       .ad-banner-middle-frame {
         position: relative;
         width: 100%;
+        /* Cap the width (not the height) so the 2/1 ratio is always honoured
+           and object-fit: cover fills the frame without cropping the art. */
+        max-width: 900px;
+        margin: 0 auto;
         aspect-ratio: 2 / 1;
-        max-height: 320px;
         border-radius: var(--radius);
         overflow: hidden;
         box-shadow: var(--shadow);
         background: #eef2ff;
-      }
-      @media (max-width: 640px) {
-        .ad-banner-middle-frame {
-          aspect-ratio: 4 / 3;
-          max-height: 260px;
-        }
       }
 
       /* ---------- Breakthrough drugs (mobile-first: 2-col grid) ---------- */
