@@ -1034,11 +1034,12 @@
         opacity: 0;
         transition: opacity 0.6s ease;
       }
-      /* The middle slot is a 4/1 strip. Until artwork is exported at that
-         ratio, contain shows the whole image rather than cropping its top
-         and bottom. Art exported at 4/1 will fill the frame exactly. */
+      /* The middle slot is a 4/1 strip. `fill` stretches the artwork to the
+         full width and height of the frame, so nothing is cropped and there
+         are no gaps at the sides - at the cost of distorting art that isn't
+         already 4/1. Export banner art at 4/1 to avoid any distortion. */
       .ad-banner-middle-frame .ad-banner-slide {
-        object-fit: contain;
+        object-fit: fill;
       }
       .ad-banner-slide.active {
         opacity: 1;
