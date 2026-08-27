@@ -723,6 +723,93 @@
         border-color: #15803d;
       }
 
+      /* ---------- Hero (mobile-first: single column) ---------- */
+      .hero {
+        position: relative;
+        overflow: hidden;
+        background: #fff;
+      }
+      .hero-banner {
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        padding-top: 10px;
+      }
+      .hero-search-label {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0;
+        color: var(--color-primary-text);
+      }
+      .search-card {
+        position: relative;
+        background: #fff;
+        border-radius: 14px;
+        padding: 10px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+        width: 100%;
+        max-width: 720px;
+        display: flex;
+      }
+      .search-card::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 16px;
+        padding: 2px;
+        background: conic-gradient(
+          from var(--search-glow-angle, 0deg),
+          transparent 0deg,
+          transparent 260deg,
+          var(--color-primary) 300deg,
+          #60a5fa 330deg,
+          transparent 360deg
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        animation: search-glow-spin 4s linear infinite;
+        pointer-events: none;
+      }
+      @property --search-glow-angle {
+        syntax: '<angle>';
+        initial-value: 0deg;
+        inherits: false;
+      }
+      @keyframes search-glow-spin {
+        to {
+          --search-glow-angle: 360deg;
+        }
+      }
+      .hero-banner-inner {
+        background-image: url('assets/hero-search-banner.png');
+        background-size: 100% auto;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 18px;
+        padding: 36px 20px;
+      }
+      .hero-cta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .search-card::before {
+          animation: none;
+        }
+      }
+
       @keyframes bounce-subtle {
         0%,
         100% {
@@ -1046,9 +1133,6 @@
       }
       .ad-banner-middle {
         margin: 24px auto;
-      }
-      .ad-banner-middle-top {
-        margin-top: 20px;
       }
       .ad-banner-middle-frame {
         position: relative;
@@ -1543,6 +1627,9 @@
         .testi-grid {
           grid-template-columns: repeat(3, 1fr);
         }
+        .hero-banner-inner {
+          padding: 56px 20px;
+        }
         .stats-strip .container {
           grid-template-columns: repeat(6, minmax(0, 1fr));
         }
@@ -1670,13 +1757,35 @@
       </form>
     </div>
 
-    <!-- ============ MIDDLE AD BANNER (admin-managed) ============ -->
-    <section class="container ad-banner-middle hidden ad-banner-middle-top" id="adBannerMiddleSection">
-      <div id="adBannerMiddleFrame" class="ad-banner-middle-frame"></div>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="home">
+      <div class="hero-banner">
+        <div class="container hero-banner-inner">
+          <h1 class="hero-search-label">Search Medicines &amp; Devices</h1>
+          <div class="search-card">
+            <!-- Uses the shared .index-search-form/.index-search-input classes
+                 (not IDs) because the header carries a second search form. -->
+            <form role="search" class="search-block index-search-form">
+              <select aria-label="Delivery location">
+                <option>Delivery to</option>
+                <option>Chennai, 600017</option>
+              </select>
+              <input class="index-search-input" type="text" placeholder="Search Medicines…" />
+              <button type="submit">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                Search
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ============ STATS STRIP ============ -->
-    <section class="stats-strip" id="home">
+    <section class="stats-strip">
       <div class="container">
         <div class="stat-item">
           <span class="stat-icon">
@@ -1852,6 +1961,11 @@
           </a>
         </div>
       </div>
+    </section>
+
+    <!-- ============ MIDDLE AD BANNER (admin-managed) ============ -->
+    <section class="container ad-banner-middle hidden" id="adBannerMiddleSection">
+      <div id="adBannerMiddleFrame" class="ad-banner-middle-frame"></div>
     </section>
 
     <!-- ============ BREAKTHROUGH DRUGS ============ -->
