@@ -2820,7 +2820,7 @@
       import * as CallModalOrganism from './components/organisms/CallModal.js';
       import { getStaff, setCurrentStaff } from './js/staff.js';
       import { addEnquiry } from './js/medicalTourism.js';
-      import { getBannersForSlot } from './js/adBanners.js';
+      import { getDisplayBanners } from './js/adBanners.js';
 
       window.openCallModal = () => CallModalOrganism.openCallModal(null);
       window.closeCallModal = CallModalOrganism.closeCallModal;
@@ -3027,7 +3027,10 @@
 
       // --- Admin-managed ad banners (left skyscraper + middle strip) ---
       function mountAdBanner({ slot, wrapId, frameId }) {
-        const banners = getBannersForSlot(slot, true);
+        // Falls back to the bundled repo images when this browser has no
+        // uploads, so every visitor sees banners - not just the admin who
+        // uploaded them into their own localStorage.
+        const banners = getDisplayBanners(slot);
         const wrap = document.getElementById(wrapId);
         const frame = document.getElementById(frameId);
         if (!wrap || !frame) return;

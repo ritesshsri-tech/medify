@@ -1,4 +1,35 @@
 export const AD_SLOTS = ['left', 'middle'];
+
+/**
+ * Bundled fallback banners, shown when a slot has nothing in localStorage.
+ *
+ * Admin uploads live in localStorage, which is per-browser: they are only
+ * ever visible to the person who uploaded them. These repo-hosted images
+ * are what every visitor sees on a fresh browser, so the demo is never
+ * missing its banners. An Admin upload still overrides them locally.
+ *
+ * Paths are relative to the site root; callers on pages/ prefix '../'.
+ */
+export const DEFAULT_BANNERS = {
+  left: [{ imageDataUrl: 'assets/ads/left-default.jpg', linkUrl: '', altText: 'Up to 20% off on medicines' }],
+  middle: [{ imageDataUrl: 'assets/ads/middle-default.jpg', linkUrl: '', altText: 'Free delivery on orders above Rs 499' }],
+};
+
+/**
+ * Banners to render for a slot: the admin-uploaded ones when present,
+ * otherwise the bundled defaults. `pathPrefix` is prepended to default
+ * image paths so pages outside the site root resolve them correctly.
+ */
+export function getDisplayBanners(slot, pathPrefix = '') {
+  const stored = getBannersForSlot(slot, true);
+  if (stored.length > 0) return stored;
+  return (DEFAULT_BANNERS[slot] || []).map((b) => ({
+    ...b,
+    id: 'default-' + slot,
+    isDefault: true,
+    imageDataUrl: pathPrefix + b.imageDataUrl,
+  }));
+}
 export const MAX_IMAGE_BYTES = 2 * 1024 * 1024; // 2MB accepted from the user
 
 // Banners never display wider than ~1200px (middle) or ~440px (left @2x), so
