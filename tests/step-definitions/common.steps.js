@@ -4,6 +4,9 @@ const { expect } = require('playwright/test');
 Given('I am logged in', async function () {
   await this.page.goto(`${this.baseUrl}/pages/login.html`);
   await this.page.evaluate(() => {
+    // siteUnlocked is the PIN access boundary and is separate from persona
+    // identity; without it every page bounces back to login.html.
+    localStorage.setItem('siteUnlocked', '1');
     localStorage.setItem('currentUser', JSON.stringify({ name: 'Test User', email: 'test@example.com' }));
   });
 });

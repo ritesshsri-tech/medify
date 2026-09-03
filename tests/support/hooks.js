@@ -14,6 +14,7 @@ AfterAll(async function () {
 Before(async function () {
   this.browser = sharedBrowser;
   this.context = await this.browser.newContext();
+
   this.page = await this.context.newPage();
   this.consoleErrors = [];
   this.page.on('pageerror', (err) => this.consoleErrors.push(err.message));

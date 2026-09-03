@@ -46,12 +46,15 @@ Then('all published medicines are shown', async function () {
   expect(cardCount).toBe(Math.min(meds.length, 24));
 });
 
-Then('the category dropdown options match the sorted distinct diseaseCategory values in the catalogue', async function () {
-  const meds = await publishedMedicines(this.page);
-  const expected = [...new Set(meds.map((m) => m.diseaseCategory).filter(Boolean))].sort();
-  const options = await this.page.locator('#categoryFilter option').allInnerTexts();
-  expect(options.slice(1)).toEqual(expected);
-});
+Then(
+  'the category dropdown options match the sorted distinct diseaseCategory values in the catalogue',
+  async function () {
+    const meds = await publishedMedicines(this.page);
+    const expected = [...new Set(meds.map((m) => m.diseaseCategory).filter(Boolean))].sort();
+    const options = await this.page.locator('#categoryFilter option').allInnerTexts();
+    expect(options.slice(1)).toEqual(expected);
+  }
+);
 
 When('I set sort to {string}', async function (sort) {
   this.currentSort = sort;
@@ -99,7 +102,9 @@ When('I scroll the sentinel into view', async function () {
 Then('24 more cards are appended to the grid without duplicating existing cards', async function () {
   const countAfter = await this.page.locator('#medicineGrid > div').count();
   expect(countAfter).toBeGreaterThan(this.countBeforeScroll);
-  const ids = await this.page.locator('#medicineGrid > div').evaluateAll((els) => els.map((el) => el.querySelector('img')?.id));
+  const ids = await this.page
+    .locator('#medicineGrid > div')
+    .evaluateAll((els) => els.map((el) => el.querySelector('img')?.id));
   expect(new Set(ids).size).toBe(ids.length);
 });
 
@@ -142,7 +147,7 @@ Then('localStorage.cart contains one entry for that medicine', async function ()
   expect(cart.length).toBe(1);
 });
 
-When('I click {string} on that medicine\'s card again', async function (label) {
+When("I click {string} on that medicine's card again", async function (label) {
   const card = this.page.locator(`#medicineGrid > div:has-text("${this.testMedicineCardName}")`).first();
   await card.locator(`button:has-text("${label}")`).click();
 });
@@ -188,14 +193,16 @@ Then('the medicine grid shows {int} column\\(s)', async function (columns) {
 });
 
 Then('the page has no horizontal overflow', async function () {
-  const hasOverflow = await this.page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+  const hasOverflow = await this.page.evaluate(
+    () => document.documentElement.scrollWidth > document.documentElement.clientWidth
+  );
   expect(hasOverflow).toBe(false);
 });
 
-Then('every card\'s {string} button has a rendered height of at least 28px', async function (label) {
-  const heights = await this.page.locator(`#medicineGrid button:has-text("${label}")`).evaluateAll((els) =>
-    els.map((el) => el.getBoundingClientRect().height)
-  );
+Then("every card's {string} button has a rendered height of at least 28px", async function (label) {
+  const heights = await this.page
+    .locator(`#medicineGrid button:has-text("${label}")`)
+    .evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
   for (const h of heights) {
     // Known Phase 1 exception (see CHANGE.md checklist item 24): legacy card
     // buttons render ~28px tall, not the 44px target. Kept pixel-identical to

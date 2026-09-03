@@ -3,12 +3,20 @@ const { expect } = require('playwright/test');
 
 Given('I am not logged in', async function () {
   await this.gotoPage('pages/login.html');
-  await this.page.evaluate(() => localStorage.removeItem('currentUser'));
+  await this.page.evaluate(() => {
+    // Clear the PIN gate as well as the persona, so guard/redirect
+    // scenarios start from a genuinely locked site.
+    localStorage.removeItem('siteUnlocked');
+    localStorage.removeItem('currentUser');
+  });
 });
 
 Given('I am on the login page', async function () {
   await this.gotoPage('pages/login.html');
-  await this.page.evaluate(() => localStorage.removeItem('currentUser'));
+  await this.page.evaluate(() => {
+    localStorage.removeItem('siteUnlocked');
+    localStorage.removeItem('currentUser');
+  });
   await this.page.reload();
 });
 
@@ -64,6 +72,17 @@ Then('I am redirected to the homepage', async function () {
 Then('currentUser is set in localStorage', async function () {
   const user = await this.page.evaluate(() => localStorage.getItem('currentUser'));
   expect(user).not.toBeNull();
+});
+
+// siteUnlocked is the MVP-only PIN gate; it is independent of currentUser.
+Then('the site is unlocked in localStorage', async function () {
+  const unlocked = await this.page.evaluate(() => localStorage.getItem('siteUnlocked'));
+  expect(unlocked).toBe('1');
+});
+
+Then('the site is not unlocked in localStorage', async function () {
+  const unlocked = await this.page.evaluate(() => localStorage.getItem('siteUnlocked'));
+  expect(unlocked).not.toBe('1');
 });
 
 Then('currentUser is not set in localStorage', async function () {

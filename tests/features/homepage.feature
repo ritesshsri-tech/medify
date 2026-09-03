@@ -27,20 +27,9 @@ Feature: Homepage
     When I search from the homepage for ""
     Then the page has not navigated away from the homepage
 
-  # Request a Call to Order — shares the CallModal organism with medicine-detail
-  Scenario: Requesting a call to order with a valid phone number succeeds
-    Given I am logged in
-    And I am on the homepage
-    When I open the call modal
-    And I enter a valid phone number and submit the call request
-    Then the call success state is shown
-
-  Scenario: Requesting a call to order with an invalid phone number shows a validation error
-    Given I am logged in
-    And I am on the homepage
-    When I open the call modal
-    And I enter an invalid phone number and submit the call request
-    Then a call phone validation error is shown
+  # Request a Call to Order is no longer reachable from the homepage: the phone
+  # number was removed and "Talk to Us" is now a WhatsApp link. The CallModal
+  # organism is still covered on medicine-detail, which does still trigger it.
 
   # Primary nav links — anchor navigation within the page
   Scenario: Clicking a primary nav link scrolls to the matching section

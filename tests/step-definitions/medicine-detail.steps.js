@@ -171,9 +171,9 @@ When('I open the second FAQ', async function () {
 });
 
 Then('only the second FAQ is open', async function () {
-  const openStates = await this.page.locator('#faqList .faq-answer').evaluateAll((els) =>
-    els.map((el) => el.classList.contains('open'))
-  );
+  const openStates = await this.page
+    .locator('#faqList .faq-answer')
+    .evaluateAll((els) => els.map((el) => el.classList.contains('open')));
   expect(openStates[0]).toBe(false);
   expect(openStates[1]).toBe(true);
 });
@@ -200,4 +200,3 @@ When('I add the medicine to cart from the detail page', async function () {
   await this.page.click('#addToCartBtn');
   await this.page.waitForTimeout(200);
 });
-

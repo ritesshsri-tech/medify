@@ -19,23 +19,27 @@ Feature: Authentication
     When I visit the category page
     Then I remain on the category page
 
-  # Item 19 — Login PIN
-  Scenario Outline: A valid PIN logs the user in and lands on the intended page
+  # Item 19 — Login PIN.
+  # The PIN is an access boundary only: it unlocks visibility of the site and
+  # deliberately does NOT sign anyone in, so currentUser stays unset.
+  Scenario Outline: A valid PIN unlocks the site and lands on the intended page
     Given I am not logged in
     And I was redirected to login from the category page
     When I enter the PIN "<pin>"
     Then I am redirected back to the category page
-    And currentUser is set in localStorage
+    And the site is unlocked in localStorage
+    And currentUser is not set in localStorage
 
     Examples:
       | pin  |
       | 0000 |
       | 4321 |
 
-  Scenario: An invalid PIN shows an error and does not log in
+  Scenario: An invalid PIN shows an error and does not unlock the site
     Given I am on the login page
     When I enter the PIN "9999"
     Then a "Incorrect PIN" error is shown
+    And the site is not unlocked in localStorage
     And currentUser is not set in localStorage
 
   Scenario: Logging in with no prior redirect lands on the homepage

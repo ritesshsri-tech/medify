@@ -16,8 +16,12 @@ Then('I remain on the homepage', async function () {
 });
 
 When('I search from the homepage for {string}', async function (term) {
-  await this.page.fill('#indexSearchInput', term);
-  await this.page.click('#indexSearchForm button[type="submit"]');
+  // The hero search uses shared classes rather than ids, because the page can
+  // render more than one search form (hero + mobile row) and duplicate ids
+  // would break the shared submit handler.
+  const form = this.page.locator('.hero .index-search-form');
+  await form.locator('.index-search-input').fill(term);
+  await form.locator('button[type="submit"]').click();
   await this.page.waitForTimeout(200);
 });
 
