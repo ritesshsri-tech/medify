@@ -9,7 +9,11 @@ function saveAddresses(addresses) {
 export function addAddress(address) {
   const addresses = getAddresses();
   const isFirst = addresses.length === 0;
-  const entry = { id: 'addr' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 1000), ...address, isDefault: isFirst };
+  const entry = {
+    id: 'addr' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 1000),
+    ...address,
+    isDefault: isFirst,
+  };
   addresses.push(entry);
   saveAddresses(addresses);
   return entry;
@@ -24,7 +28,7 @@ export function updateAddress(id, updates) {
 }
 
 export function removeAddress(id) {
-  let addresses = getAddresses().filter((a) => a.id !== id);
+  const addresses = getAddresses().filter((a) => a.id !== id);
   if (addresses.length && !addresses.some((a) => a.isDefault)) {
     addresses[0].isDefault = true;
   }

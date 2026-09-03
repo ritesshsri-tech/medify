@@ -24,7 +24,10 @@ export function populateFilterOptions(medicines, { categorySelect, indicationSel
   mfrs.forEach((mfr) => manufacturerSelect.appendChild(new Option(mfr, mfr)));
 }
 
-export function applyFilters(medicines, { search = '', category = '', indication = '', manufacturer = '', sort = currentSort } = {}) {
+export function applyFilters(
+  medicines,
+  { search = '', category = '', indication = '', manufacturer = '', sort = currentSort } = {}
+) {
   const q = search.toLowerCase().trim();
 
   const filtered = medicines.filter((m) => {

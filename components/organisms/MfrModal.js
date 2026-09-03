@@ -60,7 +60,8 @@ export function renderMfrList() {
   if (mfrIsFallback) return;
   const query = document.getElementById('mfrSearch').value;
   const filtered = filterByQuery(sortMedicines(mfrList, mfrSort), query);
-  document.getElementById('mfrModalCount').textContent = `${filtered.length} medicine${filtered.length !== 1 ? 's' : ''} found`;
+  document.getElementById('mfrModalCount').textContent =
+    `${filtered.length} medicine${filtered.length !== 1 ? 's' : ''} found`;
   const body = document.getElementById('mfrModalBody');
   body.innerHTML =
     filtered.length === 0

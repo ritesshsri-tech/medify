@@ -13,7 +13,7 @@
 (function () {
   'use strict';
 
-  var NOTICE = 'Demo Site — NOT FOR COMMERCIAL USE';
+  const NOTICE = 'Demo Site — NOT FOR COMMERCIAL USE';
 
   // Bail out if a page somehow loads this twice.
   if (document.getElementById('demoWatermarkLayer')) return;
@@ -23,12 +23,15 @@
   // DOM nodes keeps it free at scroll/repaint time.
   // Base64 rather than a raw inline SVG: url() escaping of quotes, angle
   // brackets and "#" is fragile and silently yields background-image:none.
-  var tile = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MjAiIGhlaWdodD0iNDIwIj48dGV4dCB4PSIyMTAiIHk9IjIxMCIgdHJhbnNmb3JtPSJyb3RhdGUoLTMwIDIxMCAyMTApIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iSW50ZXIsc3lzdGVtLXVpLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjE3MkEiIGZpbGwtb3BhY2l0eT0iMC4wNyIgbGV0dGVyLXNwYWNpbmc9IjEuNSI+REVNTyDigJQgTk9UIEZPUiBDT01NRVJDSUFMIFVTRTwvdGV4dD48L3N2Zz4=";
+  const tile =
+    'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MjAiIGhlaWdodD0iNDIwIj48dGV4dCB4PSIyMTAiIHk9IjIxMCIgdHJhbnNmb3JtPSJyb3RhdGUoLTMwIDIxMCAyMTApIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iSW50ZXIsc3lzdGVtLXVpLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwRjE3MkEiIGZpbGwtb3BhY2l0eT0iMC4wNyIgbGV0dGVyLXNwYWNpbmc9IjEuNSI+REVNTyDigJQgTk9UIEZPUiBDT01NRVJDSUFMIFVTRTwvdGV4dD48L3N2Zz4=';
 
-  var css =
+  const css =
     '#demoWatermarkLayer{' +
     'position:fixed;inset:0;z-index:2147483646;pointer-events:none;' +
-    'background-image:url("' + tile + '");' +
+    'background-image:url("' +
+    tile +
+    '");' +
     'background-repeat:repeat;background-position:center;' +
     '}' +
     '#demoWatermarkBadge{' +
@@ -61,15 +64,15 @@
     '}';
 
   function mount() {
-    var style = document.createElement('style');
+    const style = document.createElement('style');
     style.textContent = css;
     document.head.appendChild(style);
 
-    var layer = document.createElement('div');
+    const layer = document.createElement('div');
     layer.id = 'demoWatermarkLayer';
     layer.setAttribute('aria-hidden', 'true');
 
-    var badge = document.createElement('div');
+    const badge = document.createElement('div');
     badge.id = 'demoWatermarkBadge';
     badge.setAttribute('role', 'note');
     badge.innerHTML = '<span class="dwm-dot"></span><span>' + NOTICE + '</span>';

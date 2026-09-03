@@ -4,7 +4,15 @@ import { fetchMedicines } from './data.js';
 import { addMedicine, editMedicine, deleteMedicine, getAdded } from './medicineOverrides.js';
 import { getEnquiries, setEnquiryStatus } from './medicalTourism.js';
 import { SAMPLE_CATEGORIES, seedCategories, deleteCategories, categoryHasData } from './sampleData.js';
-import { AD_SLOTS, MAX_IMAGE_BYTES, getBannersForSlot, addBanner, setBannerActive, removeBanner, compressImage } from './adBanners.js';
+import {
+  AD_SLOTS,
+  MAX_IMAGE_BYTES,
+  getBannersForSlot,
+  addBanner,
+  setBannerActive,
+  removeBanner,
+  compressImage,
+} from './adBanners.js';
 import { paise } from './utils.js';
 
 const STAGE_LABELS = {
@@ -452,7 +460,6 @@ document.getElementById('sampleDataDeleteBtn').addEventListener('click', () => {
 });
 
 // ============ AD BANNERS ============
-const AD_SLOT_LABELS = { left: 'Left', middle: 'Middle' };
 
 function renderAdBanners() {
   AD_SLOTS.forEach((slot) => {

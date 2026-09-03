@@ -71,14 +71,14 @@
     },
     'orders-cancel': {
       title: 'Cancel an order',
-      body: "Cancellations aren't self-service in this app yet. Open the order under My Orders and use \"Talk to a human\" below, or call/WhatsApp us with your Order ID and we'll cancel it for you.",
+      body: 'Cancellations aren\'t self-service in this app yet. Open the order under My Orders and use "Talk to a human" below, or call/WhatsApp us with your Order ID and we\'ll cancel it for you.',
       links: [{ label: 'Go to My Orders', href: link('pages/account.html#orders') }],
       back: 'orders',
       keywords: ['cancel', 'cancellation', 'cancel order', 'cancel my order'],
     },
     'orders-stuck': {
       title: 'Order stuck / not moving',
-      body: "If an order contains a prescription medicine, it stays at \"Placed\" until our pharmacist approves the prescription — this is expected and shows as a banner on the order. Once approved, dispatch continues automatically. If it's been more than 24 hours since approval with no movement, contact support.",
+      body: 'If an order contains a prescription medicine, it stays at "Placed" until our pharmacist approves the prescription — this is expected and shows as a banner on the order. Once approved, dispatch continues automatically. If it\'s been more than 24 hours since approval with no movement, contact support.',
       links: [{ label: 'Go to My Orders', href: link('pages/account.html#orders') }],
       back: 'orders',
       keywords: ['stuck', 'not moving', 'delayed', 'delay', 'order pending', 'not shipped'],
@@ -220,7 +220,6 @@
   };
 
   // --- State -----------------------------------------------------------------
-  let currentNodeId = ROOT;
 
   function isOpen() {
     return localStorage.getItem('chatbotOpen') === '1';
@@ -236,9 +235,6 @@
   }
   function getVisitorName() {
     return localStorage.getItem('chatbotVisitorName') || '';
-  }
-  function getVisitorPhone() {
-    return localStorage.getItem('chatbotVisitorPhone') || '';
   }
 
   // --- Free-text matching ------------------------------------------------
@@ -351,7 +347,6 @@
   function renderNode(nodeId, immediate) {
     const node = TREE[nodeId];
     if (!node) return;
-    currentNodeId = nodeId;
 
     clearTimeout(typingTimer);
 
@@ -396,7 +391,9 @@
 
     if (node.options && node.options.length) {
       html += `<div class="chatbot-option-list">`;
-      html += node.options.map((o) => `<button type="button" class="chatbot-option-btn" data-goto="${o.goto}">${o.label}</button>`).join('');
+      html += node.options
+        .map((o) => `<button type="button" class="chatbot-option-btn" data-goto="${o.goto}">${o.label}</button>`)
+        .join('');
       html += `</div>`;
     } else if (node.back) {
       html += `<div class="chatbot-option-list"><button type="button" class="chatbot-option-btn" data-goto="${node.back}">⬅ Back</button></div>`;

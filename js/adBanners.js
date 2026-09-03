@@ -12,7 +12,9 @@ export const AD_SLOTS = ['left', 'middle'];
  */
 export const DEFAULT_BANNERS = {
   left: [{ imageDataUrl: 'assets/ads/left-default.jpg', linkUrl: '', altText: 'Up to 20% off on medicines' }],
-  middle: [{ imageDataUrl: 'assets/ads/middle-default.jpg', linkUrl: '', altText: 'Free delivery on orders above Rs 499' }],
+  middle: [
+    { imageDataUrl: 'assets/ads/middle-default.jpg', linkUrl: '', altText: 'Free delivery on orders above Rs 499' },
+  ],
 };
 
 /**
@@ -66,7 +68,7 @@ export function compressImage(file, slot) {
           ctx.drawImage(img, 0, 0, w, h);
           const out = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
           resolve(out.length < original.length ? out : original);
-        } catch (err) {
+        } catch {
           resolve(original);
         }
       };
@@ -87,7 +89,7 @@ function saveBanners(list) {
   try {
     localStorage.setItem('adBanners', JSON.stringify(list));
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 }
@@ -118,7 +120,7 @@ export function addBanner({ slot, imageDataUrl, linkUrl, altText }) {
   if (!saveBanners(list)) {
     throw new Error(
       'Not enough browser storage to save this banner. Delete an existing ' +
-      'banner or use a smaller image, then try again.'
+        'banner or use a smaller image, then try again.'
     );
   }
   return entry;

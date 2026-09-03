@@ -41,7 +41,14 @@ const OTC_MED = {
   requiresPrescription: false,
 };
 
-const DEMO_ADDR = { name: 'Demo Patient', phone: '9876500001', line1: '221B Residency Road', city: 'Bengaluru', state: 'Karnataka', pincode: '560025' };
+const DEMO_ADDR = {
+  name: 'Demo Patient',
+  phone: '9876500001',
+  line1: '221B Residency Road',
+  city: 'Bengaluru',
+  state: 'Karnataka',
+  pincode: '560025',
+};
 
 export const SAMPLE_CATEGORIES = [
   {
@@ -84,12 +91,23 @@ export function deleteCategories(categoryKeys) {
 
 function seedAddresses() {
   addAddress({ ...DEMO_ADDR });
-  addAddress({ name: 'Demo Patient (Office)', phone: '9876500002', line1: '4th Floor, Tech Park', city: 'Bengaluru', state: 'Karnataka', pincode: '560103' });
+  addAddress({
+    name: 'Demo Patient (Office)',
+    phone: '9876500002',
+    line1: '4th Floor, Tech Park',
+    city: 'Bengaluru',
+    state: 'Karnataka',
+    pincode: '560103',
+  });
 }
 
 function seedPrescriptions() {
   addPrescription({ fileName: 'veenat-rx-scan.jpg', forMedicineId: RX_MED.id, forMedicineName: RX_MED.brandName });
-  addPrescription({ fileName: 'amoxicillin-rx-scan.pdf', forMedicineId: RX_MED_2.id, forMedicineName: RX_MED_2.brandName });
+  addPrescription({
+    fileName: 'amoxicillin-rx-scan.pdf',
+    forMedicineId: RX_MED_2.id,
+    forMedicineName: RX_MED_2.brandName,
+  });
 }
 
 function seedOrders() {
@@ -198,7 +216,7 @@ export function categoryHasData(categoryKey) {
     try {
       const parsed = JSON.parse(raw);
       return Array.isArray(parsed) ? parsed.length > 0 : true;
-    } catch (e) {
+    } catch {
       return true;
     }
   });

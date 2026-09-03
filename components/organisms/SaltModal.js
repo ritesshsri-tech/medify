@@ -44,7 +44,8 @@ export function renderSaltList() {
   if (saltIsFallback) return;
   const query = document.getElementById('saltSearch').value;
   const filtered = filterByQuery(sortMedicines(saltList, saltSort), query);
-  document.getElementById('saltModalCount').textContent = `${filtered.length} medicine${filtered.length !== 1 ? 's' : ''} found`;
+  document.getElementById('saltModalCount').textContent =
+    `${filtered.length} medicine${filtered.length !== 1 ? 's' : ''} found`;
   const body = document.getElementById('saltModalBody');
   body.innerHTML =
     filtered.length === 0
